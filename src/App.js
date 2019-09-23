@@ -8,6 +8,7 @@ import { history } from './helpers/history';
 import { AdminRoute } from './components/AdminRoute';
 import { LoginPage } from './components/LoginPage';
 import { AdminHomePage } from './components/AdminHome';
+import { MessageTable } from './components/MessageTable';
 
 
 class App extends React.Component {
@@ -38,6 +39,7 @@ class App extends React.Component {
                       <nav className="navbar navbar-expand navbar-dark bg-dark">
                           <div className="navbar-nav">
                               <Link to="/" className="nav-item nav-link">Home</Link>
+                              <Link to="/messages" className="nav-item nav-link">Messages</Link>
                               <a href="#" onClick={this.logout} className="nav-item nav-link">Logout</a>
                           </div>
                       </nav>
@@ -45,9 +47,10 @@ class App extends React.Component {
                   <div className="jumbotron">
                       <div className="container">
                           <div className="row">
-                              <div className="col-md-6 offset-md-3">
+                              <div className="col-md-12">
                                   <AdminRoute exact path="/" component={AdminHomePage} />
                                   <Route path="/login" component={LoginPage} />
+                                  <Route path="/messages" component={MessageTable} />
                               </div>
                           </div>
                       </div>

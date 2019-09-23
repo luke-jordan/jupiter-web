@@ -5,7 +5,7 @@ const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('
 const login = (phoneOrEmail, password) => {
     const requestOptions = {
         method: 'post',
-        body: JSON.stringify({ phoneOrEmail, password })
+        body: JSON.stringify({ phoneOrEmail, password, otp: '1234' })
     };
 
     return fetch('https://staging-auth.jupiterapp.net/login', requestOptions)
