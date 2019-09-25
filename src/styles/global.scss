@@ -1,0 +1,19 @@
+// Global styles that can affect entire app (normalize css, etc.)
+
+@import-normalize;
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
