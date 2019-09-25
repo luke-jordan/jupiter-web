@@ -79,7 +79,7 @@ export class MessageCreateForm extends React.Component {
 
         const requestOptions = { method: 'POST', headers: authHeader(), body: JSON.stringify(bodyOfRequest) };
 
-        fetch('https://staging.jupiterapp.net/message/instruct/create', requestOptions).then((resp) => {
+        fetch('https://staging-admin.jupiterapp.net/message/instruct/create', requestOptions).then((resp) => {
             console.log('SUCCESS! : ', resp);
         }).catch((err) => {
             console.log('ERROR! : ', err);

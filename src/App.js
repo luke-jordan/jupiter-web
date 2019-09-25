@@ -9,7 +9,8 @@ import { AdminRoute } from './components/AdminRoute';
 import { LoginPage } from './components/LoginPage';
 import { AdminHomePage } from './components/AdminHome';
 import { MessageTable } from './components/MessageTable';
-
+import { BoostTable } from './components/BoostTable';
+import { BoostCreateForm } from './components/BoostForm';
 
 class App extends React.Component {
   constructor(props) {
@@ -40,7 +41,8 @@ class App extends React.Component {
                           <div className="navbar-nav">
                               <Link to="/" className="nav-item nav-link">Home</Link>
                               <Link to="/messages" className="nav-item nav-link">Messages</Link>
-                              <a href="#" onClick={this.logout} className="nav-item nav-link">Logout</a>
+                              <Link to="/boosts/table" className="nav-item nav-link">Boosts</Link>
+                              <a href="/logout" onClick={this.logout} className="nav-item nav-link">Logout</a>
                           </div>
                       </nav>
                   }
@@ -51,6 +53,8 @@ class App extends React.Component {
                                   <AdminRoute exact path="/" component={AdminHomePage} />
                                   <Route path="/login" component={LoginPage} />
                                   <Route path="/messages" component={MessageTable} />
+                                  <Route path="/boosts/table" component={BoostTable} />
+                                  <Route path="/boosts/create" component={BoostCreateForm} />
                               </div>
                           </div>
                       </div>

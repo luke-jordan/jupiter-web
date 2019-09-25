@@ -28,7 +28,7 @@ export class MessageTable extends React.Component {
     async refreshMessages() {
         try {
             const requestOptions = { method: 'GET', headers: authHeader() };
-            const messageList = await fetch('https://staging.jupiterapp.net/message/instruct/list', requestOptions).then(handleResponse);
+            const messageList = await fetch('https://staging-admin.jupiterapp.net/message/instruct/list', requestOptions).then(handleResponse);
             const sortedList = messageList.sort(msgInstructSorter);
             console.log('Sorted list: ', sortedList);
             this.setState({ messages: sortedList });
@@ -47,7 +47,7 @@ export class MessageTable extends React.Component {
             };
 
             const requestOptions = { method: 'POST', headers: authHeader(), body: JSON.stringify(requestBody) };
-            const resultOfUpdate = await fetch('https://staging.jupiterapp.net/message/instruct/update', requestOptions).then(handleResponse);
+            const resultOfUpdate = await fetch('https://staging-admin.jupiterapp.net/message/instruct/update', requestOptions).then(handleResponse);
 
             console.log('Result of updating: ', resultOfUpdate);
             await this.refreshMessages();
