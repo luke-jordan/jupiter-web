@@ -11,6 +11,10 @@ const defaultOptions = {
 };
 
 export class ApiService {
+  constructor(currUserService) {
+    this.currUserService = currUserService;
+  }
+
   get(url, options) {
     return this.request({ method: 'get', url, ...options });
   }
@@ -35,7 +39,10 @@ export class ApiService {
     options = Object.assign({}, defaultOptions, options);
 
     if (options.sendToken) {
-      options.headers['Authorization'] = `Bearer ${'TOKEN'}`;
+      const user = this.currUserService.user;
+      if (user) {
+        options.headers['Authorization'] = `Bearer ${user.token}`;
+      }
     }
 
     if (options.convertBodyToJson) {
