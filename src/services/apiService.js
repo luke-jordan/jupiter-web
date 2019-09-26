@@ -1,19 +1,17 @@
 import { ajax } from 'rxjs/ajax';
 import { map } from 'rxjs/operators';
 
-const defaultOptions = {
-  headers: {
-    'Content-Type': 'text/plain;charset=UTF-8'
-  },
-  sendToken: false,
-  convertBodyToJson: true,
-  fullResponse: false
-};
+import { currentUser } from 'helpers/currentUser';
 
 export class ApiService {
-  constructor(currUserService) {
-    this.currUserService = currUserService;
-  }
+  defaultOptions = {
+    headers: {
+      'Content-Type': 'text/plain;charset=UTF-8'
+    },
+    sendToken: false,
+    convertBodyToJson: true,
+    fullResponse: false
+  };
 
   get(url, options) {
     return this.request({ method: 'get', url, ...options });
@@ -36,13 +34,10 @@ export class ApiService {
   }
 
   request(options) {
-    options = Object.assign({}, defaultOptions, options);
+    options = Object.assign({}, this.defaultOptions, options);
 
-    if (options.sendToken) {
-      const user = this.currUserService.user;
-      if (user) {
-        options.headers['Authorization'] = `Bearer ${user.token}`;
-      }
+    if (options.sendToken && currentUser.user) {
+      options.headers['Authorization'] = `Bearer ${currentUser.user.token}`;
     }
 
     if (options.convertBodyToJson) {
