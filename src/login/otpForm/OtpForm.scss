@@ -1,0 +1,27 @@
+.otp-form {
+  max-width: 600px;
+  text-align: center;
+  margin: 0 auto;
+  .phone-num {
+    color: #5353A1;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 30px;
+  }
+  .digits {
+    margin: 20px 0 30px;
+    .form-input {
+      width: 75px;
+      text-align: center;
+      margin: 0 5px;
+    }
+  }
+  .otp-help {
+    font-size: 13px;
+    color: #787F83;
+    margin-top: 30px;
+    .link {
+      font-size: inherit;
+    }
+  }
+}

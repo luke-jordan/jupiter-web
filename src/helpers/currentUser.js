@@ -1,7 +1,7 @@
 class CurrentUser {
-  constructor() {
-    this.key = 'currentUser';
+  key = 'currentUser';
 
+  constructor() {
     try {
       this.user = JSON.parse(localStorage.getItem(this.key));
     } catch {
