@@ -1,12 +1,12 @@
 import React from 'react';
 import { Router, Switch } from 'react-router-dom';
 
+import { historyService } from 'services';
 import PageLayout from 'components/pageLayout/PageLayout';
 import AdminRoute from 'components/adminRoute/AdminRoute';
 import LoginPage from 'login/loginPage/LoginPage';
-import { historyService } from 'services';
+import HomePage from 'home/homePage/HomePage';
 
-const HomePage = () => 'Home page';
 const UsersPage = () => 'Users page';
 const BoostsPage = () => 'Boosts page';
 const MessagesPage = () => 'Messages page';

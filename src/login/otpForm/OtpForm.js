@@ -14,19 +14,21 @@ class OtpForm extends React.Component {
     const { digits } = this.state;
     return <div className="card otp-form">
       <div className="card-header">Please enter the OTP pin sent to:</div>
+      <div className="card-body">
       <div className="phone-num">********87</div>
-      <form className="form" onSubmit={this.submit}>
-        <div className="digits">
-          {digits.map((digit, index) => {
-            return <input className="form-input" value={digit} maxLength="1"
-              onChange={this.inputChange} name={`digit-${index}`} key={index}/>
-          })}
+        <form className="form" onSubmit={this.submit}>
+          <div className="digits">
+            {digits.map((digit, index) => {
+              return <input className="form-input" value={digit} maxLength="1"
+                onChange={this.inputChange} name={`digit-${index}`} key={index}/>
+            })}
+          </div>
+          <button className="button" disabled={this.props.pending}>Continue</button>
+        </form>
+        <div className="otp-help">
+          <p>Didn't receive the OTP pin? <a href="/" className="link">Resend</a></p>
+          <p>What is a one-time password? <a href="/" className="link">Help</a></p>
         </div>
-        <button className="button" disabled={this.props.pending}>Continue</button>
-      </form>
-      <div className="otp-help">
-        <p>Didn't receive the OTP pin? <a href="/" className="link">Resend</a></p>
-        <p>What is a one-time password? <a href="/" className="link">Help</a></p>
       </div>
     </div>;
   }
