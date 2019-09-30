@@ -1,9 +1,19 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+import { authService } from 'services';
 import './PageLayout.scss';
 
 class PageLayout extends React.Component {
+  constructor() {
+    super();
+    this.state = { user: null };
+  }
+
+  componentDidMount() {
+    authService.user.subscribe(user => this.setState({ user }));
+  }
+
   render() {
     return <div className="page-layout">
       <header className="page-layout-header">
@@ -11,7 +21,7 @@ class PageLayout extends React.Component {
           <div className="header-logo">
             <img src="images/logo.svg" alt="logo"></img>
           </div>
-          {this.renderHeaderNav()}
+          {this.state.user && this.renderHeaderNav()}
         </div>
       </header>
       <main className="page-layout-main">
@@ -33,8 +43,12 @@ class PageLayout extends React.Component {
       <NavLink className="header-nav-item" to="/boosts">Boosts</NavLink>
       <NavLink className="header-nav-item" to="/messages">Messages</NavLink>
       <NavLink className="header-nav-item" to="/clients-and-floats">Clients &amp; floats</NavLink>
-      <div className="header-nav-item log-out">Log out</div>
+      <div className="header-nav-item log-out" onClick={this.logoutClick}>Log out</div>
     </div>;
+  }
+
+  logoutClick() {
+    authService.logout().subscribe();
   }
 }
 

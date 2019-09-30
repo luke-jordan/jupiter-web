@@ -3,28 +3,50 @@ import React from 'react';
 import './LoginPage.scss';
 import LoginForm from '../loginForm/LoginForm';
 import OtpForm from '../otpForm/OtpForm';
+import { authService } from 'services';
 
 class LoginPage extends React.Component {
   constructor() {
     super();
-    this.state = { otpNeeded: false };
+    this.state = {
+      pending: false,
+      otpNeeded: false
+    };
   }
   render() {
+    const { otpNeeded, pending } = this.state;
     return <div className="login-page">
-      {this.state.otpNeeded ?
-        <OtpForm onSubmit={this.otpHandler}/> : 
-        <LoginForm onSubmit={this.loginHandler}/>}
-      
+      {otpNeeded ?
+        <OtpForm onSubmit={this.otpSubmit} pending={pending}/> : 
+        <LoginForm onSubmit={this.loginSubmit} pending={pending}/>}
     </div>;
   }
 
-  loginHandler = (data) => {
-    console.log('Login data', data);
-    this.setState({ otpNeeded: true });
+  loginSubmit = (data) => {
+    this.loginData = data;
+    this.setState({ pending: true }, () => {
+      this.loginRequest(data);
+    });
   }
 
-  otpHandler = (pin) => {
-    console.log('OTP pin', pin);
+  otpSubmit = (otp) => {
+    this.setState({ pending: true }, () => {
+      this.loginRequest({ ...this.loginData, otp });
+    });
+  }
+
+  loginRequest(data) {
+    authService.login(data).subscribe(res => {
+      if (res.result === 'OTP_NEEDED') {
+        this.setState({
+          otpNeeded: true,
+          pending: false
+        });
+      }
+    }, err => {
+      // TODO: handle login error
+      console.error(err);
+    });
   }
 }
 

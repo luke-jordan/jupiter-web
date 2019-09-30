@@ -1,19 +1,31 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Router, Switch } from 'react-router-dom';
 
 import PageLayout from 'components/pageLayout/PageLayout';
+import AdminRoute from 'components/adminRoute/AdminRoute';
 import LoginPage from 'login/loginPage/LoginPage';
+import { historyService } from 'services';
+
+const HomePage = () => 'Home page';
+const UsersPage = () => 'Users page';
+const BoostsPage = () => 'Boosts page';
+const MessagesPage = () => 'Messages page';
+const ClientsAndFloatsPage = () => 'Clients and floats page';
+const NotFoundPage = () => 'Page not exit'
 
 class Root extends React.Component {
   render() {
-    return <Router>
+    return <Router history={historyService}>
       <PageLayout>
-        <Route path="/" exact render={() => 'Home'}/>
-        <Route path="/login" component={LoginPage}/>
-        <Route path="/users" render={() => 'Users'}/>
-        <Route path="/boosts" render={() => 'Boosts'}/>
-        <Route path="/messages" render={() => 'Messages'}/>
-        <Route path="/clients-and-floats" render={() => 'Clients & floats'}/>
+        <Switch>
+          <AdminRoute path="/" exact component={HomePage}/>
+          <AdminRoute path="/login" component={LoginPage}/>
+          <AdminRoute path="/users" component={UsersPage}/>
+          <AdminRoute path="/boosts" component={BoostsPage}/>
+          <AdminRoute path="/messages" component={MessagesPage}/>
+          <AdminRoute path="/clients-and-floats" component={ClientsAndFloatsPage}/>
+          <AdminRoute component={NotFoundPage}/>
+        </Switch>
       </PageLayout>
     </Router>;
   }

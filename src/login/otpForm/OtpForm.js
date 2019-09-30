@@ -6,7 +6,7 @@ class OtpForm extends React.Component {
   constructor() {
     super();
     this.state = {
-      digits: ['', '', '', '']
+      digits: ['1', '2', '3', '4']
     };
   }
 
@@ -22,7 +22,7 @@ class OtpForm extends React.Component {
               onChange={this.inputChange} name={`digit-${index}`} key={index}/>
           })}
         </div>
-        <button className="button">Continue</button>
+        <button className="button" disabled={this.props.pending}>Continue</button>
       </form>
       <div className="otp-help">
         <p>Didn't receive the OTP pin? <a href="/" className="link">Resend</a></p>

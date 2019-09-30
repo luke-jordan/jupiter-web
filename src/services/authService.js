@@ -4,8 +4,9 @@ import { tap } from 'rxjs/operators';
 import { currentUser } from 'helpers/currentUser';
 
 export class AuthService {
-  constructor(apiService) {
+  constructor(apiService, historyService) {
     this.apiService = apiService;
+    this.historyService = historyService;
     this.url = process.env.REACT_APP_AUTH_URL;
     this.user = new BehaviorSubject(currentUser.user);
   }
@@ -16,6 +17,7 @@ export class AuthService {
         if (res.result !== 'OTP_NEEDED') {
           // login success
           this.user.next(currentUser.updateUser(res));
+          this.historyService.push('/');
         }
       })
     );
@@ -23,6 +25,7 @@ export class AuthService {
 
   logout() {
     this.user.next(currentUser.updateUser(null));
+    this.historyService.push('/login');
     return of(null);
   }
 }

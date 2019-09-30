@@ -6,8 +6,8 @@ class LoginForm extends React.Component {
   constructor() {
     super();
     this.state = {
-      phoneOrEmail: '',
-      password: ''
+      phoneOrEmail: 'someone@jupitersave.com',
+      password: 'holy_CHRYSALIS_hatching9531'
     };
   }
 
@@ -30,7 +30,7 @@ class LoginForm extends React.Component {
           </div>
         </div>
         <div className="text-center">
-          <button className="button">Log In</button>
+          <button className="button" disabled={this.props.pending}>Log In</button>
         </div>
       </form>
     </div>;
