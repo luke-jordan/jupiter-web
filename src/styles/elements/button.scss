@@ -1,0 +1,15 @@
+.button {
+  @include theme-gradient;
+  text-transform: uppercase;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 18px 20px;
+  color: $color-white;
+  cursor: pointer;
+  border: 0;
+  line-height: 1;
+  &[disabled] {
+    opacity: 0.5;
+  }
+}

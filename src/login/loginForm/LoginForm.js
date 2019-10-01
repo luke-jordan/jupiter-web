@@ -12,6 +12,7 @@ class LoginForm extends React.Component {
   }
 
   render() {
+    const { loading } = this.props;
     const { phoneOrEmail, password } = this.state;
     return <div className="card login-form">
       <div className="card-header">Log In</div>
@@ -19,19 +20,19 @@ class LoginForm extends React.Component {
         <form className="form" onSubmit={this.submit}>
           <div className="form-row">
             <div className="form-label">Phone Number or Email Address*</div>
-            <input type="text" className="form-input" name="phoneOrEmail"
+            <input type="text" className="form-input" name="phoneOrEmail" disabled={loading}
               value={phoneOrEmail} onChange={this.inputChange}></input>
           </div>
           <div className="form-row">
             <div className="form-label">Password</div>
-            <input type="password" className="form-input" name="password"
+            <input type="password" className="form-input" name="password" disabled={loading}
               value={password} onChange={this.inputChange}></input>
             <div className="forgot-password">
               <a href="/" className="link">Forgot Password?</a>
             </div>
           </div>
-          <div className="text-center">
-            <button className="button" disabled={this.props.pending}>Log In</button>
+          <div className="form-actions">
+            {loading ? <div className="spinner"/> : <button className="button">Log In</button>}
           </div>
         </form>
       </div>

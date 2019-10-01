@@ -17,4 +17,8 @@
   padding: 10px 15px;
   font-size: 14px;
   width: 100%;
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }

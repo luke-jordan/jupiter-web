@@ -9,28 +9,28 @@ class LoginPage extends React.Component {
   constructor() {
     super();
     this.state = {
-      pending: false,
+      loading: false,
       otpNeeded: false
     };
   }
   render() {
-    const { otpNeeded, pending } = this.state;
+    const { otpNeeded, loading } = this.state;
     return <div className="login-page">
       {otpNeeded ?
-        <OtpForm onSubmit={this.otpSubmit} pending={pending}/> : 
-        <LoginForm onSubmit={this.loginSubmit} pending={pending}/>}
+        <OtpForm onSubmit={this.otpSubmit} loading={loading}/> : 
+        <LoginForm onSubmit={this.loginSubmit} loading={loading}/>}
     </div>;
   }
 
   loginSubmit = (data) => {
     this.loginData = data;
-    this.setState({ pending: true }, () => {
+    this.setState({ loading: true }, () => {
       this.loginRequest(data);
     });
   }
 
   otpSubmit = (otp) => {
-    this.setState({ pending: true }, () => {
+    this.setState({ loading: true }, () => {
       this.loginRequest({ ...this.loginData, otp });
     });
   }
@@ -40,12 +40,13 @@ class LoginPage extends React.Component {
       if (res.result === 'OTP_NEEDED') {
         this.setState({
           otpNeeded: true,
-          pending: false
+          loading: false
         });
       }
     }, err => {
       // TODO: handle login error
       console.error(err);
+      this.setState({ loading: false });
     });
   }
 }

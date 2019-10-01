@@ -11,6 +11,7 @@ class OtpForm extends React.Component {
   }
 
   render() {
+    const { loading } = this.props;
     const { digits } = this.state;
     return <div className="card otp-form">
       <div className="card-header">Please enter the OTP pin sent to:</div>
@@ -19,11 +20,13 @@ class OtpForm extends React.Component {
         <form className="form" onSubmit={this.submit}>
           <div className="digits">
             {digits.map((digit, index) => {
-              return <input className="form-input" value={digit} maxLength="1"
+              return <input className="form-input" value={digit} maxLength="1" disabled={loading}
                 onChange={this.inputChange} name={`digit-${index}`} key={index}/>
             })}
           </div>
-          <button className="button" disabled={this.props.pending}>Continue</button>
+          <div className="form-actions">
+            {loading ? <div className="spinner"/> : <button className="button">Continue</button>}
+          </div>
         </form>
         <div className="otp-help">
           <p>Didn't receive the OTP pin? <a href="/" className="link">Resend</a></p>
