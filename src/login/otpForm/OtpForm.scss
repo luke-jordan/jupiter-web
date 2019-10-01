@@ -1,9 +1,11 @@
+@import 'styles/common';
+
 .otp-form {
   max-width: 600px;
   text-align: center;
   margin: 0 auto;
   .phone-num {
-    color: #5353A1;
+    color: $color-purple;
     font-size: 18px;
     font-weight: 600;
   }
@@ -17,7 +19,7 @@
   }
   .otp-help {
     font-size: 13px;
-    color: #787F83;
+    color: $color-grey2;
     margin-top: 30px;
     .link {
       font-size: inherit;

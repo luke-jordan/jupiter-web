@@ -32,7 +32,7 @@
       align-items: center;
       padding: 3px;
       position: relative;
-      color: $color-light-grey;
+      color: $color-grey;
       font-size: 13px;
       text-transform: uppercase;
       text-decoration: none;
@@ -59,7 +59,7 @@
 
   .page-layout-main {
     flex: 1;
-    background-color: #eef2f8;
+    background-color: $color-silver2;
     height: 100%;
     padding: 0 15px;
   }
