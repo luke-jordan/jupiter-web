@@ -1,0 +1,53 @@
+@import 'styles/common';
+
+.user-counters {
+  display: flex;
+  margin: 0 -10px;
+  .card {
+    flex: 1;
+    margin: 10px;
+    height: 195px;
+  }
+  .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .total-users {
+    text-align: center;
+    .total-count {
+      font-size: 40px;
+      font-weight: 600;
+      color: $color-grey;
+      padding: 8px 0;
+    }
+    .total-label {
+      font-size: 16px;
+      color: $color-grey2;
+    }
+  }
+  .counters-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: 0;
+    width: 100%;
+    li {
+      display: flex;
+      align-items: center;
+      height: 55px;
+      &:first-child {
+        border-bottom: 1px solid $color-silver;
+      }
+    }
+    .counter-name {
+      flex: 1;
+      color: $color-grey2;
+      font-size: 16px;
+    }
+    .counter-value {
+      color: $color-grey;
+      font-weight: 600;
+      font-size: 28px;
+    }
+  }
+}

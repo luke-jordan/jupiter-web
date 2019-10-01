@@ -1,4 +1,6 @@
 .card {
+  display: flex;
+  flex-direction: column;
   background-color: $color-white;
   border-radius: 3px;
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
@@ -11,9 +13,10 @@
   }
   .card-body {
     padding: 20px;
+    flex: 1;
   }
 }
-.card.widget {
+.card.gradient-widget {
   border-radius: 3px;
   overflow: hidden;
   .card-header {

@@ -35,6 +35,7 @@ export class ApiService {
 
   request(options) {
     options = Object.assign({}, this.defaultOptions, options);
+    options.headers = Object.assign({}, options.headers);
 
     if (options.sendToken && currentUser.user) {
       options.headers['Authorization'] = `Bearer ${currentUser.user.token}`;
@@ -42,6 +43,10 @@ export class ApiService {
 
     if (options.convertBodyToJson) {
       options.body = JSON.stringify(options.body);
+    }
+
+    if (options.params) {
+      options.url += `?${new URLSearchParams(options.params)}`;
     }
 
     return ajax(options).pipe(
