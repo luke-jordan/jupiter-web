@@ -1,0 +1,19 @@
+@import 'styles/common';
+
+.user-search {
+  padding: 60px 0;
+  text-align: center;
+  .manage-users {
+    font-size: 20px;
+    color: $color-grey;
+  }
+  .manage-description {
+    font-size: 14px;
+    color: $color-grey2;
+    padding: 10px 0;
+  }
+  .input-group {
+    max-width: 650px;
+    margin: 0 auto;
+  }
+}
