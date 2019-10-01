@@ -1,0 +1,20 @@
+.form {
+}
+.form-row {
+  margin-bottom: 30px;
+}
+.form-label {
+  color: $color-grey2;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.form-input {
+  border: 1px solid $color-silver;
+  border-radius: 10px;
+  background-color: $color-white;
+  height: 50px;
+  padding: 10px 15px;
+  font-size: 14px;
+  width: 100%;
+}
