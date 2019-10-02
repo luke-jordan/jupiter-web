@@ -1,3 +1,9 @@
 @mixin theme-gradient {
   background-image: linear-gradient(to right, $color-blue, $color-purple);
 }
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

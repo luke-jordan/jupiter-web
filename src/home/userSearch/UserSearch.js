@@ -1,11 +1,14 @@
 import React from 'react';
 
+import { inject } from 'services';
 import './UserSearch.scss';
 
 class UserSearch extends React.Component {
   constructor() {
     super();
     this.state = { search: '' };
+
+    this.historyService = inject('HistoryService');
   }
   render() {
     return <div className="user-search">
@@ -25,7 +28,7 @@ class UserSearch extends React.Component {
   }
 
   searchClick = () => {
-    console.log(this.state.search);
+    this.historyService.push(`/users?search=${this.state.search}`);
   }
 }
 

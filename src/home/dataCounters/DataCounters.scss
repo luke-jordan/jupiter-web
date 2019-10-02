@@ -1,0 +1,37 @@
+@import 'styles/common';
+
+.data-counters {
+  display: flex;
+  margin: 0 -15px;
+  .card {
+    flex: 1;
+    margin: 0 15px;
+    min-height: 210px;
+  }
+  .card-body {
+    @include flex-center;
+    flex-direction: column;
+  }
+  .data-counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .counter-value {
+      font-size: 28px;
+      font-weight: 600;
+      color: $color-grey;
+      padding: 0 12px;
+    }
+    .counter-name {
+      font-size: 16px;
+      color: $color-grey2;
+    }
+  }
+  .data-buttons {
+    margin-top: 6px;
+    text-align: center;
+    .button {
+      margin: 10px;
+    }
+  }
+}

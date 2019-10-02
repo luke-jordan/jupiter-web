@@ -13,15 +13,15 @@ export class UserCounters extends React.Component {
 
     this.state = {
       totalCount: 0,
-      totalLoading: false,
+      totalLoading: true,
 
       todayDailyCount: 0,
       todayWeeklyCount: 0,
-      todayLoading: false,
+      todayLoading: true,
 
       yesterdayDailyCount: 0,
       yesterdayWeeklyCount: 0,
-      yesterdayLoading: false
+      yesterdayLoading: true
     };
 
     this.todayDate = moment();
@@ -31,12 +31,6 @@ export class UserCounters extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({
-      totalLoading: true,
-      todayLoading: true,
-      yesterdayLoading: true
-    });
-
     this.usersService.getUsersCount().pipe(
       takeUntil(this.unmount$)
     ).subscribe(totalCount => {
@@ -85,7 +79,7 @@ export class UserCounters extends React.Component {
       </div>
 
       {/* Today */}
-      <div className="card gradient-widget">
+      <div className="card card-with-gradient">
         <div className="card-header">
           <div className="header-left">Today</div>
           <div className="header-right">{this.todayDate.format('DD MMM YYYY')}</div>
@@ -106,7 +100,7 @@ export class UserCounters extends React.Component {
       </div>
       
       {/* Yesterday */}
-      <div className="card gradient-widget">
+      <div className="card card-with-gradient">
         <div className="card-header">
           <div className="header-left">Yesterday</div>
           <div className="header-right">{this.yesterdayDate.format('DD MMM YYYY')}</div>

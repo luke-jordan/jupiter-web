@@ -31,7 +31,9 @@ class PageLayout extends React.Component {
       <header className="page-layout-header">
         <div className="header-inner">
           <div className="header-logo">
-            <img src="images/logo.svg" alt="logo"></img>
+            <NavLink to="/">
+              <img src="images/logo.svg" alt="logo"></img>
+            </NavLink>
           </div>
           {this.state.user && this.renderHeaderNav()}
         </div>

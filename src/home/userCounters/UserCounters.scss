@@ -5,13 +5,11 @@
   margin: 0 -10px;
   .card {
     flex: 1;
-    margin: 10px;
+    margin: 0 10px;
     height: 195px;
   }
   .card-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    @include flex-center;
   }
   .total-users {
     text-align: center;
