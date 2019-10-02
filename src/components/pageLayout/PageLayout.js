@@ -12,7 +12,7 @@ class PageLayout extends React.Component {
   }
 
   componentDidMount() {
-    this.authService.user.subscribe(user => this.setState({ user }));
+    this.authService.currUser.subscribe(user => this.setState({ user }));
   }
 
   render() {

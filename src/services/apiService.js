@@ -1,7 +1,7 @@
 import { ajax } from 'rxjs/ajax';
 import { map } from 'rxjs/operators';
 
-import { currentUser } from 'helpers/currentUser';
+import { inject } from 'services';
 
 export class ApiService {
   defaultOptions = {
@@ -12,6 +12,12 @@ export class ApiService {
     convertBodyToJson: true,
     fullResponse: false
   };
+
+  get authService() {
+    // use 'inject' here to avoid circular dependency
+    // (because AuthService depends on ApiService)
+    return inject('AuthService');
+  }
 
   get(url, options) {
     return this.request({ method: 'get', url, ...options });
@@ -37,8 +43,8 @@ export class ApiService {
     options = Object.assign({}, this.defaultOptions, options);
     options.headers = Object.assign({}, options.headers);
 
-    if (options.sendToken && currentUser.user) {
-      options.headers['Authorization'] = `Bearer ${currentUser.user.token}`;
+    if (options.sendToken && this.authService.user) {
+      options.headers['Authorization'] = `Bearer ${this.authService.user.token}`;
     }
 
     if (options.convertBodyToJson) {

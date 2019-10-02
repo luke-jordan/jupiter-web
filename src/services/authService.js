@@ -1,14 +1,16 @@
 import { BehaviorSubject, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { currentUser } from 'helpers/currentUser';
-
 export class AuthService {
+  userKey = 'currentUser';
+
   constructor(apiService, historyService) {
     this.apiService = apiService;
     this.historyService = historyService;
     this.url = process.env.REACT_APP_AUTH_URL;
-    this.user = new BehaviorSubject(currentUser.user);
+
+    this._getUser();
+    this.currUser = new BehaviorSubject(this.user);
   }
 
   login(data) {
@@ -16,7 +18,7 @@ export class AuthService {
       tap(res => {
         if (res.result !== 'OTP_NEEDED') {
           // login success
-          this.user.next(currentUser.updateUser(res));
+          this._setUser(res);
           this.historyService.push('/');
         }
       })
@@ -24,8 +26,32 @@ export class AuthService {
   }
 
   logout() {
-    this.user.next(currentUser.updateUser(null));
+    this._setUser(null);
     this.historyService.push('/login');
     return of(null);
+  }
+
+  _getUser() {
+    try {
+      this.user = JSON.parse(localStorage.getItem(this.userKey));
+    } catch {
+      this.user = null;
+    }
+  }
+
+  _setUser(data) {
+    if (data) {
+      this.user = {
+        token: data.token,
+        profile: data.profile,
+        systemWideUserId: data.systemWideUserId
+      };
+      localStorage.setItem(this.userKey, JSON.stringify(this.user));
+    } else {
+      this.user = null;
+      localStorage.removeItem(this.userKey);
+    }
+
+    this.currUser.next(this.user);
   }
 }
