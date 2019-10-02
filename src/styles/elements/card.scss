@@ -9,10 +9,11 @@
     line-height: 32px;
     text-align: center;
     color: $color-grey;
-    padding: 20px 20px 0;
+    padding: 15px;
+    border-bottom: 1px solid $color-silver;
   }
   .card-body {
-    padding: 20px;
+    padding: 15px;
     flex: 1;
   }
 }
@@ -25,6 +26,7 @@
     padding: 8px 20px;
     color: $color-white;
     display: flex;
+    border-bottom: 0;
     .header-left {
       flex: 1;
       font-size: 14px;

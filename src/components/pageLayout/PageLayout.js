@@ -56,7 +56,7 @@ class PageLayout extends React.Component {
       <NavLink className="header-nav-item" to="/users">Users</NavLink>
       <NavLink className="header-nav-item" to="/boosts">Boosts</NavLink>
       <NavLink className="header-nav-item" to="/messages">Messages</NavLink>
-      <NavLink className="header-nav-item" to="/clients-and-floats">Clients &amp; floats</NavLink>
+      <NavLink className="header-nav-item" to="/clients">Clients &amp; floats</NavLink>
       <div className="header-nav-item log-out" onClick={this.logoutClick}>Log out</div>
     </div>;
   }

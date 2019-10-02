@@ -1,0 +1,145 @@
+@import 'styles/common';
+
+.client-info {
+  margin-top: 15px;
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    line-height: normal;
+    padding: 18px;
+  }
+  .card-body {
+    padding: 18px;
+  }
+
+  /* Client */
+  .client-title {
+    text-align: left;
+    flex: 1;
+    .client-name {
+      font-size: 18px;
+      color: $color-grey;
+    }
+    .client-country {
+      font-size: 16px;
+      color: $color-grey2;
+    }
+  }
+  .client-timezone {
+    font-size: 14px;
+    text-align: right;
+    .timezone-label {
+      color: $color-grey;
+      font-weight: 600;
+    }
+    .timezone-value {
+      color: $color-grey2;
+    }
+  }
+
+  /* Float */
+  .float-info {
+    display: flex;
+    align-items: center;
+    .float-icon {
+      padding-right: 10px;
+    }
+    .float-title {
+      flex: 1;
+      .float-name {
+        color: $color-grey;
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+      .float-timezone {
+        color: $color-grey2;
+        font-size: 14px;
+      }
+    }
+    .float-alerts {
+      display: flex;
+      align-items: center;
+      .alerts-count {
+        position: relative;
+        font-size: 14px;
+        font-weight: bold;
+        background-color: $color-purple;
+        color: $color-white;
+        width: 25px;
+        height: 25px;
+        border-radius: 3px;
+        @include flex-center;
+        margin-right: 8px;
+        .indicator {
+          position: absolute;
+          top: -3px;
+          right: -5px;
+          width: 11px;
+          height: 11px;
+          border: 2px solid $color-white;
+          border-radius: 100%;
+          background-color: $color-orange;
+        }
+      }
+      .view-alerts {
+        font-size: 12px;
+        font-weight: bold;
+        color: $color-purple;
+        text-decoration: none;
+        img {
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+
+  /* Balance */
+  .balance-info {
+    margin-top: 30px;
+    display: flex;
+    .balance-details {
+      .balance-name {
+        color: $color-blue;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .balance-value {
+        color: $color-grey;
+        font-size: 25px;
+        font-weight: 600;
+        margin: 5px 0 15px;
+      }
+      .balance-stats {
+        display: flex;
+        background-color: $color-blue2;
+        padding: 14px 20px;
+        .stats-item {
+          color: $color-grey;
+          &:not(:last-child) {
+            margin-right: 20px;
+          }
+        }
+        .stats-item-name {
+          font-size: 12px;
+          margin-bottom: 6px;
+        }
+        .stats-item-value {
+          font-size: 18px;
+          font-weight: 600;
+        }
+      }
+    }
+    .balance-divider {
+      margin: 0 26px;
+      border-left: 1px solid $color-silver;
+    }
+    .balance-actions {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+  }
+}

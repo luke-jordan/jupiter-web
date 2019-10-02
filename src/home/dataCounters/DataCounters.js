@@ -60,10 +60,10 @@ class DataCounters extends React.Component {
               </div>
               <div className="data-buttons">
                 <NavLink className="button" to="/boosts/new">
-                  New boost <img className="button-icon" src="images/add.svg" alt="New boost"/>
+                  New boost <img className="button-icon" src="images/add.svg" alt="add"/>
                 </NavLink>
                 <NavLink className="button button-outline" to="/boosts">
-                  View boosts <img className="button-icon"  src="images/right-arrow.svg" alt="View boosts"/>
+                  View boosts <img className="button-icon"  src="images/arrow-right-purple.svg" alt="arrow"/>
                 </NavLink>
               </div>
             </>}
@@ -85,10 +85,10 @@ class DataCounters extends React.Component {
               </div>
               <div className="data-buttons">
                 <NavLink className="button" to="/messages/new">
-                  New message <img className="button-icon" src="images/add.svg" alt="New mesage"/>
+                  New message <img className="button-icon" src="images/add.svg" alt="add"/>
                 </NavLink>
                 <NavLink className="button button-outline" to="/messages">
-                  View messages <img className="button-icon"  src="images/right-arrow.svg" alt="View messages"/>
+                  View messages <img className="button-icon"  src="images/arrow-right-purple.svg" alt="arrow"/>
                 </NavLink>
               </div>
             </>}

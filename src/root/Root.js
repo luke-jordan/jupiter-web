@@ -23,7 +23,7 @@ class Root extends React.Component {
           <AdminRoute path="/users" component={UsersPage}/>
           <AdminRoute path="/boosts" component={BoostsPage}/>
           <AdminRoute path="/messages" component={MessagesPage}/>
-          <AdminRoute path="/clients-and-floats" component={ClientsAndFloatsPage}/>
+          <AdminRoute path="/clients" component={ClientsAndFloatsPage}/>
           <AdminRoute component={NotFoundPage}/>
         </Switch>
       </PageLayout>

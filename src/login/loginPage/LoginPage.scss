@@ -1,6 +1,10 @@
 .login-page {
   height: 100%;
   padding: 48px;
+  .card-header {
+    border-bottom: 0;
+    padding: 25px 0 10px;
+  }
   .form-actions {
     height: 50px;
     text-align: center;
