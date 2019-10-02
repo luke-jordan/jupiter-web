@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Switch } from 'react-router-dom';
 
-import { historyService } from 'services';
+import { inject } from 'services';
 import PageLayout from 'components/pageLayout/PageLayout';
 import AdminRoute from 'components/adminRoute/AdminRoute';
 import LoginPage from 'login/loginPage/LoginPage';
@@ -15,7 +15,7 @@ const NotFoundPage = () => 'Page not exit'
 
 class Root extends React.Component {
   render() {
-    return <Router history={historyService}>
+    return <Router history={inject('HistoryService')}>
       <PageLayout>
         <Switch>
           <AdminRoute path="/" exact component={HomePage}/>

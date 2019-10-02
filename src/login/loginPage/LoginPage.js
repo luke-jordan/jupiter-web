@@ -3,11 +3,13 @@ import React from 'react';
 import './LoginPage.scss';
 import LoginForm from '../loginForm/LoginForm';
 import OtpForm from '../otpForm/OtpForm';
-import { authService } from 'services';
+import { inject } from 'services';
 
 class LoginPage extends React.Component {
   constructor() {
     super();
+    this.authService = inject('AuthService');
+
     this.state = {
       loading: false,
       otpNeeded: false
@@ -36,7 +38,7 @@ class LoginPage extends React.Component {
   }
 
   loginRequest(data) {
-    authService.login(data).subscribe(res => {
+    this.authService.login(data).subscribe(res => {
       if (res.result === 'OTP_NEEDED') {
         this.setState({
           otpNeeded: true,

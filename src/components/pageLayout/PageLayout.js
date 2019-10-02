@@ -1,17 +1,18 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { authService } from 'services';
+import { inject } from 'services';
 import './PageLayout.scss';
 
 class PageLayout extends React.Component {
   constructor() {
     super();
+    this.authService = inject('AuthService');
     this.state = { user: null };
   }
 
   componentDidMount() {
-    authService.user.subscribe(user => this.setState({ user }));
+    this.authService.user.subscribe(user => this.setState({ user }));
   }
 
   render() {
@@ -47,8 +48,8 @@ class PageLayout extends React.Component {
     </div>;
   }
 
-  logoutClick() {
-    authService.logout().subscribe();
+  logoutClick = () => {
+    this.authService.logout().subscribe();
   }
 }
 

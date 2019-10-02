@@ -7,14 +7,16 @@ import { UsersService } from './usersService';
 
 // register services
 const bottle = new Bottle();
-bottle.service('apiService', ApiService);
-bottle.service('authService', AuthService, 'apiService', 'historyService');
-bottle.service('historyService', createBrowserHistory);
-bottle.service('usersService', UsersService, 'apiService');
+bottle.service('ApiService', ApiService);
+bottle.service('AuthService', AuthService, 'ApiService', 'HistoryService');
+bottle.service('HistoryService', createBrowserHistory);
+bottle.service('UsersService', UsersService, 'ApiService');
 
-// export instances
-const container = bottle.container;
-export const apiService = container.apiService;
-export const authService = container.authService;
-export const historyService = container.historyService;
-export const usersService = container.usersService;
+// inject returns instance of the service
+export const inject = className => {
+  if (className in bottle.container) {
+    return bottle.container[className];
+  } else {
+    throw new Error(`Cannot inject ${className}`);
+  }
+};

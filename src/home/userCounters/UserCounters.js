@@ -1,12 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 
-import { usersService } from 'services';
+import { inject } from 'services';
 import './UserCounters.scss';
 
 export class UserCounters extends React.Component {
   constructor() {
     super();
+    this.usersService = inject('UsersService');
+
     this.state = {
       totalCount: 0,
       totalLoading: false,
@@ -31,11 +33,11 @@ export class UserCounters extends React.Component {
       yesterdayLoading: true
     });
 
-    usersService.getUsersCount().subscribe(totalCount => {
+    this.usersService.getUsersCount().subscribe(totalCount => {
       this.setState({ totalCount, totalLoading: false });
     });
 
-    usersService.getDailyWeeklyUsersCount(this.state.todayDate).subscribe(res => {
+    this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).subscribe(res => {
       this.setState({
         todayDailyCount: res.dailyCount,
         todayWeeklyCount: res.weeklyCount,
@@ -43,7 +45,7 @@ export class UserCounters extends React.Component {
       });
     });
 
-    usersService.getDailyWeeklyUsersCount(this.state.todayDate).subscribe(res => {
+    this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).subscribe(res => {
       this.setState({
         yesterdayDailyCount: res.dailyCount,
         yesterdayWeeklyCount: res.weeklyCount,
