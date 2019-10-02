@@ -1,5 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
 import './PageLayout.scss';
@@ -9,10 +11,19 @@ class PageLayout extends React.Component {
     super();
     this.authService = inject('AuthService');
     this.state = { user: null };
+
+    this.unmount$ = new Subject();
   }
 
   componentDidMount() {
-    this.authService.currUser.subscribe(user => this.setState({ user }));
+    this.authService.user$.pipe(
+      takeUntil(this.unmount$)
+    ).subscribe(user => this.setState({ user }));
+  }
+
+  componentWillUnmount() {
+    this.unmount$.next();
+    this.unmount$.complete();
   }
 
   render() {
@@ -49,7 +60,9 @@ class PageLayout extends React.Component {
   }
 
   logoutClick = () => {
-    this.authService.logout().subscribe();
+    this.authService.logout().pipe(
+      takeUntil(this.unmount$)
+    ).subscribe();
   }
 }
 

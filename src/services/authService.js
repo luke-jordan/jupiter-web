@@ -9,8 +9,8 @@ export class AuthService {
     this.historyService = historyService;
     this.url = process.env.REACT_APP_AUTH_URL;
 
-    this._getUser();
-    this.currUser = new BehaviorSubject(this.user);
+    this._getCurrentUser();
+    this.user$ = new BehaviorSubject(this.user);
   }
 
   login(data) {
@@ -18,7 +18,7 @@ export class AuthService {
       tap(res => {
         if (res.result !== 'OTP_NEEDED') {
           // login success
-          this._setUser(res);
+          this._setCurrentUser(res);
           this.historyService.push('/');
         }
       })
@@ -26,12 +26,15 @@ export class AuthService {
   }
 
   logout() {
-    this._setUser(null);
-    this.historyService.push('/login');
-    return of(null);
+    return of(null).pipe(
+      tap(() => {
+        this._setCurrentUser(null);
+        this.historyService.push('/login');
+      })
+    );
   }
 
-  _getUser() {
+  _getCurrentUser() {
     try {
       this.user = JSON.parse(localStorage.getItem(this.userKey));
     } catch {
@@ -39,7 +42,7 @@ export class AuthService {
     }
   }
 
-  _setUser(data) {
+  _setCurrentUser(data) {
     if (data) {
       this.user = {
         token: data.token,
@@ -52,6 +55,6 @@ export class AuthService {
       localStorage.removeItem(this.userKey);
     }
 
-    this.currUser.next(this.user);
+    this.user$.next(this.user);
   }
 }

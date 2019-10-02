@@ -1,5 +1,7 @@
 import React from 'react';
 import moment from 'moment';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
 import './UserCounters.scss';
@@ -24,6 +26,8 @@ export class UserCounters extends React.Component {
 
     this.todayDate = moment();
     this.yesterdayDate = moment().subtract('1', 'day');
+
+    this.unmount$ = new Subject();
   }
 
   componentDidMount() {
@@ -33,11 +37,15 @@ export class UserCounters extends React.Component {
       yesterdayLoading: true
     });
 
-    this.usersService.getUsersCount().subscribe(totalCount => {
+    this.usersService.getUsersCount().pipe(
+      takeUntil(this.unmount$)
+    ).subscribe(totalCount => {
       this.setState({ totalCount, totalLoading: false });
     });
 
-    this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).subscribe(res => {
+    this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).pipe(
+      takeUntil(this.unmount$)
+    ).subscribe(res => {
       this.setState({
         todayDailyCount: res.dailyCount,
         todayWeeklyCount: res.weeklyCount,
@@ -45,13 +53,20 @@ export class UserCounters extends React.Component {
       });
     });
 
-    this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).subscribe(res => {
+    this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).pipe(
+      takeUntil(this.unmount$)
+    ).subscribe(res => {
       this.setState({
         yesterdayDailyCount: res.dailyCount,
         yesterdayWeeklyCount: res.weeklyCount,
         yesterdayLoading: false
       });
     });
+  }
+
+  componentWillUnmount() {
+    this.unmount$.next();
+    this.unmount$.complete();
   }
 
   render() {
