@@ -1,10 +1,12 @@
 @import 'styles/common.scss';
 
 .home-page {
-  max-width: $page-content-width;
-  margin: 0 auto;
-  padding: 45px 10px 65px;
   background-color: $color-silver2;
+  .home-page-inner {
+    max-width: $page-content-width;
+    margin: 0 auto;
+    padding: 45px 10px 65px;
+  }
   .stats {
     display: flex;
     margin: 0 -10px;

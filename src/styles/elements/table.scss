@@ -1,0 +1,21 @@
+@import 'styles/common';
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  th {
+    font-size: 12px;
+    font-weight: 600;
+    color: $color-grey;
+    text-transform: uppercase;
+    text-align: left;
+  }
+  td {
+    font-size: 14px;
+    color: $color-grey2;
+  }
+  td, th {
+    border: 1px solid $color-silver;
+    padding: 12px 10px;
+  }
+}

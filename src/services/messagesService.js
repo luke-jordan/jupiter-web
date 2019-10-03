@@ -6,10 +6,14 @@ export class MessagesService {
     this.url = process.env.REACT_APP_ADMIN_URL;
   }
 
-  getActiveMessages() {
+  getMessages(params) {
     return this.apiService.get(`${this.url}/message/instruct/list`, {
-      sendToken: true
-    }).pipe(
+      sendToken: true, params
+    });
+  }
+
+  getActiveMessagesCount() {
+    return this.getMessages().pipe(
       map(res => res.length)
     );
   }

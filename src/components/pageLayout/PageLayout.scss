@@ -6,13 +6,13 @@
   height: 100%;
 
   .page-layout-header {
-    padding: 0 10px;
     .header-inner {
-      display: flex;
       max-width: $page-content-width;
+      display: flex;
       margin: 0 auto;
       height: 65px;
       align-items: center;
+      padding: 0 10px;
     }
     .header-logo {
       padding-right: 50px;
@@ -63,14 +63,14 @@
 
   .page-layout-footer {
     @include theme-gradient;
-    padding: 15px 10px;
     .footer-inner {
-      display: flex;
       max-width: $page-content-width;
+      display: flex;
       margin: 0 auto;
       font-weight: bold;
       font-size: 14px;
       color: white;
+      padding: 15px 10px;
     }
     .footer-copyright {
       flex: 1;

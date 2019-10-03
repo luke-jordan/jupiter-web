@@ -29,13 +29,13 @@ class DataCounters extends React.Component {
   }
 
   componentDidMount() {
-    this.boostsService.getActiveBoosts().pipe(
+    this.boostsService.getActiveBoostsCount().pipe(
       takeUntil(this.unmount$)
     ).subscribe(boostsCount => {
       this.setState({ boostsCount, boostsLoading: false });
     });
 
-    this.messagesService.getActiveMessages().pipe(
+    this.messagesService.getActiveMessagesCount().pipe(
       takeUntil(this.unmount$)
     ).subscribe(messagesCount => {
       this.setState({ messagesCount, messagesLoading: false });
@@ -68,7 +68,7 @@ class DataCounters extends React.Component {
                   New boost <img className="button-icon" src={addImage} alt="add"/>
                 </NavLink>
                 <NavLink className="button button-outline" to="/boosts">
-                  View boosts <img className="button-icon"  src={arrowRightPurple} alt="arrow"/>
+                  View boosts <img className="button-icon" src={arrowRightPurple} alt="arrow"/>
                 </NavLink>
               </div>
             </>}
@@ -93,7 +93,7 @@ class DataCounters extends React.Component {
                   New message <img className="button-icon" src={addImage} alt="add"/>
                 </NavLink>
                 <NavLink className="button button-outline" to="/messages">
-                  View messages <img className="button-icon"  src={arrowRightPurple} alt="arrow"/>
+                  View messages <img className="button-icon" src={arrowRightPurple} alt="arrow"/>
                 </NavLink>
               </div>
             </>}

@@ -6,10 +6,14 @@ export class BoostsService {
     this.url = process.env.REACT_APP_ADMIN_URL;
   }
 
-  getActiveBoosts() {
+  getBoosts(params) {
     return this.apiService.get(`${this.url}/boost/list`, {
-      sendToken: true
-    }).pipe(
+      sendToken: true, params
+    });
+  }
+
+  getActiveBoostsCount() {
+    return this.getBoosts().pipe(
       map(res => res.length)
     );
   }

@@ -10,10 +10,12 @@ import './HomePage.scss';
 class HomePage extends React.Component {
   render() {
     return <div className="home-page">
-      <UserCounters/>
-      <UserSearch/>
-      <DataCounters/>
-      <ClientsList/>
+      <div className="home-page-inner">
+        <UserCounters/>
+        <UserSearch/>
+        <DataCounters/>
+        <ClientsList/>
+      </div>
     </div>;
   }
 }

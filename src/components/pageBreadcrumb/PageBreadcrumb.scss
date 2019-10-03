@@ -2,12 +2,12 @@
 
 .page-breadcrumb {
   background-color: $color-silver2;
-  padding: 20px 10px 32px;
   color: $color-grey;
   line-height: 1;
   .breadcrumb-inner {
     max-width: $page-content-width;
     margin: 0 auto;
+    padding: 20px 10px 32px;
   }
   .breadcrumb-link {
     display: flex;
