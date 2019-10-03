@@ -1,6 +1,9 @@
+@import 'styles/common';
+
 .login-page {
   height: 100%;
-  padding: 48px;
+  padding: 48px 10px;
+  background-color: $color-silver2;
   .card-header {
     border-bottom: 0;
     padding: 25px 0 10px;

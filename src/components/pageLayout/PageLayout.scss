@@ -59,13 +59,11 @@
 
   .page-layout-main {
     flex: 1;
-    background-color: $color-silver2;
-    padding: 0 15px;
   }
 
   .page-layout-footer {
     @include theme-gradient;
-    padding: 15px;
+    padding: 15px 10px;
     .footer-inner {
       display: flex;
       max-width: $page-content-width;

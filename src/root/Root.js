@@ -6,10 +6,10 @@ import PageLayout from 'components/pageLayout/PageLayout';
 import AdminRoute from 'components/adminRoute/AdminRoute';
 import LoginPage from 'login/loginPage/LoginPage';
 import HomePage from 'home/homePage/HomePage';
+import MessagesPage from 'messages/messagesPage/MessagesPage';
 
 const UsersPage = () => 'Users page';
 const BoostsPage = () => 'Boosts page';
-const MessagesPage = () => 'Messages page';
 const ClientsAndFloatsPage = () => 'Clients and floats page';
 const NotFoundPage = () => 'Page not exit'
 

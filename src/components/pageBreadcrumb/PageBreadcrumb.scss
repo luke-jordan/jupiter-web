@@ -1,0 +1,27 @@
+@import 'styles/common';
+
+.page-breadcrumb {
+  background-color: $color-silver2;
+  padding: 20px 10px 32px;
+  color: $color-grey;
+  line-height: 1;
+  .breadcrumb-inner {
+    max-width: $page-content-width;
+    margin: 0 auto;
+  }
+  .breadcrumb-link {
+    display: flex;
+    font-size: 12px;
+    img {
+      margin-right: 8px;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+  .breadcrumb-title {
+    font-size: 22px;
+    text-align: center;
+  }
+}
