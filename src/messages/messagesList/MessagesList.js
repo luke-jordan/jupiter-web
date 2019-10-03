@@ -1,6 +1,7 @@
 import React from 'react';
 
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
+
 import './MessagesList.scss';
 
 const MessagesList = props => {

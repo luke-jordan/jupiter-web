@@ -4,7 +4,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
+
 import './PageLayout.scss';
+import logoImage from 'assets/images/logo.svg';
 
 class PageLayout extends React.Component {
   constructor() {
@@ -32,7 +34,7 @@ class PageLayout extends React.Component {
         <div className="header-inner">
           <div className="header-logo">
             <NavLink to="/">
-              <img src="images/logo.svg" alt="logo"></img>
+              <img src={logoImage} alt="logo"></img>
             </NavLink>
           </div>
           {this.state.user && this.renderHeaderNav()}

@@ -3,6 +3,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import MessagesList from '../messagesList/MessagesList';
 import MessageCreate from '../messageCreate/MessageCreate';
+
 import './MessagesPage.scss';
 
 const MessagesPage = () => {

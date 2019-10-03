@@ -1,9 +1,10 @@
 import React from 'react';
 
-import './LoginPage.scss';
+import { inject } from 'services';
 import LoginForm from '../loginForm/LoginForm';
 import OtpForm from '../otpForm/OtpForm';
-import { inject } from 'services';
+
+import './LoginPage.scss';
 
 class LoginPage extends React.Component {
   constructor() {

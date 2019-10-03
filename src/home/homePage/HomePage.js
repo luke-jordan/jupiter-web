@@ -4,6 +4,7 @@ import UserCounters from '../userCounters/UserCounters';
 import UserSearch from '../userSearch/UserSearch';
 import DataCounters from '../dataCounters/DataCounters';
 import ClientsList from '../clientsList/ClientsList';
+
 import './HomePage.scss';
 
 class HomePage extends React.Component {

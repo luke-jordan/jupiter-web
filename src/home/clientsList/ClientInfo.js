@@ -2,6 +2,9 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import './ClientInfo.scss';
+import currencyImage from 'assets/images/currency.svg';
+import arrowRightPurple2Image from 'assets/images/arrow-right-purple2.svg';
+import arrowRightWhite from 'assets/images/arrow-right-white.svg';
 
 class ClientInfo extends React.Component {
   render() {
@@ -34,7 +37,7 @@ class ClientInfo extends React.Component {
     const client = this.props.client;
     return <div className="float-info">
       <div className="float-icon">
-        <img src="images/currency.svg" alt=""/>
+        <img src={currencyImage} alt=""/>
       </div>
       <div className="float-title">
         <div className="float-name">Float: <b>{client.currency}</b></div>
@@ -43,7 +46,7 @@ class ClientInfo extends React.Component {
       <div className="float-alerts">
         <div className="alerts-count">0<div className="indicator"/></div>
         <NavLink className="view-alerts" to="/clients">
-          View Alerts <img src="images/arrow-right-purple2.svg" alt="arrow"/>
+          View Alerts <img src={arrowRightPurple2Image} alt="arrow"/>
         </NavLink>
       </div>
     </div>;
@@ -87,7 +90,7 @@ class ClientInfo extends React.Component {
 
       <div className="balance-actions">
         <NavLink className="button" to="/clients">
-          Mange float <img className="button-icon" src="images/arrow-right-white.svg" alt="arrow"/>
+          Mange float <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
         </NavLink>
       </div>
     </div>;

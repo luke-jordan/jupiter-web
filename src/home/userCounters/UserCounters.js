@@ -4,7 +4,9 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
+
 import './UserCounters.scss';
+import userCirleImage from 'assets/images/user-circle.svg';
 
 export class UserCounters extends React.Component {
   constructor() {
@@ -71,7 +73,7 @@ export class UserCounters extends React.Component {
         <div className="card-body">
           {state.totalLoading ? <div className="spinner"/> :
             <div className="total-users">
-              <img alt="" src="images/user-circle.svg"/>
+              <img alt="" src={userCirleImage}/>
               <div className="total-count">{state.totalCount}</div>
               <div className="total-label">Total Users</div>
             </div>}

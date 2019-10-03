@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
 import ClientInfo from './ClientInfo';
+
 import './ClientsList.scss';
 
 class ClientsList extends React.Component {

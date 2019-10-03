@@ -4,7 +4,12 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
+
 import './DataCounters.scss';
+import giftImage from 'assets/images/gift.svg';
+import addImage from 'assets/images/add.svg';
+import arrowRightPurple from 'assets/images/arrow-right-purple.svg';
+import letterImage from 'assets/images/letter.svg';
 
 class DataCounters extends React.Component {
   constructor() {
@@ -49,7 +54,7 @@ class DataCounters extends React.Component {
       <div className="card card-with-icon">
         <div className="card-header">
           <div className="header-text">Boosts</div>
-          <img src="images/gift.svg" alt="Boosts"/>
+          <img src={giftImage} alt="Boosts"/>
         </div>
         <div className="card-body">
           {state.boostsLoading ? <div className="spinner"/> :
@@ -60,10 +65,10 @@ class DataCounters extends React.Component {
               </div>
               <div className="data-buttons">
                 <NavLink className="button" to="/boosts/new">
-                  New boost <img className="button-icon" src="images/add.svg" alt="add"/>
+                  New boost <img className="button-icon" src={addImage} alt="add"/>
                 </NavLink>
                 <NavLink className="button button-outline" to="/boosts">
-                  View boosts <img className="button-icon"  src="images/arrow-right-purple.svg" alt="arrow"/>
+                  View boosts <img className="button-icon"  src={arrowRightPurple} alt="arrow"/>
                 </NavLink>
               </div>
             </>}
@@ -74,7 +79,7 @@ class DataCounters extends React.Component {
       <div className="card card-with-icon">
         <div className="card-header">
           <div className="header-text">Messages</div>
-          <img src="images/letter.svg" alt="Messages"/>
+          <img src={letterImage} alt="Messages"/>
         </div>
         <div className="card-body">
           {state.messagesLoading ? <div className="spinner"/> :
@@ -85,10 +90,10 @@ class DataCounters extends React.Component {
               </div>
               <div className="data-buttons">
                 <NavLink className="button" to="/messages/new">
-                  New message <img className="button-icon" src="images/add.svg" alt="add"/>
+                  New message <img className="button-icon" src={addImage} alt="add"/>
                 </NavLink>
                 <NavLink className="button button-outline" to="/messages">
-                  View messages <img className="button-icon"  src="images/arrow-right-purple.svg" alt="arrow"/>
+                  View messages <img className="button-icon"  src={arrowRightPurple} alt="arrow"/>
                 </NavLink>
               </div>
             </>}

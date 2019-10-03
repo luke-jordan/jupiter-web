@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { inject } from 'services';
+
 import './UserSearch.scss';
 
 class UserSearch extends React.Component {
