@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bottlejs": "^1.7.2",
+    "classnames": "^2.2.6",
     "history": "^4.9.0",
     "moment": "^2.24.0",
     "react": "^16.9.0",

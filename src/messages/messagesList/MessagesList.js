@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import { inject } from 'services';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
+import DropdownMenu from 'components/dropdownMenu/DropdownMenu';
 
 import './MessagesList.scss';
 import sortIcon from 'assets/images/sort-by.svg';
@@ -72,14 +73,16 @@ class MessagesList extends React.Component {
     return <table className="table">
       <thead>
         <tr>
-          <th>Type</th>
+          {/* <th style={{ width: 40 }}/> */}
+          <th style={{ width: 125 }}>Type</th>
           <th>Title</th>
-          <th>Format</th>
-          <th className="text-center">Start date</th>
-          <th className="text-center">End date</th>
-          <th className="text-center">Msgs</th>
-          <th className="text-center">Queued</th>
-          <th className="text-center">Priority</th>
+          <th style={{ width: 155 }}>Format</th>
+          <th className="text-center" style={{ width: 100 }}>Start date</th>
+          <th className="text-center" style={{ width: 100 }}>End date</th>
+          <th className="text-center" style={{ width: 80 }}>Msgs</th>
+          <th className="text-center" style={{ width: 80 }}>Queued</th>
+          <th className="text-center" style={{ width: 80 }}>Priority</th>
+          <th style={{ width: 40 }}/>
         </tr>
       </thead>
       <tbody>
@@ -95,21 +98,40 @@ class MessagesList extends React.Component {
       ONCE_OFF: 'Once-Off'
     }[message.presentationType];
 
+    const format = {
+      CARD: 'Card',
+      MODAL: 'Modal',
+      PUSH: 'Push notification'
+    }[message.templates.template.DEFAULT.display.type];
+
     const startTime = moment(message.startTime).format('DD/MM/YY hh:mmA');
 
     let endTime = moment(message.endTime);
     endTime = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
 
     return <tr key={message.instructionId}>
+      {/* <td></td> */}
       <td>{type}</td>
       <td>{message.templates.template.DEFAULT.title}</td>
-      <td>{message.templates.template.DEFAULT.display.type}</td>
+      <td>{format}</td>
       <td className="text-center">{startTime}</td>
       <td className="text-center">{endTime}</td>
       <td className="text-center">{message.totalMessageCount}</td>
       <td className="text-center">{message.unfetchedMessageCount}</td>
-      <td className="text-center">{message.messagePriority} </td>
+      <td className="text-center">{message.messagePriority}</td>
+      <td>
+        <DropdownMenu items={[
+          { text: 'View', tag: 'view' },
+          { text: 'Edit', tag: 'edit' },
+          { text: 'Duplicate', tag: 'duplicate' },
+          { text: 'Deactivate', tag: 'deactivate' }
+        ]} onItemClick={action => this.rowActionClick(action, message)}/>
+      </td>
     </tr>;
+  }
+
+  rowActionClick(action, message) {
+    console.log(action, message);
   }
 }
 

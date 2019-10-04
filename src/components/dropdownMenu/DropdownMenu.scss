@@ -1,0 +1,40 @@
+@import 'styles/common';
+
+.dropdown-menu {
+  .menu-trigger {
+    display: flex;
+    height: 16px;
+    cursor: pointer;
+  }
+  .menu-list-wrap {
+    position: relative;
+  }
+  .menu-list {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: -15px;
+    width: 110px;
+    list-style-type: none;
+    margin: 0;
+    padding: 4px 0;
+    background-color: $color-white;
+    border-radius: 10px;
+    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    li {
+      color: $color-grey2;
+      padding: 10px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      &:hover {
+        background-color: $color-silver2;
+      }
+    }
+  }
+  &.open {
+    .menu-list {
+      display: block;
+    }
+  }
+}
