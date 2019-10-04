@@ -18,11 +18,4 @@ bottle.service('BoostsService', BoostsService, 'ApiService');
 bottle.service('MessagesService', MessagesService, 'ApiService');
 bottle.service('ClientsService', ClientsService, 'ApiService');
 
-// inject returns instance of the service
-export const inject = className => {
-  if (className in bottle.container) {
-    return bottle.container[className];
-  } else {
-    throw new Error(`Cannot inject ${className}`);
-  }
-};
+export default bottle;

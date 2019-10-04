@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { inject } from 'services';
+import { inject } from 'utils';
 
 import './UserSearch.scss';
 

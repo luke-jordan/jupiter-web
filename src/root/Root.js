@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router, Switch } from 'react-router-dom';
 
-import { inject } from 'services';
+import { inject } from 'utils';
 import PageLayout from 'components/pageLayout/PageLayout';
 import AdminRoute from 'components/adminRoute/AdminRoute';
 import LoginPage from 'login/loginPage/LoginPage';

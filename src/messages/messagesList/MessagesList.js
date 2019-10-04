@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 import moment from 'moment';
 
-import { inject } from 'services';
+import { inject } from 'utils';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import DropdownMenu from 'components/dropdownMenu/DropdownMenu';
 import Spinner from 'components/spinner/Spinner';
