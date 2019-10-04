@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, mergeMap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { inject } from 'services';
@@ -16,8 +16,10 @@ class MessagesList extends React.Component {
   constructor() {
     super();
     this.messagesService = inject('MessagesService');
+    this.historyService = inject('HistoryService');
 
     this.state = {
+      init: false,
       loading: true,
       messages: []
     };
@@ -29,7 +31,7 @@ class MessagesList extends React.Component {
     this.messagesService.getMessages().pipe(
       takeUntil(this.unmount$)
     ).subscribe(messages => {
-      this.setState({ messages, loading: false });
+      this.setState({ messages, loading: false, init: true });
     });
   }
 
@@ -39,35 +41,42 @@ class MessagesList extends React.Component {
   }
 
   render() {
+    const state = this.state;
     return <div className="messages-list">
       <PageBreadcrumb title="Messages" link={{ to: '/', text: 'Home' }}/>
       <div className="messages-list-inner">
-        {this.renderActions()}
-        {this.renderTable()}
+        {state.loading && <div className="spinner-overlay"><div className="spinner"/></div>}
+        {state.init && this.renderActions()}
+        {state.init && this.renderTable()}
       </div>
     </div>;
   }
 
   renderActions() {
+    const messagesAvailable = !!this.state.messages.length;
     return <div className="messages-actions">
-      <button className="button button-outline" disabled={this.state.loading}>
-        Sort by <img className="button-icon" src={sortIcon} alt="sort"/>
-      </button>
-      <NavLink to="/messages/new" className="button">
-        New message <img className="button-icon" src={addIcon} alt="add"/>
-      </NavLink>
+      <div className="action-buttons">
+        {messagesAvailable &&
+          <button className="button button-outline">
+            Filter by <img className="button-icon" src={sortIcon} alt="sort"/>
+          </button>}
+        <div></div>
+        <NavLink to="/messages/new" className="button">
+          New message <img className="button-icon" src={addIcon} alt="add"/>
+        </NavLink>
+      </div>
+      {messagesAvailable &&
+        <div className="quick-actions">
+          Quick Actions: <span className="link">Deactivate</span>
+        </div>}
     </div>;
   }
 
   renderTable() {
     const state = this.state;
 
-    if (state.loading) {
-      return <div className="text-center"><div className="spinner"/></div>;
-    }
-
-    if (state.messages.length === 0) {
-      return <div className="text-center">No messages</div>
+    if (!state.messages.length) {
+      return <div className="no-data">No messages</div>
     }
 
     return <table className="table">
@@ -131,7 +140,21 @@ class MessagesList extends React.Component {
   }
 
   rowActionClick(action, message) {
-    console.log(action, message);
+    if (action.tag === 'deactivate') {
+      this.deactivateMessage(message.instructionId);
+    } else {
+      this.historyService.push(`/messages/${action.tag}/${message.instructionId}`);
+    }
+  }
+
+  deactivateMessage(instructionId) {
+    this.setState({ loading: true });
+    this.messagesService.updateMessage(instructionId, { active: false }).pipe(
+      mergeMap(() => this.messagesService.getMessages()),
+      takeUntil(this.unmount$)
+    ).subscribe(messages => {
+      this.setState({ messages, loading: false });
+    });
   }
 }
 

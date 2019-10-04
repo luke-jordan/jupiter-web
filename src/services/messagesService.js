@@ -17,4 +17,12 @@ export class MessagesService {
       map(res => res.length)
     );
   }
+
+  updateMessage(instructionId, updateValues) {
+    return this.apiService.post(`${this.url}/message/instruct/update`, {
+      instructionId, updateValues
+    }, {
+      sendToken: true
+    });
+  }
 }
