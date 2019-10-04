@@ -7,6 +7,7 @@ import moment from 'moment';
 import { inject } from 'services';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import DropdownMenu from 'components/dropdownMenu/DropdownMenu';
+import Spinner from 'components/spinner/Spinner';
 
 import './MessagesList.scss';
 import sortIcon from 'assets/images/sort-by.svg';
@@ -45,7 +46,7 @@ class MessagesList extends React.Component {
     return <div className="messages-list">
       <PageBreadcrumb title="Messages" link={{ to: '/', text: 'Home' }}/>
       <div className="messages-list-inner">
-        {state.loading && <div className="spinner-overlay"><div className="spinner"/></div>}
+        {state.loading && <Spinner overlay/>}
         {state.init && this.renderActions()}
         {state.init && this.renderTable()}
       </div>

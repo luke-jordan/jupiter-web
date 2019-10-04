@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
+import Spinner from 'components/spinner/Spinner';
 
 import './UserCounters.scss';
 import userCirleImage from 'assets/images/user-circle.svg';
@@ -71,7 +72,7 @@ export class UserCounters extends React.Component {
       {/* Total */}
       <div className="card">
         <div className="card-body">
-          {state.totalLoading ? <div className="spinner"/> :
+          {state.totalLoading ? <Spinner/> :
             <div className="total-users">
               <img alt="" src={userCirleImage}/>
               <div className="total-count">{state.totalCount}</div>
@@ -87,7 +88,7 @@ export class UserCounters extends React.Component {
           <div className="header-right">{this.todayDate.format('DD MMM YYYY')}</div>
         </div>
         <div className="card-body">
-          {state.todayLoading ? <div className="spinner"/> :
+          {state.todayLoading ? <Spinner/> :
             <ul className="counters-list">
               <li>
                 <span className="counter-name">Daily Users</span>
@@ -108,7 +109,7 @@ export class UserCounters extends React.Component {
           <div className="header-right">{this.yesterdayDate.format('DD MMM YYYY')}</div>
         </div>
         <div className="card-body">
-          {state.yesterdayLoading ? <div className="spinner"/> :
+          {state.yesterdayLoading ? <Spinner/> :
             <ul className="counters-list">
               <li>
                 <span className="counter-name">Daily Users</span>

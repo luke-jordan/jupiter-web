@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Spinner from 'components/spinner/Spinner';
+
 import './OtpForm.scss';
 
 class OtpForm extends React.Component {
@@ -25,7 +27,7 @@ class OtpForm extends React.Component {
             })}
           </div>
           <div className="form-actions">
-            {loading ? <div className="spinner"/> : <button className="button">Continue</button>}
+            {loading ? <Spinner/> : <button className="button">Continue</button>}
           </div>
         </form>
         <div className="otp-help">

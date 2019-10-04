@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
+import Spinner from 'components/spinner/Spinner';
 import ClientInfo from './ClientInfo';
 
 import './ClientsList.scss';
@@ -38,7 +39,7 @@ class ClientsList extends React.Component {
     return <div className="clients-list">
       <header className="header">Clients &amp; Floats</header>
       {state.loading ? 
-        <div className="text-center"><div className="spinner"/></div> :
+        <div className="text-center"><Spinner/></div> :
         state.clients.map(client => <ClientInfo client={client} key={client.clientId}/>)}
     </div>;
   }

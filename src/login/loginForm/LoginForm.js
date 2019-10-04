@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Spinner from 'components/spinner/Spinner';
+
 import './LoginForm.scss';
 
 class LoginForm extends React.Component {
@@ -32,7 +34,7 @@ class LoginForm extends React.Component {
             </div>
           </div>
           <div className="form-actions">
-            {loading ? <div className="spinner"/> : <button className="button">Log In</button>}
+            {loading ? <Spinner/> : <button className="button">Log In</button>}
           </div>
         </form>
       </div>

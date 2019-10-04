@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'services';
+import Spinner from 'components/spinner/Spinner';
 
 import './DataCounters.scss';
 import giftImage from 'assets/images/gift.svg';
@@ -57,7 +58,7 @@ class DataCounters extends React.Component {
           <img src={giftImage} alt="Boosts"/>
         </div>
         <div className="card-body">
-          {state.boostsLoading ? <div className="spinner"/> :
+          {state.boostsLoading ? <Spinner/> :
             <>
               <div className="data-counter">
                 <span className="counter-value">{state.boostsCount}</span>
@@ -82,7 +83,7 @@ class DataCounters extends React.Component {
           <img src={letterImage} alt="Messages"/>
         </div>
         <div className="card-body">
-          {state.messagesLoading ? <div className="spinner"/> :
+          {state.messagesLoading ? <Spinner/> :
             <>
               <div className="data-counter">
                 <span className="counter-value">{state.messagesCount}</span>
