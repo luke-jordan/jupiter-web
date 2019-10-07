@@ -24,7 +24,7 @@ class ClientInfo extends React.Component {
     return <>
       <div className="client-title">
         <div className="client-name">Client: <b>{client.clientName}</b></div>
-        <div className="client-country">-</div>
+        <div className="client-country">{client.countryName}</div>
       </div>
       <div className="client-timezone">
         <div className="timezone-label">Timezone</div>

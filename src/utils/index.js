@@ -21,3 +21,9 @@ export const convertAmount = (amount, unit) => {
     return amount;
   }
 }
+
+export const getCountryByCode = (countries, code) => {
+  return countries.find(country => {
+    return (country['alpha-2'] === code || country['alpha-3'] === code);
+  });
+}
