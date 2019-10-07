@@ -11,3 +11,13 @@ export const inject = className => {
 export const capitalize = str => {
   return str ? `${str[0].toUpperCase()}${str.slice(1).toLowerCase()}` : '';
 }
+
+export const convertAmount = (amount, unit) => {
+  if (unit === 'WHOLE_CENT') {
+    return amount / 100;
+  } else if (unit === 'HUNDREDTH_CENT') {
+    return amount / 10000;
+  } else  {
+    return amount;
+  }
+}
