@@ -1,6 +1,6 @@
 import { mergeMap, map } from 'rxjs/operators';
 
-import { convertAmount, getCountryByCode } from 'utils';
+import { convertAmount, getCountryByCode, formatMoney } from 'utils';
 
 export class ClientsService {
   constructor(apiService, dataService) {
@@ -28,8 +28,12 @@ export class ClientsService {
 
           client.floats.forEach(float => {
             const { floatBalance, bonusPoolBalance } = float;
+
             floatBalance.amountValue = convertAmount(floatBalance.amount, floatBalance.unit);
+            floatBalance.amountMoney = formatMoney(floatBalance.amountValue, floatBalance.currency);
+
             bonusPoolBalance.amountValue = convertAmount(bonusPoolBalance.amount, bonusPoolBalance.unit);
+            bonusPoolBalance.amountMoney = formatMoney(bonusPoolBalance.amountValue, bonusPoolBalance.currency);
           });
         });
         return clients;

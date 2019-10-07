@@ -1,3 +1,5 @@
+import currency from 'currency.js';
+
 import bottle from 'services/bottle';
 
 export const inject = className => {
@@ -26,4 +28,17 @@ export const getCountryByCode = (countries, code) => {
   return countries.find(country => {
     return (country['alpha-2'] === code || country['alpha-3'] === code);
   });
+}
+
+
+export const formatMoney = (amount, currencyCode) => {
+  const defaults = { formatWithSymbol: true, symbol: '' };
+  const options = {
+    USD: { symbol: '$' },
+    EUR: { symbol: '€' },
+    ZAR: { symbol: 'R' }
+  };
+  return currency(
+    amount, Object.assign({}, defaults, options[currencyCode])
+  ).format();
 }

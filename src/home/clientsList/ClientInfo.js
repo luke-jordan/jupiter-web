@@ -61,7 +61,7 @@ class ClientInfo extends React.Component {
     {/* Total float balance */}
       <div className="balance-details">
         <div className="balance-name">Total float balance</div>
-        <div className="balance-value">{floatBalance.amountValue}</div>
+        <div className="balance-value">{floatBalance.amountMoney}</div>
         <div className="balance-stats">
           <div className="stats-item">
             <div className="stats-item-name">Growth in last month</div>
@@ -79,7 +79,7 @@ class ClientInfo extends React.Component {
       {/* Bonus pool balance */}
       <div className="balance-details">
         <div className="balance-name">Bonus pool balance</div>
-        <div className="balance-value">{bonusPoolBalance.amountValue}</div>
+        <div className="balance-value">{bonusPoolBalance.amountMoney}</div>
         <div className="balance-stats">
           <div className="stats-item">
             <div className="stats-item-name">Inflow last week</div>
