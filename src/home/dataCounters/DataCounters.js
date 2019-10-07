@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'utils';
 import Spinner from 'components/spinner/Spinner';
+import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
 
 import './DataCounters.scss';
 import giftImage from 'assets/images/gift.svg';
@@ -104,4 +105,4 @@ class DataCounters extends React.Component {
   }
 }
 
-export default DataCounters;
+export default errorBoundary(DataCounters);

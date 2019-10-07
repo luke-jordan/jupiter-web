@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { inject } from 'utils';
 import Spinner from 'components/spinner/Spinner';
+import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
 
 import './UserCounters.scss';
 import userCirleImage from 'assets/images/user-circle.svg';
@@ -126,4 +127,4 @@ export class UserCounters extends React.Component {
   }
 }
 
-export default UserCounters;
+export default errorBoundary(UserCounters);

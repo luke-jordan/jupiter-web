@@ -1,6 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
+
 import './ClientInfo.scss';
 import currencyImage from 'assets/images/currency.svg';
 import arrowRightPurple2Image from 'assets/images/arrow-right-purple2.svg';
@@ -99,4 +101,4 @@ class ClientInfo extends React.Component {
   }
 };
 
-export default ClientInfo;
+export default errorBoundary(ClientInfo);
