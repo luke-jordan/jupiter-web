@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
-import moment from 'moment';
 import classNames from 'classnames';
 
 import { inject } from 'utils';
@@ -111,34 +110,16 @@ class MessagesList extends React.Component {
   }
 
   renderTableRow(message) {
-    const type = {
-      RECURRING: 'Recurring',
-      EVENT_DRIVEN: 'Event-Driven',
-      ONCE_OFF: 'Once-Off'
-    }[message.presentationType];
-
-    const format = {
-      CARD: 'Card',
-      MODAL: 'Modal',
-      PUSH: 'Push notification'
-    }[message.templates.template.DEFAULT.display.type];
-
-    const startTime = moment(message.startTime).format('DD/MM/YY hh:mmA');
-
-    let endTime = moment(message.endTime);
-    endTime = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
-
     const checked = this.state.checkedMessages.includes(message.instructionId);
-
     return <tr key={message.instructionId}>
       <td className="text-center">
         <Checkbox checked={checked} onChange={checked => this.checkMessageChange(checked, message)}/>
       </td>
-      <td>{type}</td>
+      <td>{message.presentationTypeName}</td>
       <td>{message.templates.template.DEFAULT.title}</td>
-      <td>{format}</td>
-      <td className="text-center">{startTime}</td>
-      <td className="text-center">{endTime}</td>
+      <td>{message.format}</td>
+      <td className="text-center">{message.displayStartTime}</td>
+      <td className="text-center">{message.displayEndTime}</td>
       <td className="text-center">{message.totalMessageCount}</td>
       <td className="text-center">{message.unfetchedMessageCount}</td>
       <td className="text-center">{message.messagePriority}</td>
