@@ -23,25 +23,25 @@ class ClientInfo extends React.Component {
     const client = this.props.client;
     return <>
       <div className="client-title">
-        <div className="client-name">Client: <b>-</b></div>
+        <div className="client-name">Client: <b>{client.clientName}</b></div>
         <div className="client-country">-</div>
       </div>
       <div className="client-timezone">
         <div className="timezone-label">Timezone</div>
-        <div className="timezone-value">{client.defaultTimezone}</div>
+        <div className="timezone-value">{client.timeZone}</div>
       </div>
     </>;
   }
 
   renderFloat() {
-    const client = this.props.client;
+    const float = this.props.client.floats[0];
     return <div className="float-info">
       <div className="float-icon">
         <img src={currencyImage} alt=""/>
       </div>
       <div className="float-title">
-        <div className="float-name">Float: <b>{client.currency}</b></div>
-        <div className="float-timezone"><b>Timezone:</b> {client.defaultTimezone}</div>
+        <div className="float-name">Float: <b>{float.floatName}</b></div>
+        <div className="float-timezone"><b>Timezone:</b> {float.floatTimeZone}</div>
       </div>
       <div className="float-alerts">
         <div className="alerts-count">0<div className="indicator"/></div>
@@ -53,11 +53,13 @@ class ClientInfo extends React.Component {
   }
 
   renderBalance() {
+    const float = this.props.client.floats[0];
+    const { floatBalance, bonusPoolBalance } = float;
     return <div className="balance-info">
     {/* Total float balance */}
       <div className="balance-details">
         <div className="balance-name">Total float balance</div>
-        <div className="balance-value">0</div>
+        <div className="balance-value">{floatBalance.amount}</div>
         <div className="balance-stats">
           <div className="stats-item">
             <div className="stats-item-name">Growth in last month</div>
@@ -75,7 +77,7 @@ class ClientInfo extends React.Component {
       {/* Bonus pool balance */}
       <div className="balance-details">
         <div className="balance-name">Bonus pool balance</div>
-        <div className="balance-value">0</div>
+        <div className="balance-value">{bonusPoolBalance.amount}</div>
         <div className="balance-stats">
           <div className="stats-item">
             <div className="stats-item-name">Inflow last week</div>

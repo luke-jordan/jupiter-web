@@ -15,7 +15,7 @@ class ClientsList extends React.Component {
 
     this.state = {
       loading: true,
-      clients: []
+      clients: {}
     };
 
     this.unmount$ = new Subject();
@@ -35,13 +35,17 @@ class ClientsList extends React.Component {
   }
 
   render() {
-    const state = this.state;
     return <div className="clients-list">
       <header className="header">Clients &amp; Floats</header>
-      {state.loading ? 
-        <div className="text-center"><Spinner/></div> :
-        state.clients.map(client => <ClientInfo client={client} key={client.clientId}/>)}
+      {this.state.loading ? 
+        <div className="text-center"><Spinner/></div> : this.renderClients()}
     </div>;
+  }
+
+  renderClients() {
+    const clients = this.state.clients;
+    const clientsIds = Object.keys(clients);
+    return clientsIds.map(id => <ClientInfo client={clients[id]} key={id}/>);
   }
 }
 
