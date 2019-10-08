@@ -1,0 +1,10 @@
+@import 'styles/common';
+
+.message-edit {
+  .message-edit-inner {
+    position: relative;
+    max-width: $page-content-width;
+    min-height: 100px;
+    margin: 0 auto;
+  }
+}

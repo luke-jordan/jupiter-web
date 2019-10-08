@@ -15,6 +15,12 @@ export class MessagesService {
     );
   }
 
+  getMessage(id) {
+    return this.getMessages().pipe(
+      map(messages => messages.find(msg => msg.instructionId === id))
+    );
+  }
+
   getActiveMessagesCount() {
     return this.getMessages().pipe(
       map(res => res.length)
@@ -25,6 +31,12 @@ export class MessagesService {
     return this.apiService.post(`${this.url}/message/instruct/update`, {
       instructionId, updateValues
     }, {
+      sendToken: true
+    });
+  }
+
+  createMessage(data) {
+    return this.apiService.post(`${this.url}/message/instruct/create`, data, {
       sendToken: true
     });
   }

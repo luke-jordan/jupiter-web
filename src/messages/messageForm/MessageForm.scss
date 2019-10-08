@@ -1,0 +1,45 @@
+@import 'styles/common';
+
+.message-form {
+  padding: 40px 10px;
+  display: flex;
+  .msg-form-left {
+    flex: 1.5;
+    padding-right: 100px;
+  }
+  .msg-form-right {
+    flex: 1;
+  }
+  .msg-form-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    .title-num {
+      display: flex;
+      flex: 0 0 32px;
+      justify-content: center;
+      align-items: center;
+      height: 32px;
+      color: $color-white;
+      border-radius: 100%;
+      background-color: $color-blue;
+      font-size: 16px;
+      font-weight: 600px;
+    }
+    .title-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: $color-grey;
+      padding-left: 12px;
+    }
+  }
+  .msg-details {
+    background-color: $color-silver2;
+    padding: 15px;
+    border-radius: 10px;
+    &.view-mode {
+      background-color: transparent;
+      border: 1px solid $color-silver;
+    }
+  }
+}

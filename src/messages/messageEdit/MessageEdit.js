@@ -1,17 +1,181 @@
 import React from 'react';
+import { takeUntil } from 'rxjs/operators';
 
-import { capitalize } from 'utils';
+import { capitalize, unmountDecorator, inject } from 'utils';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
+import Spinner from 'components/spinner/Spinner';
+import MessageForm from '../messageForm/MessageForm';
 
 import './MessageEdit.scss';
 
 class MessageEdit extends React.Component {
+  constructor(props) {
+    super();
+    this.state = {
+      loading: false,
+      mode: props.match.params.mode,
+      formData: {
+        title: '',
+        body: '',
+        quickAction: 'ADD_CASH',
+        type: 'CARD',
+        sendTo: 'whole_universe',
+        sampleSize: 0,
+        priority: 0,
+        recurrence: 'EVENT_DRIVEN',
+        recurringMinIntervalDays: 0,
+        recurringMaxInQueue: 0,
+        eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER'
+      }
+    };
+
+    this.messagesService = inject('MessagesService');
+    this.historyService = inject('HistoryService');
+
+    unmountDecorator(this);
+  }
+
+  componentDidMount() {
+    this.loadMessage();
+  }
+
   render() {
-    const { mode } = this.props.match.params;
-    const title = capitalize(`${mode} message`);
+    const state = this.state;
+    const title = capitalize(`${state.mode} message`);
+
     return <div className="message-edit">
       <PageBreadcrumb title={title} link={{ to: '/messages', text: 'Messages' }}/>
+      <div className="message-edit-inner">
+        {state.loading && <Spinner overlay/>}
+        <MessageForm mode={state.mode} formData={state.formData}
+          onChange={this.formInputChange} onSubmit={this.formSubmit}/>
+      </div>
     </div>;
+  }
+
+  loadMessage() {
+    if (this.state.mode === 'new') {
+      return;
+    }
+
+    this.setState({ loading: true });
+
+    const id = this.props.match.params.id;
+    this.messagesService.getMessage(id).pipe(
+      takeUntil(this.unmount$)
+    ).subscribe(message => {
+      this.setState({
+        formData: this.messageToFormData(message),
+        loading: false
+      });
+    }, err => {
+      console.error(err);
+    });
+  }
+
+  formInputChange = event => {
+    const { name, value } = event.target;
+    const state = this.state;
+    this.setState({
+      ...state,
+      formData: {
+        ...state.formData, [name]: value
+      }
+    });
+  }
+
+  formSubmit = event => {
+    event.preventDefault();
+
+    const mode = this.state.mode;
+
+    if (mode === 'view') {
+      this.setState({ mode: 'edit' });
+      return;
+    }
+
+    const body = this.formDataToRequestBody();
+    let obs;
+
+    if (mode === 'edit') {
+      const id = this.props.match.params.id;
+      obs = this.messagesService.updateMessage(id, body);
+    } else {
+      // new or duplicate
+      obs = this.messagesService.createMessage(body);
+    }
+
+    this.setState({ loading: true });
+
+    obs.pipe(
+      takeUntil(this.unmount$)
+    ).subscribe(() => {
+      this.setState({ loading: false });
+      this.historyService.push('/messages');
+    }, err => {
+      console.error(err);
+    });
+  }
+
+  formDataToRequestBody() {
+    const data = this.state.formData;
+
+    const body = {
+      audienceType: 'GROUP',
+      templates: {
+        template: {
+          DEFAULT: {
+            title: data.title,
+            body: data.body,
+            display: { type: data.type },
+            actionToTake: data.quickAction
+          }
+        }
+      },
+      messagePriority: parseInt(data.priority),
+      presentationType: data.recurrence
+    };
+
+    if (data.recurrence === 'RECURRING') {
+      body.recurrenceParameters = {
+        minIntervalDays: data.recurringMinIntervalDays,
+        maxInQueue: data.recurringMaxInQueue
+      };
+    } else if (data.recurrence === 'EVENT_DRIVEN') {
+      if (this.state.mode === 'edit') {
+        body.flags = [data.eventTypeCategory];
+      } else {
+        body.eventTypeCategory = data.eventTypeCategory;
+      }
+    }
+
+    let selectionMethod = data.sendTo;
+    if (selectionMethod === 'random_sample') {
+      selectionMethod += ` #{${data.sampleSize / 100}}`;
+    }
+
+    body.selectionInstruction = `${selectionMethod} from #{{"client_id":"za_client_co"}}`;
+
+    return body;
+  }
+
+  messageToFormData(message) {
+    const defaultTemplate = message.templates.template.DEFAULT;
+    const recurrenceParameters = message.recurrenceParameters;
+
+    const data = {
+      title: defaultTemplate.title,
+      body: defaultTemplate.body,
+      quickAction: defaultTemplate.actionToTake,
+      type: defaultTemplate.display.type,
+      priority: message.messagePriority,
+      recurrence: message.presentationType,
+      recurringMinIntervalDays: recurrenceParameters ? recurrenceParameters.minIntervalDays : 0,
+      recurringMaxInQueue: recurrenceParameters ? recurrenceParameters.maxInQueue : 0,
+      eventTypeCategory: message.flags ? message.flags[0] : ''
+    };
+
+    return data;
   }
 }
 
