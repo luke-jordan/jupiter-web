@@ -1,9 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject } from 'utils';
+import { inject, unmountDecorator } from 'utils';
 
 import './PageLayout.scss';
 import logoImage from 'assets/images/logo.svg';
@@ -14,18 +13,13 @@ class PageLayout extends React.Component {
     this.authService = inject('AuthService');
     this.state = { user: null };
 
-    this.unmount$ = new Subject();
+    unmountDecorator(this);
   }
 
   componentDidMount() {
     this.authService.user$.pipe(
       takeUntil(this.unmount$)
     ).subscribe(user => this.setState({ user }));
-  }
-
-  componentWillUnmount() {
-    this.unmount$.next();
-    this.unmount$.complete();
   }
 
   render() {

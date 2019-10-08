@@ -1,4 +1,5 @@
 import currency from 'currency.js';
+import { Subject } from 'rxjs';
 
 import bottle from 'services/bottle';
 
@@ -8,7 +9,7 @@ export const inject = className => {
   } else {
     throw new Error(`Cannot inject service "${className}"`);
   }
-};
+}
 
 export const capitalize = str => {
   return str ? `${str[0].toUpperCase()}${str.slice(1).toLowerCase()}` : '';
@@ -30,7 +31,6 @@ export const getCountryByCode = (countries, code) => {
   });
 }
 
-
 export const formatMoney = (amount, currencyCode) => {
   const defaults = { formatWithSymbol: true, symbol: '' };
   const options = {
@@ -41,4 +41,20 @@ export const formatMoney = (amount, currencyCode) => {
   return currency(
     amount, Object.assign({}, defaults, options[currencyCode])
   ).format();
+}
+
+export const unmountDecorator = (instance) => {
+  if (instance.$unmount) {
+    throw Error('Unmount decorator can be applied only once');
+  }
+
+  const unmountFn = instance.componentWillUnmount;
+  instance.unmount$ = new Subject();
+  instance.componentWillUnmount = function() {
+    if (unmountFn) {
+      unmountFn.apply(this, arguments);
+    }
+    this.unmount$.next();
+    this.unmount$.complete();
+  }
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Subject, fromEvent } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import { unmountDecorator } from 'utils';
 
 import './DropdownMenu.scss';
 import moreIcon from 'assets/images/more.svg';
@@ -12,16 +14,12 @@ class DropdownMenu extends React.Component {
   constructor() {
     super();
     this.state = { open: false };
-    this.unmount$ = new Subject();
+
+    unmountDecorator(this);
   }
 
   componentDidMount() {
     windowClick$.pipe(takeUntil(this.unmount$)).subscribe(this.windowClick);
-  }
-
-  componentWillUnmount() {
-    this.unmount$.next();
-    this.unmount$.complete();
   }
 
   render() {

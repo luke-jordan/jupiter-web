@@ -1,9 +1,8 @@
 import React from 'react';
 import moment from 'moment';
-import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject } from 'utils';
+import { inject, unmountDecorator } from 'utils';
 import Spinner from 'components/spinner/Spinner';
 import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
 
@@ -31,7 +30,7 @@ export class UserCounters extends React.Component {
     this.todayDate = moment();
     this.yesterdayDate = moment().subtract('1', 'day');
 
-    this.unmount$ = new Subject();
+    unmountDecorator(this);
   }
 
   componentDidMount() {
@@ -60,11 +59,6 @@ export class UserCounters extends React.Component {
         yesterdayLoading: false
       });
     });
-  }
-
-  componentWillUnmount() {
-    this.unmount$.next();
-    this.unmount$.complete();
   }
 
   render() {

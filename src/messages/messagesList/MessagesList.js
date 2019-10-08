@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Subject, forkJoin } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 import classNames from 'classnames';
 
-import { inject } from 'utils';
+import { inject, unmountDecorator } from 'utils';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import DropdownMenu from 'components/dropdownMenu/DropdownMenu';
 import Spinner from 'components/spinner/Spinner';
@@ -28,7 +28,7 @@ class MessagesList extends React.Component {
       checkAll: false
     };
 
-    this.unmount$ = new Subject();
+    unmountDecorator(this);
   }
 
   componentDidMount() {
@@ -37,11 +37,6 @@ class MessagesList extends React.Component {
     ).subscribe(messages => {
       this.setState({ messages, loading: false, init: true });
     });
-  }
-
-  componentWillUnmount() {
-    this.unmount$.next();
-    this.unmount$.complete();
   }
 
   render() {

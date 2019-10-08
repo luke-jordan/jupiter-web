@@ -1,8 +1,7 @@
 import React from 'react';
-import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject } from 'utils';
+import { inject, unmountDecorator } from 'utils';
 import Spinner from 'components/spinner/Spinner';
 import ClientInfo from './ClientInfo';
 
@@ -18,7 +17,7 @@ class ClientsList extends React.Component {
       clients: {}
     };
 
-    this.unmount$ = new Subject();
+    unmountDecorator(this);
   }
 
   componentDidMount() {
@@ -27,11 +26,6 @@ class ClientsList extends React.Component {
     ).subscribe(clients => {
       this.setState({ clients: clients, loading: false });
     });
-  }
-
-  componentWillUnmount() {
-    this.unmount$.next();
-    this.unmount$.complete();
   }
 
   render() {

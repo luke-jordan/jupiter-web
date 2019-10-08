@@ -1,9 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject } from 'utils';
+import { inject, unmountDecorator } from 'utils';
 import Spinner from 'components/spinner/Spinner';
 import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
 
@@ -27,7 +26,7 @@ class DataCounters extends React.Component {
       messagesCount: 0
     };
 
-    this.unmount$ = new Subject();
+    unmountDecorator(this);
   }
 
   componentDidMount() {
@@ -42,11 +41,6 @@ class DataCounters extends React.Component {
     ).subscribe(messagesCount => {
       this.setState({ messagesCount, messagesLoading: false });
     });
-  }
-
-  componentWillUnmount() {
-    this.unmount$.next();
-    this.unmount$.complete();
   }
 
   render()  {
