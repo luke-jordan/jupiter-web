@@ -175,6 +175,14 @@ class MessageEdit extends React.Component {
       eventTypeCategory: message.flags ? message.flags[0] : ''
     };
 
+    if (message.selectionInstruction) {
+      const match = message.selectionInstruction.match(/(whole_universe|random_sample)(?:\s#\{([\d.]+)\})?/);
+      if (match) {
+        data.sendTo = match[1];
+        data.sampleSize = match[2] ? match[2] * 100 : 0
+      }
+    }
+
     return data;
   }
 }
