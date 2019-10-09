@@ -10,7 +10,7 @@ import './HomePage.scss';
 class HomePage extends React.Component {
   render() {
     return <div className="home-page">
-      <div className="home-page-inner">
+      <div className="page-content">
         <UserCounters/>
         <UserSearch/>
         <DataCounters/>

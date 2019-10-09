@@ -42,7 +42,7 @@ class MessagesList extends React.Component {
     const state = this.state;
     return <div className="messages-list">
       <PageBreadcrumb title="Messages" link={{ to: '/', text: 'Home' }}/>
-      <div className="messages-list-inner">
+      <div className="page-content">
         {state.loading && <Spinner overlay/>}
         {this.renderActions()}
         {this.renderTable()}
@@ -52,7 +52,7 @@ class MessagesList extends React.Component {
 
   renderActions() {
     const { checkedMessages } = this.state;
-    return <div className="messages-actions">
+    return <div className="page-actions">
       <div className="action-buttons">
         <button className="button button-outline">
           Filter by <img className="button-icon" src={sortIcon} alt="sort"/>
@@ -75,7 +75,7 @@ class MessagesList extends React.Component {
       <thead>
         <tr>
           <th style={{ width: 40 }}>
-            <Checkbox checked={state.checkAll} onChange={this.checkAllChange}
+            <Checkbox checked={state.checkAll} onChange={this.checkAllMessages}
               disabled={!state.messages.length}/>
           </th>
           <th style={{ width: 125 }}>Type</th>
@@ -101,7 +101,7 @@ class MessagesList extends React.Component {
     const checked = this.state.checkedMessages.includes(message.instructionId);
     return <tr key={message.instructionId}>
       <td className="text-center">
-        <Checkbox checked={checked} onChange={checked => this.checkMessageChange(checked, message)}/>
+        <Checkbox checked={checked} onChange={checked => this.checkMessage(checked, message)}/>
       </td>
       <td>{message.presentationTypeName}</td>
       <td>{message.templates.template.DEFAULT.title}</td>
@@ -122,18 +122,34 @@ class MessagesList extends React.Component {
     </tr>;
   }
 
-  rowActionClick(action, message) {
-    if (action.tag === 'deactivate') {
-      this.deactivateMessages([message.instructionId]);
-    } else {
-      this.historyService.push(`/messages/${action.tag}/${message.instructionId}`);
-    }
+  checkMessage(checked, message) {
+    const { checkedMessages } = this.state;
+    this.setState({
+      checkedMessages: checked ?
+        [...checkedMessages, message.instructionId] :
+        checkedMessages.filter(id => id !== message.instructionId)
+    });
+  }
+
+  checkAllMessages = checkAll => {
+    this.setState({
+      checkAll,
+      checkedMessages: checkAll ? this.state.messages.map(m => m.instructionId): []
+    });
   }
 
   deactivateCheckedMessages = () => {
     const ids = this.state.checkedMessages;
     if (ids.length) {
       this.deactivateMessages(ids);
+    }
+  }
+
+  rowActionClick(action, message) {
+    if (action.tag === 'deactivate') {
+      this.deactivateMessages([message.instructionId]);
+    } else {
+      this.historyService.push(`/messages/${action.tag}/${message.instructionId}`);
     }
   }
 
@@ -148,22 +164,6 @@ class MessagesList extends React.Component {
       takeUntil(this.unmount$)
     ).subscribe(messages => {
       this.setState({ messages, loading: false });
-    });
-  }
-
-  checkMessageChange(checked, message) {
-    const { checkedMessages } = this.state;
-    this.setState({
-      checkedMessages: checked ?
-        [...checkedMessages, message.instructionId] :
-        checkedMessages.filter(id => id !== message.instructionId)
-    });
-  }
-
-  checkAllChange = checkAll => {
-    this.setState({
-      checkAll,
-      checkedMessages: checkAll ? this.state.messages.map(m => m.instructionId): []
     });
   }
 }

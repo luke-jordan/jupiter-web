@@ -7,9 +7,9 @@ import AdminRoute from 'components/adminRoute/AdminRoute';
 import LoginPage from 'login/loginPage/LoginPage';
 import HomePage from 'home/homePage/HomePage';
 import MessagesPage from 'messages/messagesPage/MessagesPage';
+import BoostsPage from 'boosts/boostsPage/BoostsPage';
 
 const UsersPage = () => 'Users page';
-const BoostsPage = () => 'Boosts page';
 const ClientsAndFloatsPage = () => 'Clients and floats page';
 const NotFoundPage = () => 'Page not exit'
 

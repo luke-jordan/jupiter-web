@@ -45,7 +45,7 @@ class MessageEdit extends React.Component {
 
     return <div className="message-edit">
       <PageBreadcrumb title={title} link={{ to: '/messages', text: 'Messages' }}/>
-      <div className="message-edit-inner">
+      <div className="page-content">
         {state.loading && <Spinner overlay/>}
         <MessageForm mode={state.mode} formData={state.formData}
           onChange={this.formInputChange} onSubmit={this.formSubmit}/>

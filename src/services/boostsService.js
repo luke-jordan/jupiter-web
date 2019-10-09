@@ -1,4 +1,5 @@
-import { map } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
+import moment from 'moment';
 
 export class BoostsService {
   constructor(apiService) {
@@ -9,12 +10,30 @@ export class BoostsService {
   getBoosts(params) {
     return this.apiService.get(`${this.url}/boost/list`, {
       sendToken: true, params
-    });
+    }).pipe(
+      tap(boosts => boosts.forEach(this._modifyBoost))
+    );
   }
 
   getActiveBoostsCount() {
     return this.getBoosts().pipe(
       map(res => res.length)
     );
+  }
+
+  _modifyBoost = (boost) => {
+    boost.boostTypeText = {
+      GAME: 'Game',
+      SIMPLE: 'Simple'
+    }[boost.boostType];
+
+    boost.boostCategoryText = {
+      TIME_LIMITED: 'Time limited'
+    }[boost.boostCategory];
+
+    boost.startTimeText = moment(boost.startTime).format('DD/MM/YY hh:mmA');
+
+    const endTime = moment(boost.endTime);
+    boost.endTimeText = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
   }
 }

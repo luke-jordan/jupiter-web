@@ -2,9 +2,7 @@
 
 .home-page {
   background-color: $color-silver2;
-  .home-page-inner {
-    max-width: $page-content-width;
-    margin: 0 auto;
+  .page-content {
     padding: 45px 10px 65px;
   }
   .stats {
