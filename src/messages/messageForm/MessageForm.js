@@ -16,25 +16,25 @@ class MessageForm extends React.Component {
     const isView = this.props.mode === 'view';
 
     return <div className="msg-form-left">
-      <div className="msg-form-title">
-        <div className="title-num">1</div>
-        <div className="title-text">Enter message details</div>
+      <div className="form-section">
+        <div className="section-num">1</div>
+        <div className="section-text">Enter message details</div>
       </div>
       <div className={classNames('msg-details', { 'view-mode': isView })}>
         {/* Title */}
-        <div className="form-row">
+        <div className="form-group">
           <div className="form-label">Title</div>
           <input className="form-input" type="text" placeholder="Enter title" name="title"
             value={formData.title} onChange={onChange} disabled={isView}/>
         </div>
         {/* Body */}
-        <div className="form-row">
+        <div className="form-group">
           <div className="form-label">Body</div>
           <textarea className="form-input" rows="15" placeholder="Enter body" name="body"
             value={formData.body} onChange={onChange} disabled={isView}/>
         </div>
         {/* Quick action */}
-        <div className="form-row">
+        <div className="form-group">
           <div className="form-label">Quick action from message</div>
           <select className="form-input" placeholder="Select action" name="quickAction"
             value={formData.quickAction} onChange={onChange} disabled={isView}>
@@ -52,12 +52,12 @@ class MessageForm extends React.Component {
     const isView = this.props.mode === 'view';
 
     return <div className="msg-form-right">
-      <div className="msg-form-title">
-        <div className="title-num">2</div>
-        <div className="title-text">Specify conditions</div>
+      <div className="form-section">
+        <div className="section-num">2</div>
+        <div className="section-text">Specify conditions</div>
       </div>
       {/* Type */}
-      <div className="form-row">
+      <div className="form-group">
         <div className="form-label">Set display type</div>
         <select className="form-input" name="type"
           value={formData.type} onChange={onChange} disabled={isView}>
@@ -67,7 +67,7 @@ class MessageForm extends React.Component {
         </select>
       </div>
       {/* Send to */}
-      <div className="form-row">
+      <div className="form-group">
         <div className="form-label">Send to</div>
         <select className="form-input" name="sendTo"
           value={formData.sendTo} onChange={onChange} disabled={isView}>
@@ -76,19 +76,19 @@ class MessageForm extends React.Component {
         </select>
       </div>
       {/* Sample size */}
-      {formData.sendTo === 'random_sample' && <div className="form-row">
+      {formData.sendTo === 'random_sample' && <div className="form-group">
         <div className="form-label">Sample size</div>
         <input className="form-input" type="number" name="sampleSize"
           value={formData.sampleSize} onChange={onChange} disabled={isView}/>
       </div>}
       {/* Priority */}
-      <div className="form-row">
+      <div className="form-group">
         <div className="form-label">Assign a priority (0=low, 100=high)</div>
         <input className="form-input" type="number" name="priority"
           value={formData.priority} onChange={onChange} disabled={isView}/>
       </div>
       {/* Send message (recurrence) */}
-      <div className="form-row">
+      <div className="form-group">
         <div className="form-label">Send message</div>
         <select className="form-input" name="recurrence" 
           value={formData.recurrence} onChange={onChange} disabled={isView}>
@@ -99,25 +99,25 @@ class MessageForm extends React.Component {
       </div>
       {formData.recurrence === 'RECURRING' && <>
         {/* Recurring min interval days */}
-        <div className="form-row">
+        <div className="form-group">
           <div className="form-label">Assign minimum days between sending messages</div>
           <input className="form-input" type="number" name="recurringMinIntervalDays"
             value={formData.recurringMinIntervalDays} onChange={onChange} disabled={isView}/>
         </div>
         {/* Recurring max in queue */}
-        <div className="form-row">
+        <div className="form-group">
           <div className="form-label">Skip sending if more than X messages have been sent</div>
           <input className="form-input" type="number" name="recurringMaxInQueue"
             value={formData.recurringMaxInQueue} onChange={onChange} disabled={isView}/>
         </div>
       </>}
       {/* Event type and category */}
-      {formData.recurrence === 'EVENT_DRIVEN' && <div className="form-row">
+      {formData.recurrence === 'EVENT_DRIVEN' && <div className="form-group">
         <div className="form-label">Event type and category</div>
         <input className="form-input" type="text" name="eventTypeCategory"
           value={formData.eventTypeCategory} onChange={onChange} disabled={isView}/>
       </div>}
-      <div className="form-row text-right">
+      <div className="form-group text-right">
         <button className="button">{this.getSubmitText()}</button>
       </div>
     </div>;

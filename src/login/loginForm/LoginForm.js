@@ -20,12 +20,12 @@ class LoginForm extends React.Component {
       <div className="card-header">Log In</div>
       <div className="card-body">
         <form className="form" onSubmit={this.submit}>
-          <div className="form-row">
+          <div className="form-group">
             <div className="form-label">Phone Number or Email Address*</div>
             <input type="text" className="form-input" name="phoneOrEmail" disabled={loading}
               value={phoneOrEmail} onChange={this.inputChange}></input>
           </div>
-          <div className="form-row">
+          <div className="form-group">
             <div className="form-label">Password</div>
             <input type="password" className="form-input" name="password" disabled={loading}
               value={password} onChange={this.inputChange}></input>

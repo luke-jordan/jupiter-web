@@ -1,6 +1,14 @@
 .form {
 }
 .form-row {
+  display: flex;
+  margin: 0 -10px;
+  .form-group {
+    flex: 1;
+    margin: 0 10px 30px;
+  }
+}
+.form-group {
   margin-bottom: 30px;
 }
 .form-label {
@@ -41,5 +49,30 @@ textarea.form-input {
   .button {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+  }
+}
+
+
+.form-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  .section-num {
+    display: flex;
+    flex: 0 0 32px;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    color: $color-white;
+    border-radius: 100%;
+    background-color: $color-blue;
+    font-size: 16px;
+    font-weight: 600px;
+  }
+  .section-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: $color-grey;
+    padding-left: 12px;
   }
 }

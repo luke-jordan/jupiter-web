@@ -75,12 +75,8 @@ class MessageEdit extends React.Component {
 
   formInputChange = event => {
     const { name, value } = event.target;
-    const state = this.state;
     this.setState({
-      ...state,
-      formData: {
-        ...state.formData, [name]: value
-      }
+      formData: { ...this.state.formData, [name]: value }
     });
   }
 
