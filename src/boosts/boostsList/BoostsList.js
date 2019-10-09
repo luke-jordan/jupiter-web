@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'components/spinner/Spinner';
 import Checkbox from 'components/checkbox/Checkbox';
+import DropdownMenu from 'components/dropdownMenu/DropdownMenu';
 import { unmountDecorator, inject } from 'utils';
 
 import './BoostsList.scss';
@@ -68,18 +69,18 @@ class BoostsList extends React.Component {
     return <table className="table">
       <thead>
         <tr>
-          <th style={{ width: 40 }}>
+          <th className="text-center" style={{ width: 40 }}>
             <Checkbox checked={state.checkAll} onChange={this.checkAllBoosts}
               disabled={!state.boosts.length}/>
           </th>
           <th style={{ width: 100 }}>Type</th>
           <th style={{ width: 150 }}>Category</th>
           <th>Name</th>
-          <th style={{ width: 100 }}>Start date</th>
-          <th style={{ width: 100 }}>End data</th>
-          <th style={{ width: 80 }}>Users</th>
-          <th style={{ width: 100 }}>Budget</th>
-          <th style={{ width: 100 }}>Remaining</th>
+          <th className="text-center" style={{ width: 100 }}>Start date</th>
+          <th className="text-center" style={{ width: 100 }}>End date</th>
+          <th className="text-center" style={{ width: 80 }}># Users</th>
+          <th className="text-center" style={{ width: 100 }}>Budget</th>
+          <th className="text-center" style={{ width: 100 }}>Remaining</th>
           <th style={{ width: 40 }}/>
         </tr>
       </thead>
@@ -94,18 +95,25 @@ class BoostsList extends React.Component {
   renderTableRow(boost) {
     const checked = this.state.checkedBoosts.includes(boost.boostId);
     return <tr key={boost.boostId}>
-      <td className="text-center">
+      <td style={{ textAlign: 'center' }}>
         <Checkbox checked={checked} onChange={checked => this.checkBoost(checked, boost)}/>
       </td>
       <td>{boost.boostTypeText}</td>
       <td>{boost.boostCategoryText}</td>
       <td>?</td>
-      <td>{boost.startTimeText}</td>
-      <td>{boost.endTimeText}</td>
-      <td>?</td>
-      <td>{boost.boostBudget}</td>
-      <td>{boost.boostRedeemed}</td>
-      <td></td>
+      <td className="text-center">{boost.startTimeText}</td>
+      <td className="text-center">{boost.endTimeText}</td>
+      <td className="text-center">?</td>
+      <td className="text-center">{boost.boostBudgetMoney}</td>
+      <td className="text-center">{boost.boostRedeemedMoney}</td>
+      <td>
+        <DropdownMenu items={[
+          { text: 'View', link: `/boosts/view/${boost.boostId}` },
+          { text: 'Edit', link: `/boosts/edit/${boost.boostId}` },
+          { text: 'Duplicate', link: `/boosts/duplicate/${boost.boostId}` },
+          { text: 'Deactivate', click: () => this.deactivateBoosts([boost.boostId]) }
+        ]}/>
+      </td>
     </tr>;
   }
 
@@ -125,8 +133,15 @@ class BoostsList extends React.Component {
     });
   }
 
-  deactivateCheckedBoosts() {
+  deactivateCheckedBoosts = () => {
+    const ids = this.state.checkedBoosts;
+    if (ids.length) {
+      this.deactivateBoosts(ids);
+    }
+  }
 
+  deactivateBoosts(ids) {
+    console.log(`Deactivate`, ids);
   }
 }
 

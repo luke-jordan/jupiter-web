@@ -21,7 +21,7 @@ export const convertAmount = (amount, unit) => {
   } else if (unit === 'HUNDREDTH_CENT') {
     return amount / 10000;
   } else  {
-    return amount;
+    return +amount;
   }
 }
 

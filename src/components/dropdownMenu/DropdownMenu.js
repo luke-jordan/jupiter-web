@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { unmountDecorator } from 'utils';
+import { unmountDecorator, inject } from 'utils';
 
 import './DropdownMenu.scss';
 import moreIcon from 'assets/images/more.svg';
@@ -14,6 +14,8 @@ class DropdownMenu extends React.Component {
   constructor() {
     super();
     this.state = { open: false };
+
+    this.historyService = inject('HistoryService');
 
     unmountDecorator(this);
   }
@@ -44,9 +46,14 @@ class DropdownMenu extends React.Component {
   }
 
   itemClick(event, item) {
-    if (this.props.onItemClick) {
-      this.props.onItemClick(item);
+    if (item.click) {
+      item.click(event, item);
     }
+
+    if (item.link) {
+      this.historyService.push(item.link);
+    }
+
     this.setState({ open: false });
   }
 

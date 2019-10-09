@@ -74,7 +74,7 @@ class MessagesList extends React.Component {
     return <table className="table">
       <thead>
         <tr>
-          <th style={{ width: 40 }}>
+          <th className="text-center" style={{ width: 40 }}>
             <Checkbox checked={state.checkAll} onChange={this.checkAllMessages}
               disabled={!state.messages.length}/>
           </th>
@@ -83,7 +83,7 @@ class MessagesList extends React.Component {
           <th style={{ width: 155 }}>Format</th>
           <th className="text-center" style={{ width: 100 }}>Start date</th>
           <th className="text-center" style={{ width: 100 }}>End date</th>
-          <th className="text-center" style={{ width: 80 }}>Msgs</th>
+          <th className="text-center" style={{ width: 80 }}># Msgs</th>
           <th className="text-center" style={{ width: 80 }}>Queued</th>
           <th className="text-center" style={{ width: 80 }}>Priority</th>
           <th style={{ width: 40 }}/>
@@ -113,11 +113,11 @@ class MessagesList extends React.Component {
       <td className="text-center">{message.messagePriority}</td>
       <td>
         <DropdownMenu items={[
-          { text: 'View', tag: 'view' },
-          { text: 'Edit', tag: 'edit' },
-          { text: 'Duplicate', tag: 'duplicate' },
-          { text: 'Deactivate', tag: 'deactivate' }
-        ]} onItemClick={action => this.rowActionClick(action, message)}/>
+          { text: 'View', link: `/messages/view/${message.instructionId}` },
+          { text: 'Edit', link: `/messages/edit/${message.instructionId}` },
+          { text: 'Duplicate', link: `/messages/duplicate/${message.instructionId}` },
+          { text: 'Deactivate', click: () => this.deactivateMessages([message.instructionId]) }
+        ]}/>
       </td>
     </tr>;
   }
@@ -142,14 +142,6 @@ class MessagesList extends React.Component {
     const ids = this.state.checkedMessages;
     if (ids.length) {
       this.deactivateMessages(ids);
-    }
-  }
-
-  rowActionClick(action, message) {
-    if (action.tag === 'deactivate') {
-      this.deactivateMessages([message.instructionId]);
-    } else {
-      this.historyService.push(`/messages/${action.tag}/${message.instructionId}`);
     }
   }
 

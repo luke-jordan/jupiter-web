@@ -1,6 +1,8 @@
 import { tap, map } from 'rxjs/operators';
 import moment from 'moment';
 
+import { convertAmount, formatMoney } from 'utils';
+
 export class BoostsService {
   constructor(apiService) {
     this.apiService = apiService;
@@ -35,5 +37,11 @@ export class BoostsService {
 
     const endTime = moment(boost.endTime);
     boost.endTimeText = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
+
+    boost.boostBudgetValue = convertAmount(boost.boostBudget, boost.boostUnit);
+    boost.boostBudgetMoney = formatMoney(boost.boostBudgetValue, boost.boostCurrency);
+
+    boost.boostRedeemedValue = convertAmount(boost.boostRedeemed, boost.boostUnit);
+    boost.boostRedeemedMoney = formatMoney(boost.boostRedeemedValue, boost.boostCurrency);
   }
 }
