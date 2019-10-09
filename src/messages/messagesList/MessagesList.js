@@ -21,7 +21,6 @@ class MessagesList extends React.Component {
     this.historyService = inject('HistoryService');
 
     this.state = {
-      init: false,
       loading: true,
       messages: [],
       checkedMessages: [],
@@ -35,7 +34,7 @@ class MessagesList extends React.Component {
     this.messagesService.getMessages().pipe(
       takeUntil(this.unmount$)
     ).subscribe(messages => {
-      this.setState({ messages, loading: false, init: true });
+      this.setState({ messages, loading: false });
     });
   }
 
@@ -45,47 +44,39 @@ class MessagesList extends React.Component {
       <PageBreadcrumb title="Messages" link={{ to: '/', text: 'Home' }}/>
       <div className="messages-list-inner">
         {state.loading && <Spinner overlay/>}
-        {state.init && this.renderActions()}
-        {state.init && this.renderTable()}
+        {this.renderActions()}
+        {this.renderTable()}
       </div>
     </div>;
   }
 
   renderActions() {
-    const { messages, checkedMessages } = this.state;
-
+    const { checkedMessages } = this.state;
     return <div className="messages-actions">
       <div className="action-buttons">
-        {!!messages.length &&
-          <button className="button button-outline">
-            Filter by <img className="button-icon" src={sortIcon} alt="sort"/>
-          </button>}
-        <div></div>
+        <button className="button button-outline">
+          Filter by <img className="button-icon" src={sortIcon} alt="sort"/>
+        </button>
         <NavLink to="/messages/new" className="button">
           New message <img className="button-icon" src={addIcon} alt="add"/>
         </NavLink>
       </div>
-      {!!messages.length &&
-        <div className="quick-actions">
-          Quick Actions:&nbsp;
-          <span className={classNames('link', { inactive: !checkedMessages.length })}
-            onClick={this.deactivateChecked}>Deactivate</span>
-        </div>}
+      <div className="quick-actions">
+        Quick Actions:&nbsp;
+        <span className={classNames('link', { inactive: !checkedMessages.length })}
+          onClick={this.deactivateCheckedMessages}>Deactivate</span>
+      </div>
     </div>;
   }
 
   renderTable() {
     const state = this.state;
-
-    if (!state.messages.length) {
-      return <div className="no-data">No messages</div>
-    }
-
     return <table className="table">
       <thead>
         <tr>
           <th style={{ width: 40 }}>
-            <Checkbox checked={state.checkAll} onChange={this.checkAllChange}/>
+            <Checkbox checked={state.checkAll} onChange={this.checkAllChange}
+              disabled={!state.messages.length}/>
           </th>
           <th style={{ width: 125 }}>Type</th>
           <th>Title</th>
@@ -99,7 +90,9 @@ class MessagesList extends React.Component {
         </tr>
       </thead>
       <tbody>
-        {state.messages.map(message => this.renderTableRow(message))}
+        {state.messages.length ?
+          state.messages.map(message => this.renderTableRow(message)) :
+          <tr><td className="no-data" colSpan="10">No messages</td></tr>}
       </tbody>
     </table>;
   }
@@ -137,18 +130,17 @@ class MessagesList extends React.Component {
     }
   }
 
-  deactivateChecked = () => {
+  deactivateCheckedMessages = () => {
     const ids = this.state.checkedMessages;
     if (ids.length) {
       this.deactivateMessages(ids);
     }
   }
 
-  deactivateMessages(instructionIds) {
+  deactivateMessages(ids) {
     this.setState({ loading: true });
-
     forkJoin(
-      instructionIds.map(id => {
+      ids.map(id => {
         return this.messagesService.updateMessage(id, { active: false });
       })
     ).pipe(
@@ -169,15 +161,10 @@ class MessagesList extends React.Component {
   }
 
   checkAllChange = checkAll => {
-    const newState = {
-      checkAll, checkedMessages: []
-    };
-
-    if (checkAll) {
-      newState.checkedMessages = this.state.messages.map(m => m.instructionId);
-    }
-
-    this.setState(newState);
+    this.setState({
+      checkAll,
+      checkedMessages: checkAll ? this.state.messages.map(m => m.instructionId): []
+    });
   }
 }
 
