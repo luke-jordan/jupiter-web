@@ -9,8 +9,9 @@ const PageBreadcrumb = props => {
   return <div className="page-breadcrumb">
     <div className="breadcrumb-inner">
       <div className="breadcrumb-link">
-        <img src={arrowIcon} alt="arrow"></img>
-        <NavLink to={link.to}>{link.text}</NavLink>
+        <NavLink to={link.to}>
+          <img src={arrowIcon} alt="arrow"></img> {link.text}
+        </NavLink>
       </div>
       <div className="breadcrumb-title">{props.title}</div>
     </div>

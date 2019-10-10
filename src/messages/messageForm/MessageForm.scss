@@ -2,15 +2,11 @@
 
 .message-form {
   padding: 10px 0;
-  display: flex;
-  .msg-form-left {
-    flex: 1.5;
-    padding-right: 80px;
-  }
-  .msg-form-right {
-    flex: 1;
-  }
   .msg-details {
+    flex: 1.5;
+    padding-right: 60px;
+  }
+  .details-box {
     background-color: $color-silver2;
     padding: 15px;
     border-radius: 10px;

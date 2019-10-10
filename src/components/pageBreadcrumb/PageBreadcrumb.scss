@@ -12,12 +12,13 @@
   .breadcrumb-link {
     display: flex;
     font-size: 12px;
-    img {
-      margin-right: 8px;
-    }
     a {
+      display: inline-flex;
       color: inherit;
       text-decoration: none;
+      img {
+        margin-right: 8px;
+      }
     }
   }
   .breadcrumb-title {

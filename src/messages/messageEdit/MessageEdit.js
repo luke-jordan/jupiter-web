@@ -38,7 +38,7 @@ class MessageEdit extends React.Component {
   componentDidMount() {
     this.loadMessage();
   }
-
+  
   render() {
     const state = this.state;
     const title = capitalize(`${state.mode} message`);
