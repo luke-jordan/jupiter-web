@@ -6,7 +6,6 @@ import { takeUntil } from 'rxjs/operators';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'components/spinner/Spinner';
 import Checkbox from 'components/checkbox/Checkbox';
-import DropdownMenu from 'components/dropdownMenu/DropdownMenu';
 import { unmountDecorator, inject } from 'utils';
 
 import './BoostsList.scss';
