@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import moment from 'moment';
 
@@ -21,6 +22,17 @@ export class BoostsService {
     return this.getBoosts().pipe(
       map(res => res.length)
     );
+  }
+
+  createBoost(data) {
+    return this.apiService.post(`${this.url}/boost/create`, data, {
+      sendToken: true
+    });
+  }
+
+  updateBoost(boostId, updateValues) {
+    // boost update is not implemented yet
+    return of(null);
   }
 
   _modifyBoost = (boost) => {

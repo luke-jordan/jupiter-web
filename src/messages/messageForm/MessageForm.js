@@ -23,7 +23,7 @@ class MessageForm extends React.Component {
     view: 'Edit',
     edit: 'Update',
     duplicate: 'Submit'
-  }
+  };
 
   isView() {
     return this.props.mode === 'view';

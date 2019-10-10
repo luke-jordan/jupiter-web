@@ -3,15 +3,26 @@ import React from 'react';
 import './BoostForm.scss';
 
 class BoostForm extends React.Component {
+  submitButtonText = {
+    new: 'Submit',
+    view: 'Edit',
+    edit: 'Update',
+    duplicate: 'Submit'
+  };
+
   isView() {
     return this.props.mode === 'view';
   }
 
   render() {
-    return <form className="boost-form" onSubmit={this.props.onSubmit} autoComplete="off">
+    const props = this.props;
+    return <form className="boost-form" onSubmit={props.onSubmit} autoComplete="off">
       {this.renderDetails()}
       {this.renderConditions()}
       {this.renderPushAndCardDetails()}
+      <div className="text-right">
+        <button className="button">{this.submitButtonText[props.mode]}</button>
+      </div>
     </form>;
   }
 
@@ -65,10 +76,10 @@ class BoostForm extends React.Component {
       </div>
       <div className="grid-row">
         <div className="grid-col">
-          {/* Action */}
+          {/* Expiry time */}
           <div className="form-group">
             <div className="form-label">When does it expire?</div>
-            <select className="form-input" name="action" value={formData.action}
+            <select className="form-input" name="expiryTime" value={formData.expiryTime}
               onChange={onChange} disabled={this.isView()}>
               <option value="END_OF_DAY">End of today</option>
               <option value="END_OF_TOMORROW">End tomorrow</option>
@@ -142,8 +153,8 @@ class BoostForm extends React.Component {
           </div>
           <div className="form-group">
             <div className="form-label">Notification body</div>
-            <input className="form-input" type="text" name="pushTitle" placeholder="Enter body"
-              value={formData.pushTitle} onChange={onChange} disabled={this.isView()}/>
+            <input className="form-input" type="text" name="pushBody" placeholder="Enter body"
+              value={formData.pushBody} onChange={onChange} disabled={this.isView()}/>
           </div>
         </div>
         {/* Card title & body */}

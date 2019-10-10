@@ -107,12 +107,12 @@ class BoostsList extends React.Component {
       <td className="text-center">{boost.boostBudgetMoney}</td>
       <td className="text-center">{boost.boostRedeemedMoney}</td>
       <td>
-        <DropdownMenu items={[
+        {/* <DropdownMenu items={[
           { text: 'View', link: `/boosts/view/${boost.boostId}` },
           { text: 'Edit', link: `/boosts/edit/${boost.boostId}` },
           { text: 'Duplicate', link: `/boosts/duplicate/${boost.boostId}` },
           { text: 'Deactivate', click: () => this.deactivateBoosts([boost.boostId]) }
-        ]}/>
+        ]}/> */}
       </td>
     </tr>;
   }
