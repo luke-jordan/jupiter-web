@@ -24,6 +24,10 @@ class BoostEdit extends React.Component {
         perUserAmount: 100,
         totalBudget: 1000,
         source: 'primary_bonus_pool',
+        pushTitle: '',
+        pushBody: '',
+        cardTitle: '',
+        cardBody: ''
       }
     };
   }
