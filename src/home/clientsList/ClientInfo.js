@@ -62,16 +62,15 @@ class ClientInfo extends React.Component {
   }
 
   renderBalanceInfo(float) {
-    const { floatBalance, bonusPoolBalance } = float;
     return <div className="balance-info">
-    {/* Total float balance */}
+      {/* Total float balance */}
       <div className="balance-details">
         <div className="balance-name">Total float balance</div>
-        <div className="balance-value">{floatBalance.amountMoney}</div>
+        <div className="balance-value">{float.floatBalance.amountMoney}</div>
         <div className="balance-stats">
           <div className="stats-item">
             <div className="stats-item-name">Growth in last month</div>
-            <div className="stats-item-value">0</div>
+            <div className="stats-item-value">{float.floatMonthGrowth.amountMoney}</div>
           </div>
           <div className="stats-item">
             <div className="stats-item-name">Users in last month</div>
@@ -85,15 +84,15 @@ class ClientInfo extends React.Component {
       {/* Bonus pool balance */}
       <div className="balance-details">
         <div className="balance-name">Bonus pool balance</div>
-        <div className="balance-value">{bonusPoolBalance.amountMoney}</div>
+        <div className="balance-value">{float.bonusPoolBalance.amountMoney}</div>
         <div className="balance-stats">
           <div className="stats-item">
             <div className="stats-item-name">Inflow last week</div>
-            <div className="stats-item-value">0</div>
+            <div className="stats-item-value">{float.bonusInflowSum.amountMoney}</div>
           </div>
           <div className="stats-item">
             <div className="stats-item-name">Outflow last week</div>
-            <div className="stats-item-value">0</div>
+            <div className="stats-item-value">{float.bonusOutflow.amountMoney}</div>
           </div>
         </div>
       </div>
