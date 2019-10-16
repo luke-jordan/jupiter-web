@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Spinner from 'components/spinner/Spinner';
+import Input from 'components/input/Input';
 
 import './OtpForm.scss';
 
@@ -22,7 +23,7 @@ class OtpForm extends React.Component {
         <form className="form" onSubmit={this.submit}>
           <div className="digits">
             {digits.map((digit, index) => {
-              return <input className="form-input" value={digit} maxLength="1" disabled={loading}
+              return <Input value={digit} maxLength="1" disabled={loading}
                 onChange={this.inputChange} name={`digit-${index}`} key={index}/>
             })}
           </div>

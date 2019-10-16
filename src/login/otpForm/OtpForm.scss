@@ -11,10 +11,13 @@
   }
   .digits {
     margin: 20px 0 30px;
-    .form-input {
+    .base-input {
+      display: inline-block;
       width: 75px;
-      text-align: center;
       margin: 0 5px;
+      .input-control {
+        text-align: center;
+      }
     }
   }
   .otp-help {

@@ -95,7 +95,7 @@ class BoostsList extends React.Component {
     const checked = this.state.checkedBoosts.includes(boost.boostId);
     return <tr key={boost.boostId}>
       <td style={{ textAlign: 'center' }}>
-        <Checkbox checked={checked} onChange={checked => this.checkBoost(checked, boost)}/>
+        <Checkbox checked={checked} onChange={event => this.checkBoost(event, boost)}/>
       </td>
       <td>{boost.boostTypeText}</td>
       <td>{boost.boostCategoryText}</td>
@@ -116,19 +116,20 @@ class BoostsList extends React.Component {
     </tr>;
   }
 
-  checkBoost(checked, boost) {
+  checkBoost(event, boost) {
     const { checkedBoosts } = this.state;
     this.setState({
-      checkedBoosts: checked ?
+      checkedBoosts: event.target.checked ?
         [...checkedBoosts, boost.boostId] :
         checkedBoosts.filter(id => id !== boost.boostId)
     });
   }
 
-  checkAllBoosts = checkAll => {
+  checkAllBoosts = event => {
+    const checked = event.target.checked;
     this.setState({
-      checkAll,
-      checkedBoosts: checkAll ? this.state.boosts.map(m => m.boostId): []
+      checkAll: checked,
+      checkedBoosts: checked ? this.state.boosts.map(m => m.boostId): []
     });
   }
 

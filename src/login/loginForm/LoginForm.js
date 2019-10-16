@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Spinner from 'components/spinner/Spinner';
+import Input from 'components/input/Input';
 
 import './LoginForm.scss';
 
@@ -22,13 +23,13 @@ class LoginForm extends React.Component {
         <form className="form" onSubmit={this.submit}>
           <div className="form-group">
             <div className="form-label">Phone Number or Email Address*</div>
-            <input type="text" className="form-input" name="phoneOrEmail" disabled={loading}
-              value={phoneOrEmail} onChange={this.inputChange}></input>
+            <Input name="phoneOrEmail" disabled={loading}
+              value={phoneOrEmail} onChange={this.inputChange}/>
           </div>
           <div className="form-group">
             <div className="form-label">Password</div>
-            <input type="password" className="form-input" name="password" disabled={loading}
-              value={password} onChange={this.inputChange}></input>
+            <Input type="password" name="password" disabled={loading}
+              value={password} onChange={this.inputChange}/>
             <div className="forgot-password">
               <a href="/" className="link">Forgot Password?</a>
             </div>

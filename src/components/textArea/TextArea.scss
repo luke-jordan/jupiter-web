@@ -1,0 +1,24 @@
+@import 'styles/common';
+
+.base-input.textarea {
+  .input-control-wrap {
+    position: relative;
+  }
+  .input-control {
+    resize: none;
+    height: auto;
+  }
+  .chars-counter {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    font-size: 11px;
+    padding: 5px;
+    color: $color-grey2;
+    mark {
+      background-color: transparent;
+      color: $color-blue;
+      font-weight: 600;
+    }
+  }
+}

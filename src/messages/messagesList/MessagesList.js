@@ -101,7 +101,7 @@ class MessagesList extends React.Component {
     const checked = this.state.checkedMessages.includes(message.instructionId);
     return <tr key={message.instructionId}>
       <td className="text-center">
-        <Checkbox checked={checked} onChange={checked => this.checkMessage(checked, message)}/>
+        <Checkbox checked={checked} onChange={event => this.checkMessage(event, message)}/>
       </td>
       <td>{message.presentationTypeName}</td>
       <td>{message.templates.template.DEFAULT.title}</td>
@@ -122,19 +122,20 @@ class MessagesList extends React.Component {
     </tr>;
   }
 
-  checkMessage(checked, message) {
+  checkMessage(event, message) {
     const { checkedMessages } = this.state;
     this.setState({
-      checkedMessages: checked ?
+      checkedMessages: event.target.checked ?
         [...checkedMessages, message.instructionId] :
         checkedMessages.filter(id => id !== message.instructionId)
     });
   }
 
-  checkAllMessages = checkAll => {
+  checkAllMessages = event => {
+    const checked = event.target.checked;
     this.setState({
-      checkAll,
-      checkedMessages: checkAll ? this.state.messages.map(m => m.instructionId): []
+      checkAll: checked,
+      checkedMessages: checked ? this.state.messages.map(m => m.instructionId): []
     });
   }
 

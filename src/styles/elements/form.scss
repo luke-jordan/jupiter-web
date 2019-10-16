@@ -10,40 +10,21 @@
   margin-bottom: 8px;
 }
 
-.form-input {
-  border: 1px solid $color-silver;
-  border-radius: 10px;
-  background-color: $color-white;
-  height: 50px;
-  padding: 10px 15px;
-  font-size: 14px;
-  width: 100%;
-  outline: none;
-  color: $color-grey;
-  &[disabled] {
-    border: 0;
-    background-color: $color-silver2;
-    cursor: not-allowed;
-  }
-}
-textarea.form-input {
-  resize: none;
-  height: auto;
-}
-
 .input-group {
   display: flex;
-  .form-input {
-    border: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+  .base-input {
+    flex: 1;
+    .input-control {
+      border: 0;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
   .button {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
 }
-
 
 .form-section {
   display: flex;
@@ -66,5 +47,34 @@ textarea.form-input {
     font-weight: 600;
     color: $color-grey;
     padding-left: 12px;
+  }
+}
+
+.base-input {
+  &.disabled {
+    .input-control {
+      border: 0;
+      background-color: $color-silver2;
+      cursor: not-allowed;
+    }
+  }
+  .input-control-wrap {
+
+  }
+  .input-control {
+    border: 1px solid $color-silver;
+    border-radius: 10px;
+    background-color: $color-white;
+    height: 50px;
+    padding: 10px 15px;
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    color: $color-grey;
+  }
+  .input-error {
+    color: $color-red;
+    font-size: 10px;
+    padding: 2px;
   }
 }

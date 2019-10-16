@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 import { fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -13,9 +12,8 @@ const windowClick$ = fromEvent(window, 'click');
 class DropdownMenu extends React.Component {
   constructor() {
     super();
-    this.state = { open: false };
-
     this.historyService = inject('HistoryService');
+    this.dopdownRef = React.createRef();
 
     unmountDecorator(this);
   }
@@ -25,9 +23,8 @@ class DropdownMenu extends React.Component {
   }
 
   render() {
-    const { props, state } = this;
-    return <div className={classNames('dropdown-menu', { open: state.open })}
-      ref={el => this.el = el}>
+    const props = this.props;
+    return <div className="dropdown-menu" ref={this.dopdownRef}>
       <div className="menu-trigger" onClick={this.triggerClick}>
         <img src={moreIcon} alt="more"/>
       </div>
@@ -42,7 +39,7 @@ class DropdownMenu extends React.Component {
   }
 
   triggerClick = () => {
-    this.setState({ open: true });
+    this.toggleOpen();
   }
 
   itemClick(event, item) {
@@ -54,14 +51,20 @@ class DropdownMenu extends React.Component {
       this.historyService.push(item.link);
     }
 
-    this.setState({ open: false });
+    this.toggleOpen(false);
   }
 
   windowClick = event => {
-    if (
-      this.state.open && this.el !== event.target.closest('.dropdown-menu')
-    ) {
-      this.setState({ open: false });
+    const el = this.dopdownRef.current;
+    if (el && el !== event.target.closest('.dropdown-menu')) {
+      this.toggleOpen(false);
+    }
+  }
+
+  toggleOpen(open) {
+    const el = this.dopdownRef.current;
+    if (el) {
+      el.classList.toggle('open', open);
     }
   }
 }

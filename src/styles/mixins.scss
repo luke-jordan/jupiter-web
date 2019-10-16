@@ -7,3 +7,9 @@
   align-items: center;
   justify-content: center;
 }
+
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

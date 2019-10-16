@@ -1,0 +1,38 @@
+@import 'styles/common';
+
+.base-input.checkbox {
+  .input-control-wrap {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    input[type="checkbox"] {
+      display: none;
+    }
+    input[type="checkbox"]:checked + .checkbox-icon {
+      border: 0;
+      .checkbox-img {
+        display: block;
+      }
+    }
+    .checkbox-icon {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      border: 2px solid $color-grey2;
+      border-radius: 2px;
+    }
+    .checkbox-img {
+      display: none;
+    }
+    .checkbox-text {
+      padding-left: 8px;
+      font-weight: 400;
+      font-size: 14px;
+      text-transform: none;
+    }
+  }
+  &.disabled .input-control-wrap {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
