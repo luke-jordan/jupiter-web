@@ -14,9 +14,10 @@ class BoostEdit extends React.Component {
     super();
     this.boostsService = inject('BoostsService');
     this.historyService = inject('HistoryService');
+    this.clientsService = inject('ClientsService');
 
     this.state = {
-      loading: false,
+      loading: true,
       mode: props.match.params.mode,
       formData: {
         label: '',
@@ -34,7 +35,8 @@ class BoostEdit extends React.Component {
         cardTitle: '',
         cardBody: '',
         currency: 'ZAR'
-      }
+      },
+      floats: []
     };
 
     unmountDecorator(this);
@@ -48,10 +50,19 @@ class BoostEdit extends React.Component {
       <PageBreadcrumb title={title} link={{ to: '/boosts', text: 'Boosts' }}/>
       <div className="page-content">
         {state.loading && <Spinner overlay/>}
-        <BoostForm formData={state.formData} mode={state.mode}
+        <BoostForm formData={state.formData} mode={state.mode} floats={state.floats}
           onChange={this.formInputChange} onSubmit={this.formSubmit}/>
       </div>
     </div>;
+  }
+
+  componentDidMount() {
+    this.clientsService.getClients().pipe(
+      takeUntil(this.unmount$)
+    ).subscribe(clients => {
+      const floats = clients.length ? clients[0].floats : [];
+      this.setState({ floats, loading: false });
+    });
   }
 
   formInputChange = event => {

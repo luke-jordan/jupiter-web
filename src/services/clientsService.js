@@ -16,14 +16,18 @@ export class ClientsService {
       this.dataService.getCountries()
     ).pipe(
       map(res => {
-        const [clients, countries] = res;
+        const [clientsMap, countries] = res;
 
-        Object.keys(clients).forEach(id => {
-          const client = clients[id];
+        const clients = Object.keys(clientsMap).map(id => {
+          clientsMap[id].clientId = id;
+          return clientsMap[id];
+        });
+
+        clients.forEach(client => {
           this._modifyClient(client, countries);
           client.floats.forEach(float => this._modifyFloat(float));
         });
-
+        
         return clients;
       })
     );

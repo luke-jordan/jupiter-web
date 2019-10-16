@@ -95,12 +95,12 @@ class BoostForm extends React.Component {
             <Input name="totalBudget" type="number" value={formData.totalBudget}
               onChange={onChange} disabled={this.isView()}/>
           </div>
-          {/* Source */}
+          {/* Bonus pool */}
           <div className="form-group">
             <div className="form-label">What bonus pool is it from?</div>
             <Select name="source" value={formData.source}
               onChange={onChange} disabled={this.isView()}>
-              <option value="primary_bonus_pool">primary_bonus_pool</option>
+              {this.renderBonusPoolOptions()}
             </Select>
           </div>
         </div>
@@ -175,6 +175,14 @@ class BoostForm extends React.Component {
         </div>
       </div>
     </>;
+  }
+
+  renderBonusPoolOptions() {
+    return this.props.floats.map(float => {
+      return <optgroup label={`${float.floatName}`} key={float.floatId}>
+        {float.bonusPoolIds.map(id => <option key={id} value={id}>{id}</option>)}
+      </optgroup>;
+    });
   }
 }
 

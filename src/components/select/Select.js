@@ -31,10 +31,8 @@ class Select extends React.Component {
     this.updateValue();
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      this.updateValue();
-    }
+  componentDidUpdate() {
+    this.updateValue();
   }
 
   updateValue() {
