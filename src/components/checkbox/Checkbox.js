@@ -8,7 +8,7 @@ const Checkbox = props => {
   const rootClass = classNames('base-input checkbox', { disabled: props.disabled });
 
   return <div className={rootClass}>
-    <label className="input-control-wrap" htmlFor={props.name}>
+    <label className="checkbox-inner" htmlFor={props.name}>
       <input type="checkbox"
         disabled={props.disabled}
         name={props.name}

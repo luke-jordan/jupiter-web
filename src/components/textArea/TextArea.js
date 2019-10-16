@@ -15,9 +15,8 @@ class TextArea extends React.Component {
     const showCharsCounter = !props.disabled && props.maxLength && props.charsCounter;
     
     return <div className={rootClass}>
-      <div className="input-control-wrap">
-        <textarea className="input-control"
-          name={props.name}
+      <div className="input-control">
+        <textarea name={props.name}
           disabled={props.disabled}
           maxLength={props.maxLength}
           rows={props.rows}
@@ -25,7 +24,7 @@ class TextArea extends React.Component {
           value={props.value}
           onChange={this.onChange}
           ref={this.inputRef}/>
-        {showCharsCounter && <div className="chars-counter" ref={this.counterRef}></div>}
+          {showCharsCounter && <div className="chars-counter" ref={this.counterRef}></div>}
       </div>
       {props.error && <div className="input-error">{props.error}</div>}
     </div>
