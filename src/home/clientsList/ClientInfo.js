@@ -15,8 +15,7 @@ class ClientInfo extends React.Component {
         {this.renderClient()}
       </div>
       <div className="card-body">
-        {this.renderFloat()}
-        {this.renderBalance()}
+        {this.renderFloats()}
       </div>
     </div>;
   }
@@ -35,8 +34,16 @@ class ClientInfo extends React.Component {
     </>;
   }
 
-  renderFloat() {
-    const float = this.props.client.floats[0];
+  renderFloats() {
+    return this.props.client.floats.map(float => {
+      return <div className="float-item" key={float.floatId}>
+        {this.renderFloatInfo(float)}
+        {this.renderBalanceInfo(float)}
+      </div>;
+    });
+  }
+
+  renderFloatInfo(float) {
     return <div className="float-info">
       <div className="float-icon">
         <img src={currencyImage} alt=""/>
@@ -54,8 +61,7 @@ class ClientInfo extends React.Component {
     </div>;
   }
 
-  renderBalance() {
-    const float = this.props.client.floats[0];
+  renderBalanceInfo(float) {
     const { floatBalance, bonusPoolBalance } = float;
     return <div className="balance-info">
     {/* Total float balance */}
