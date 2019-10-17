@@ -2,6 +2,7 @@ import React from 'react';
 
 import Select from 'components/select/Select';
 import Input from 'components/input/Input';
+import TextArea from 'components/textArea/TextArea';
 
 import './BoostForm.scss';
 
@@ -156,7 +157,7 @@ class BoostForm extends React.Component {
           </div>
           <div className="form-group">
             <div className="form-label">Notification body</div>
-            <Input name="pushBody" placeholder="Enter body" disabled={this.isView()}
+            <TextArea name="pushBody" rows="3" disabled={this.isView()}
               value={formData.pushBody} onChange={onChange}/>
           </div>
         </div>
@@ -169,7 +170,7 @@ class BoostForm extends React.Component {
           </div>
           <div className="form-group">
             <div className="form-label">Card body</div>
-            <Input name="cardBody" placeholder="Enter body" disabled={this.isView()}
+            <TextArea name="cardBody" rows="3" disabled={this.isView()}
               value={formData.cardBody} onChange={onChange}/>
           </div>
         </div>
