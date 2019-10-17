@@ -3,6 +3,7 @@ import React from 'react';
 import Select from 'components/select/Select';
 import Input from 'components/input/Input';
 import TextArea from 'components/textArea/TextArea';
+import AudienceSelection from 'components/audienceSelection/AudienceSelection';
 
 import './BoostForm.scss';
 
@@ -23,6 +24,7 @@ class BoostForm extends React.Component {
     return <form className="boost-form" onSubmit={props.onSubmit} autoComplete="off">
       {this.renderDetails()}
       {this.renderConditions()}
+      {this.renderAudienceSelection()}
       {this.renderPushAndCardDetails()}
       <div className="text-right">
         <button className="button">{this.submitButtonText[props.mode]}</button>
@@ -79,8 +81,8 @@ class BoostForm extends React.Component {
         <div className="section-text">Conditions</div>
       </div>
       <div className="grid-row">
+        {/* Expiry time */}
         <div className="grid-col">
-          {/* Expiry time */}
           <div className="form-group">
             <div className="form-label">When does it expire?</div>
             <Select name="expiryTime" value={formData.expiryTime}
@@ -90,13 +92,17 @@ class BoostForm extends React.Component {
               <option value="END_OF_WEEK">End week</option>
             </Select>
           </div>
-          {/* Total budget */}
+        </div>
+        {/* Total budget */}
+        <div className="grid-col">
           <div className="form-group">
             <div className="form-label">What is the total budget?</div>
             <Input name="totalBudget" type="number" value={formData.totalBudget}
               onChange={onChange} disabled={this.isView()}/>
           </div>
-          {/* Bonus pool */}
+        </div>
+        {/* Bonus pool */}
+        <div className="grid-col">
           <div className="form-group">
             <div className="form-label">What bonus pool is it from?</div>
             <Select name="source" value={formData.source}
@@ -105,46 +111,39 @@ class BoostForm extends React.Component {
             </Select>
           </div>
         </div>
+      </div>
+      <div className="grid-row">
+        {/* Required save */}
         <div className="grid-col">
-          {/* Required save */}
           <div className="form-group">
             <div className="form-label">How much must a user save to get it?</div>
             <Input name="requiredSave" type="number" value={formData.requiredSave}
               onChange={onChange} disabled={this.isView()}/>
           </div>
-          {/* Per user amount */}
+        </div>
+        {/* Per user amount */}
+        <div className="grid-col">
           <div className="form-group">
             <div className="form-label">How much is it worth (per user)?</div>
             <Input name="perUserAmount" type="number" value={formData.perUserAmount}
               onChange={onChange} disabled={this.isView()}/>
           </div>
         </div>
-        <div className="grid-col">
-          {/* Audience */}
-          <div className="form-group">
-            <div className="form-label">Who is eligible? Boost audience:</div>
-            <Select name="audience" value={formData.audience}
-              onChange={onChange} disabled={this.isView()}>
-              <option value="whole_universe">All users @ client</option>
-              <option value="random_sample">Sample of client users</option>
-            </Select>
-          </div>
-          {/* Sample size */}
-          {formData.audience === 'random_sample' && <div className="form-group">
-            <div className="form-label">Proportion of client:</div>
-            <Input name="sampleSize" value={formData.sampleSize}
-              onChange={onChange} disabled={this.isView()}/>
-          </div>}
-        </div>
+        <div className="grid-col"></div>
       </div>
     </>;
+  }
+
+  renderAudienceSelection() {
+    const { formData, onChange } = this.props;
+    return <AudienceSelection formData={formData} onChange={onChange}/>;
   }
 
   renderPushAndCardDetails() {
     const { formData, onChange } = this.props;
     return <>
       <div className="form-section">
-        <div className="section-num">3</div>
+        <div className="section-num">4</div>
         <div className="section-text">Push notification &amp; Card details</div>
       </div>
       <div className="grid-row">

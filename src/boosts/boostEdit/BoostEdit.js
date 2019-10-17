@@ -25,7 +25,11 @@ class BoostEdit extends React.Component {
         category: 'TIME_LIMITED',
         expiryTime: 'END_OF_DAY',
         audience: 'whole_universe',
-        sampleSize: 0,
+        audienceSample: 0,
+        audienceDateFrom: '',
+        audienceDateTo: '',
+        audienceActivityFrom: 0,
+        audienceActivityTo: 5,
         requiredSave: 100,
         perUserAmount: 10,
         totalBudget: 1000,
@@ -127,7 +131,7 @@ class BoostEdit extends React.Component {
     // audience
     let selectionMethod = data.audience;
     if (data.audience === 'random_sample') {
-      selectionMethod = `${data.audience} #{${data.sampleSize / 100}}`;
+      selectionMethod = `${data.audience} #{${data.audienceSample / 100}}`;
     }
     body.boostAudience = 'GENERAL';
     body.boostAudienceSelection = `${selectionMethod} from #{{"client_id":"za_client_co"}}`;

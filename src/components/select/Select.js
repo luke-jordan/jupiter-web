@@ -34,7 +34,7 @@ class Select extends React.Component {
   componentDidUpdate() {
     this.updateValue();
   }
-
+  
   updateValue() {
     if (this.selectRef.current && this.valueRef.current) {
       const selected = this.selectRef.current.selectedOptions[0];
