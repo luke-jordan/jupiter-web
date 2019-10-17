@@ -25,7 +25,8 @@ class MessageEdit extends React.Component {
         recurrence: 'EVENT_DRIVEN',
         recurringMinIntervalDays: 0,
         recurringMaxInQueue: 0,
-        eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER'
+        eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER',
+        urlToVisit: ''
       }
     };
 
@@ -124,7 +125,8 @@ class MessageEdit extends React.Component {
             title: data.title,
             body: data.body,
             display: { type: data.type },
-            actionToTake: data.quickAction
+            actionToTake: data.quickAction,
+            urlToVisit: data.urlToVisit
           }
         }
       },
@@ -168,7 +170,8 @@ class MessageEdit extends React.Component {
       recurrence: message.presentationType,
       recurringMinIntervalDays: recurrenceParameters ? recurrenceParameters.minIntervalDays : 0,
       recurringMaxInQueue: recurrenceParameters ? recurrenceParameters.maxInQueue : 0,
-      eventTypeCategory: message.flags ? message.flags[0] : ''
+      eventTypeCategory: message.flags ? message.flags[0] : '',
+      urlToVisit: defaultTemplate.urlToVisit
     };
 
     if (message.selectionInstruction) {

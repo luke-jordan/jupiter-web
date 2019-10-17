@@ -103,11 +103,11 @@ class MessagesList extends React.Component {
       <td className="text-center">
         <Checkbox checked={checked} onChange={event => this.checkMessage(event, message)}/>
       </td>
-      <td>{message.presentationTypeName}</td>
+      <td>{message.presentationTypeText}</td>
       <td>{message.templates.template.DEFAULT.title}</td>
-      <td>{message.format}</td>
-      <td className="text-center">{message.displayStartTime}</td>
-      <td className="text-center">{message.displayEndTime}</td>
+      <td>{message.displayTypeText}</td>
+      <td className="text-center">{message.startTimeText}</td>
+      <td className="text-center">{message.endTimeText}</td>
       <td className="text-center">{message.totalMessageCount}</td>
       <td className="text-center">{message.unfetchedMessageCount}</td>
       <td className="text-center">{message.messagePriority}</td>

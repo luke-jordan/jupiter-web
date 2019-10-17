@@ -72,6 +72,12 @@ class MessageForm extends React.Component {
             <option value="VISIT_WEB">Visit website</option>
           </Select>
         </div>
+        {/* Url to visit */}
+        {formData.quickAction === 'VISIT_WEB' && <div className="form-group">
+          <div className="form-label">Url to visit</div>
+          <Input placeholder="Enter website url" name="urlToVisit" disabled={this.isView()}
+            value={formData.urlToVisit} onChange={onChange}/>
+        </div>}
       </div>
     </div>;
   }
@@ -91,6 +97,7 @@ class MessageForm extends React.Component {
           <option value="CARD">Card</option>
           <option value="MODAL">Modal</option>
           <option value="PUSH">Push notification</option>
+          <option value="EMAIL">Email</option>
         </Select>
       </div>
       {/* Send to */}

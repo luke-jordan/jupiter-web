@@ -11,7 +11,10 @@ export class MessagesService {
     return this.apiService.get(`${this.url}/message/instruct/list`, {
       sendToken: true, params
     }).pipe(
-      tap(messages => messages.forEach(this._modifyMessage))
+      tap(messages => {
+        messages.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+        messages.forEach(this._modifyMessage);
+      })
     );
   }
 
@@ -42,21 +45,22 @@ export class MessagesService {
   }
 
   _modifyMessage = (message) => {
-    message.presentationTypeName = {
+    message.presentationTypeText = {
       RECURRING: 'Recurring',
       EVENT_DRIVEN: 'Event-Driven',
       ONCE_OFF: 'Once-Off'
     }[message.presentationType] || '';
 
-    message.format = {
+    message.displayTypeText = {
       CARD: 'Card',
       MODAL: 'Modal',
-      PUSH: 'Push notification'
+      PUSH: 'Push notification',
+      EMAIL: 'Email'
     }[message.templates.template.DEFAULT.display.type] || '';
 
-    message.displayStartTime = moment(message.startTime).format('DD/MM/YY hh:mmA');
+    message.startTimeText = moment(message.startTime).format('DD/MM/YY hh:mmA');
 
     const endTime = moment(message.endTime);
-    message.displayEndTime = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
+    message.endTimeText = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
   }
 }
