@@ -9,7 +9,7 @@ export class UsersService {
   }
 
   getUsersCount(params) {
-    return this.apiService.get(`${this.url}/user`, {
+    return this.apiService.get(`${this.url}/user/count`, {
       sendToken: true, params
     }).pipe(
       map(res => +res.userCount)
