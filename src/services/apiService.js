@@ -43,8 +43,10 @@ export class ApiService {
     options = Object.assign({}, this.defaultOptions, options);
     options.headers = Object.assign({}, options.headers);
 
-    if (options.sendToken && this.authService.user) {
-      options.headers['Authorization'] = `Bearer ${this.authService.user.token}`;
+    const user = this.authService.user.value;
+
+    if (options.sendToken && user) {
+      options.headers['Authorization'] = `Bearer ${user.token}`;
     }
 
     if (options.convertBodyToJson) {

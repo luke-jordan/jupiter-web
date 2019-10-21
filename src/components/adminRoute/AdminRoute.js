@@ -8,13 +8,14 @@ const AdminRoute = ({ component: Component, ...rest }) => {
 
   return <Route {...rest} render={props => {
     const isLoginPath = /^\/login/.test(props.location.pathname);
+    const user = authService.user.value;
 
-    if (isLoginPath && authService.user) {
+    if (isLoginPath && user) {
       // redirect to home page if user already logged in
       return <Redirect to="/"/>;
     }
 
-    if (!isLoginPath && !authService.user) {
+    if (!isLoginPath && !user) {
       // redirect to login page if user is not logged yet
       return <Redirect to="/login"/>;
     }

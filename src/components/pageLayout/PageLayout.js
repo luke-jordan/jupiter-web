@@ -17,7 +17,7 @@ class PageLayout extends React.Component {
   }
 
   componentDidMount() {
-    this.authService.user$.pipe(
+    this.authService.user.pipe(
       takeUntil(this.unmount$)
     ).subscribe(user => this.setState({ user }));
   }

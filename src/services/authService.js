@@ -9,8 +9,7 @@ export class AuthService {
     this.historyService = historyService;
     this.url = process.env.REACT_APP_AUTH_URL;
 
-    this._getCurrentUser();
-    this.user$ = new BehaviorSubject(this.user);
+    this.user = new BehaviorSubject(this._getCurrentUser());
   }
 
   login(data) {
@@ -36,25 +35,25 @@ export class AuthService {
 
   _getCurrentUser() {
     try {
-      this.user = JSON.parse(localStorage.getItem(this.userKey));
+      return JSON.parse(localStorage.getItem(this.userKey));
     } catch {
-      this.user = null;
+      return null;
     }
   }
 
   _setCurrentUser(data) {
     if (data) {
-      this.user = {
+      const user = {
         token: data.token,
         profile: data.profile,
         systemWideUserId: data.systemWideUserId
       };
-      localStorage.setItem(this.userKey, JSON.stringify(this.user));
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+      this.user.next(user);
     } else {
-      this.user = null;
       localStorage.removeItem(this.userKey);
+      this.user.next(null);
     }
 
-    this.user$.next(this.user);
   }
 }
