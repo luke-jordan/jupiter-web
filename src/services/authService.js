@@ -54,6 +54,5 @@ export class AuthService {
       localStorage.removeItem(this.userKey);
       this.user.next(null);
     }
-
   }
 }

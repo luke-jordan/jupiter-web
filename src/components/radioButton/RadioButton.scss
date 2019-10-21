@@ -1,0 +1,35 @@
+@import 'styles/common';
+
+.base-input.radio {
+  display: inline-block;
+  .radio-inner {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  .radio-icon {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: 2px solid $color-purple;
+    border-radius: 100%;
+  }
+  .radio-text {
+    font-size: 14px;
+    color: $color-grey2;
+    padding: 0 8px;
+  }
+  input[type="radio"] {
+    display: none;
+  }
+  input[type="radio"]:checked + .radio-icon:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    border-radius: 100%;
+    background-color: $color-purple;
+  }
+}

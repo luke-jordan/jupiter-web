@@ -1,6 +1,7 @@
 @import 'styles/common';
 
 .base-input.checkbox {
+  display: inline-block;
   .checkbox-inner {
     display: inline-flex;
     align-items: center;

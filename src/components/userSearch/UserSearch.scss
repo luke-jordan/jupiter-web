@@ -1,7 +1,6 @@
 @import 'styles/common';
 
 .user-search {
-  padding: 70px 0;
   text-align: center;
   .manage-users {
     font-size: 20px;
@@ -11,6 +10,19 @@
     font-size: 14px;
     color: $color-grey2;
     padding: 10px 0;
+  }
+  .search-by {
+    margin-bottom: 8px;
+    .radio {
+      margin: 0 5px;
+      .radio-icon {
+        width: 18px;
+        height: 18px;
+      }
+      .radio-text {
+        padding: 0 6px;
+      }
+    }
   }
   .input-group {
     max-width: 650px;
