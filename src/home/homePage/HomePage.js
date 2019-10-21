@@ -26,7 +26,7 @@ class HomePage extends React.Component {
   }
 
   searchUser = data => {
-    this.historyService.push(`/users?${new URLSearchParams(data)}`);
+    this.historyService.push(`/users/details?${new URLSearchParams(data)}`);
   }
 }
 

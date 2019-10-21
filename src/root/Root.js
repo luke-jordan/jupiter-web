@@ -8,8 +8,8 @@ import LoginPage from 'login/loginPage/LoginPage';
 import HomePage from 'home/homePage/HomePage';
 import MessagesPage from 'messages/messagesPage/MessagesPage';
 import BoostsPage from 'boosts/boostsPage/BoostsPage';
+import UsersPage from 'users/usersPage/UsersPage';
 
-const UsersPage = () => 'Users page';
 const ClientsAndFloatsPage = () => 'Clients and floats page';
 const NotFoundPage = () => 'Page not exit'
 

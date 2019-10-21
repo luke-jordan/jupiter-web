@@ -3,6 +3,7 @@ import React from 'react';
 import Input from 'components/input/Input';
 
 import RadioButton from 'components/radioButton/RadioButton';
+import { inject } from 'utils';
 
 import './UserSearch.scss';
 
@@ -17,8 +18,13 @@ class UserSearch extends React.Component {
 
   constructor() {
     super();
+    this.historyService = inject('HistoryService');
+
+    const params = new URLSearchParams(this.historyService.location.search);
+
     this.state = {
-      search: '', searchBy: 'emailAddress'
+      search: params.get('search') || '',
+      searchBy: params.get('searchBy') || 'emailAddress'
     };
   }
 
@@ -39,7 +45,7 @@ class UserSearch extends React.Component {
       </div>
       <div className="input-group">
         <Input value={this.state.search} onChange={this.inputChange} name="search"
-          placeholder={option ? option.placeholder : 'Search'}/>
+          placeholder={option ? option.placeholder : 'Search'} autocomplete="off"/>
         <button className="button" onClick={this.searchClick}>Search</button>
       </div>
     </div>;
