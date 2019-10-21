@@ -36,4 +36,14 @@ export class UsersService {
       })
     );
   }
+
+  searchUser(params) {
+    if (params.nationalId) {
+      params = Object.assign({}, params, { countryCode: 'ZAF' });
+    }
+
+    return this.apiService.get(`${this.url}/user/find`, {
+      sendToken: true, params
+    });
+  }
 }

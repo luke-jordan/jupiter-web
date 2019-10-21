@@ -7,48 +7,54 @@ import { inject } from 'utils';
 
 import './UserSearch.scss';
 
-class UserSearch extends React.Component {
-  options = [{
-    text: 'Email address', placeholder: 'Enter email address', value: 'emailAddress'
-  }, {
-    text: 'Phone number', placeholder: 'Enter phone number', value: 'phoneNumber'
-  }, {
-    text: 'National ID', placeholder: 'Enter national ID', value: 'nationalId'
-  }];
+const searchTypes = [{
+  text: 'Email address', value: 'emailAddress',
+  placeholder: 'Enter email address'
+}, {
+  text: 'Phone number', value: 'phoneNumber',
+  placeholder: 'Enter phone number'
+}, {
+  text: 'National ID', value: 'nationalId',
+  placeholder: 'Enter national ID', 
+}];
 
+class UserSearch extends React.Component {
   constructor() {
     super();
     this.historyService = inject('HistoryService');
 
-    const params = new URLSearchParams(this.historyService.location.search);
+    this.state = this.getDataFromSearchParams();
 
-    this.state = {
-      search: params.get('search') || '',
-      searchBy: params.get('searchBy') || 'emailAddress'
-    };
+    this.unlistenHistory = this.historyService.listen(() => {
+      this.setState(this.getDataFromSearchParams());
+    });
+  }
+
+  componentWillUnmount() {
+    this.unlistenHistory();
   }
 
   render() {
     const state = this.state;
-    const option = this.options.find(item => item.value === state.searchBy);
+    const selectedOption = searchTypes.find(item => item.value === state.searchType);
 
-    return <div className="user-search">
+    return <form className="user-search" onSubmit={this.submit} autoComplete="off">
       <div className="manage-users">Manage Users</div>
       <div className="manage-description">To manage a user enter one of their following details below:</div>
       <div className="search-by">
-        {this.options.map((item, index) => {
-          return <RadioButton key={index} name="searchBy" checked={state.searchBy === item.value}
+        {searchTypes.map((item, index) => {
+          return <RadioButton key={index} name="searchType" checked={state.searchType === item.value}
             value={item.value} onChange={this.inputChange}>
             {item.text}
           </RadioButton>
         })}
       </div>
       <div className="input-group">
-        <Input value={this.state.search} onChange={this.inputChange} name="search"
-          placeholder={option ? option.placeholder : 'Search'} autocomplete="off"/>
-        <button className="button" onClick={this.searchClick}>Search</button>
+        <Input value={this.state.searchValue} onChange={this.inputChange} name="searchValue"
+          placeholder={selectedOption ? selectedOption.placeholder : 'Search'}/>
+        <button className="button">Search</button>
       </div>
-    </div>;
+    </form>;
   }
 
   inputChange = event => {
@@ -56,11 +62,21 @@ class UserSearch extends React.Component {
     this.setState({ [name]: value });
   }
 
-  searchClick = () => {
-    const { state, props } = this;
-    if (state.search && props.onSearch) {
-      props.onSearch({ search: state.search, searchBy: state.searchBy });
+  submit = event => {
+    event.preventDefault();
+    const { searchValue, searchType } = this.state;
+    if (searchValue) {
+      const params = new URLSearchParams({ searchValue, searchType });
+      this.historyService.push(`/users?${params}`);
     }
+  }
+
+  getDataFromSearchParams() {
+    const params = new URLSearchParams(this.historyService.location.search);
+    return {
+      searchValue: params.get('searchValue') || '',
+      searchType: params.get('searchType') || 'emailAddress'
+    };
   }
 }
 
