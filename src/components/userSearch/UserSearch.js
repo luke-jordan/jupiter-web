@@ -23,10 +23,10 @@ class UserSearch extends React.Component {
     super();
     this.historyService = inject('HistoryService');
 
-    this.state = this.getDataFromSearchParams();
+    this.state = this.getSearchData();
 
     this.unlistenHistory = this.historyService.listen(() => {
-      this.setState(this.getDataFromSearchParams());
+      this.setState(this.getSearchData());
     });
   }
 
@@ -71,7 +71,7 @@ class UserSearch extends React.Component {
     }
   }
 
-  getDataFromSearchParams() {
+  getSearchData() {
     const params = new URLSearchParams(this.historyService.location.search);
     return {
       searchValue: params.get('searchValue') || '',
