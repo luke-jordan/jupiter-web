@@ -1,0 +1,16 @@
+@import 'styles/common';
+
+.user-search-result {
+  .user-search .manage-users {
+    font-size: 22px;
+  }
+  .user-found {
+    font-size: 14px;
+    color: $color-grey2;
+    margin-bottom: 15px;
+  }
+  .user-not-found {
+    font-size: 14px;
+    color: $color-red2;
+  }
+}

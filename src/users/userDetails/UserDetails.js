@@ -1,77 +1,75 @@
 import React from 'react';
-import { takeUntil } from 'rxjs/operators';
+import { NavLink } from 'react-router-dom';
 
-import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
-import UserSearch from 'components/userSearch/UserSearch';
-import Spinner from 'components/spinner/Spinner';
-import { inject, unmountDecorator } from 'utils';
+import { inject } from 'utils';
 
 import './UserDetails.scss';
+import userIcon from 'assets/images/user-circle-blue.svg';
+import arrowRightWhite from 'assets/images/arrow-right-white.svg';
 
 class UserDetails extends React.Component {
   constructor() {
     super();
     this.historyService = inject('HistoryService');
-    this.usersService = inject('UsersService');
-
-    this.state = {
-      loading: false,
-      user: null,
-      blank: false
-    };
-
-    unmountDecorator(this);
   }
 
   render() {
-    return <div className="user-details">
-      <PageBreadcrumb link={{ to: '/', text: 'Home' }} title={<UserSearch/>}/>
-      <div className="page-content">{this.renderContent()}</div>
+    return <div className="user-details card">
+      {this.renderHeader()}
+      <div className="card-body">
+        {this.renderPendingTransactions()}
+      </div>
     </div>;
   }
 
-  renderContent() {
-    const state = this.state;
-    if (state.blank) {
-      return null;
-    } else if (state.loading) {
-      return <div className="text-center"><Spinner/></div>;
-    } else if (state.user) {
-      return <pre>{JSON.stringify(state.user, null, 2)}</pre>;
-    } else {
-      return <div className="user-not-found">USER NOT FOUND: Please check the user details and try again</div>;
-    }
+  renderHeader() {
+    const user = this.props.user;
+    return <div className="card-header">
+      <div className="user-icon">
+        <img className="user-image" src={userIcon} alt="user"/>
+        <div className="user-name">
+          <div className="user-name-text">{user.fullNameText}</div>
+          <div className="user-start-date">{user.sinceDateText}</div>
+        </div>
+      </div>
+      <div className="user-balance">
+        <div className="balance-label">Total jupiter balance</div>
+        <div className="balance-value">{user.userBalance.currentBalance.amountMoney}</div>
+      </div>
+    </div>;
   }
 
-  componentDidMount() {
-    this.getUserDetails();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.location.search !== prevProps.location.search) {
-      this.getUserDetails();
-    }
-  }
-
-  getUserDetails() {
-    const params = new URLSearchParams(this.props.location.search);
-    const searchValue = params.get('searchValue');
-    const searchType = params.get('searchType');
-
-    if (!searchValue) {
-      this.setState({ blank: true });
-      return;
-    }
-
-    this.setState({ loading: true, blank: false });
-
-    this.usersService.searchUser({ [searchType]: searchValue }).pipe(
-      takeUntil(this.unmount)
-    ).subscribe(user => {
-      this.setState({ loading: false, user });
-    }, () => {
-      this.setState({ loading: false, user: null });
+  renderPendingTransactions() {
+    const rows = this.props.user.pendingTransactions.map(transaction => {
+      return <tr key={transaction.transactionId}>
+        <td>{transaction.creationTimeText}</td>
+        <td>{transaction.amountMoney}</td>
+        <td className="transaction-buttons">
+          <button className="button button-outline button-small">Mark as received</button>
+          <button className="button button-outline button-small">Cancel</button>
+        </td>
+      </tr>;
     });
+
+    return <div className="user-transactions">
+      <header className="transactions-header">Pending EFT Transactions</header>
+      <table className="table">
+        <thead>
+          <tr>
+            <th style={{width: 150}}>Date</th>
+            <th style={{width: 150}}>EFT amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
+      </table>
+      <NavLink className="button view-history"
+        to={{ pathname: '/users/history', search: this.historyService.location.search }}>
+        View user history <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
+      </NavLink> 
+    </div>;
   }
 }
 

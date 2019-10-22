@@ -1,6 +1,8 @@
 import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
+
+import { convertAmount, formatMoney } from 'utils';
 
 export class UsersService {
   constructor(apiService) {
@@ -44,6 +46,26 @@ export class UsersService {
 
     return this.apiService.get(`${this.url}/user/find`, {
       sendToken: true, params
-    });
+    }).pipe(
+      tap(user => {
+        this._modifyUser(user);
+        user.pendingTransactions.forEach(transaction => this._modifyUserTransaction(transaction));
+      })
+    );
+  }
+
+  _modifyUser(user) {
+    user.fullNameText = `${user.personalName} ${user.familyName}`;
+    user.sinceDateText = `User since ${moment(user.creationTimeEpochMillis).format('MMM YYYY')}`;
+
+    const currentBalance = user.userBalance.currentBalance;
+    currentBalance.amountValue = convertAmount(currentBalance.amount, currentBalance.unit);
+    currentBalance.amountMoney = formatMoney(currentBalance.amountValue, currentBalance.currency);
+  }
+
+  _modifyUserTransaction(transaction) {
+    transaction.amountValue = convertAmount(transaction.amount, transaction.unit);
+    transaction.amountMoney = formatMoney(transaction.amountValue, transaction.currency);
+    transaction.creationTimeText = moment(transaction.creationTime).format('DD/MM/YYYY');
   }
 }
