@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { inject } from 'utils';
+import { inject, tempStorage } from 'utils';
 
 import './UserDetails.scss';
 import userIcon from 'assets/images/user-circle-blue.svg';
@@ -65,11 +65,15 @@ class UserDetails extends React.Component {
           {rows}
         </tbody>
       </table>
-      <NavLink className="button view-history"
+      <NavLink className="button view-history" onClick={this.saveHistoryToTempStorage}
         to={{ pathname: '/users/history', search: this.historyService.location.search }}>
         View user history <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
       </NavLink> 
     </div>;
+  }
+
+  saveHistoryToTempStorage = () => {
+    tempStorage.set('user-history', this.props.user);
   }
 }
 

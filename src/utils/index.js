@@ -58,3 +58,15 @@ export const unmountDecorator = (instance) => {
     this.unmount.complete();
   }
 }
+
+export const tempStorage = {
+  _map: new Map(),
+  set: function(key, value) {
+    this._map.set(key, value)
+  },
+  take: function(key) {
+    const value = this._map.get(key);
+    this._map.delete(key);
+    return value;
+  }
+};

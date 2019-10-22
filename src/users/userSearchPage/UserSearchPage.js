@@ -7,11 +7,12 @@ import Spinner from 'components/spinner/Spinner';
 import { inject, unmountDecorator } from 'utils';
 import UserDetails from '../userDetails/UserDetails';
 
-import './UserSearchResult.scss';
+import './UserSearchPage.scss';
 
-class UserSearchResult extends React.Component {
+class UserSearchPage extends React.Component {
   constructor() {
     super();
+    
     this.historyService = inject('HistoryService');
     this.usersService = inject('UsersService');
 
@@ -25,7 +26,7 @@ class UserSearchResult extends React.Component {
   }
 
   render() {
-    return <div className="user-search-result">
+    return <div className="user-search-page">
       <PageBreadcrumb link={{ to: '/', text: 'Home' }} title={<UserSearch/>}/>
       <div className="page-content">{this.renderContent()}</div>
     </div>;
@@ -48,21 +49,21 @@ class UserSearchResult extends React.Component {
   }
 
   componentDidMount() {
-    this.getUserDetails();
+    this.loadUserDetails();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.location.search !== prevProps.location.search) {
-      this.getUserDetails();
+      this.loadUserDetails();
     }
   }
 
-  getUserDetails() {
+  loadUserDetails() {
     const params = new URLSearchParams(this.props.location.search);
     const searchValue = params.get('searchValue');
     const searchType = params.get('searchType');
 
-    if (!searchValue) {
+    if (!searchValue || !searchType) {
       this.setState({ blank: true });
       return;
     }
@@ -79,4 +80,4 @@ class UserSearchResult extends React.Component {
   }
 }
 
-export default UserSearchResult;
+export default UserSearchPage;
