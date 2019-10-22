@@ -34,7 +34,7 @@ class MessageForm extends React.Component {
   }
 
   render() {
-    return <form className="message-form" onSubmit={this.props.onSubmit} autoComplete="off">
+    return <form className="message-form" onSubmit={this.props.onSubmit}>
       <div className="grid-row">
         {this.renderDetails()}
         {this.renderConditions()}

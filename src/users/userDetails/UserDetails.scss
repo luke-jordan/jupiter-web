@@ -4,47 +4,6 @@
   border: 1px solid $color-silver;
   border-radius: 0;
   box-shadow: none;
-  .card-header {
-    display: flex;
-    line-height: 1;
-    .user-icon {
-      flex: 1;
-      text-align: left;
-      display: flex;
-    }
-    .user-name {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      padding-left: 10px;
-      .user-name-text {
-        font-size: 16px;
-        font-weight: 600;
-        color: $color-grey;
-      }
-      .user-start-date {
-        font-size: 12px;
-        color: $color-grey2;
-      }
-    }
-    .user-balance {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      font-weight: 600;
-      text-align: right;
-      .balance-label {
-        color: $color-blue;
-        font-size: 12px;
-        text-transform: uppercase;
-      }
-      .balance-value {
-        color: $color-grey;
-        font-size: 20px;
-      }
-    }
-  }
-
   .user-transactions {
     position: relative;
     .table {

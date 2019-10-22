@@ -38,7 +38,7 @@ class UserSearch extends React.Component {
     const state = this.state;
     const selectedOption = searchTypes.find(item => item.value === state.searchType);
 
-    return <form className="user-search" onSubmit={this.submit} autoComplete="off">
+    return <form className="user-search" onSubmit={this.submit}>
       <div className="manage-users">Manage Users</div>
       <div className="manage-description">To manage a user enter one of their following details below:</div>
       <div className="search-by">

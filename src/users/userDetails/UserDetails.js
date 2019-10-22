@@ -2,9 +2,9 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { inject, tempStorage } from 'utils';
+import UserWithBalance from '../userWithBalance/UserWithBalance';
 
 import './UserDetails.scss';
-import userIcon from 'assets/images/user-circle-blue.svg';
 import arrowRightWhite from 'assets/images/arrow-right-white.svg';
 
 class UserDetails extends React.Component {
@@ -15,26 +15,11 @@ class UserDetails extends React.Component {
 
   render() {
     return <div className="user-details card">
-      {this.renderHeader()}
+      <div className="card-header">
+        <UserWithBalance user={this.props.user}/>
+      </div>
       <div className="card-body">
         {this.renderPendingTransactions()}
-      </div>
-    </div>;
-  }
-
-  renderHeader() {
-    const user = this.props.user;
-    return <div className="card-header">
-      <div className="user-icon">
-        <img className="user-image" src={userIcon} alt="user"/>
-        <div className="user-name">
-          <div className="user-name-text">{user.fullName}</div>
-          <div className="user-start-date">User since {user.formattedStartDate}</div>
-        </div>
-      </div>
-      <div className="user-balance">
-        <div className="balance-label">Total jupiter balance</div>
-        <div className="balance-value">{user.userBalance.currentBalance.amountMoney}</div>
       </div>
     </div>;
   }
@@ -62,7 +47,7 @@ class UserDetails extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {rows}
+          {rows.length ? rows : <tr><td colSpan="3" className="no-data">No transactions</td></tr>}
         </tbody>
       </table>
       <NavLink className="button view-history" onClick={this.saveHistoryToTempStorage}

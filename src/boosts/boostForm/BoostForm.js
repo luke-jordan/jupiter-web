@@ -21,7 +21,7 @@ class BoostForm extends React.Component {
 
   render() {
     const props = this.props;
-    return <form className="boost-form" onSubmit={props.onSubmit} autoComplete="off">
+    return <form className="boost-form" onSubmit={props.onSubmit}>
       {this.renderDetails()}
       {this.renderConditions()}
       {this.renderAudienceSelection()}
