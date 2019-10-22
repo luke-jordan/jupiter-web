@@ -28,7 +28,7 @@ class BoostsList extends React.Component {
 
   componentDidMount() {
     this.boostsService.getBoosts().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(boosts => {
       this.setState({ boosts, loading: false });
     });

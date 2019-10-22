@@ -63,7 +63,7 @@ class MessageEdit extends React.Component {
 
     const id = this.props.match.params.id;
     this.messagesService.getMessage(id).pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(message => {
       this.setState({
         formData: this.messageToFormData(message),
@@ -105,7 +105,7 @@ class MessageEdit extends React.Component {
     this.setState({ loading: true });
 
     obs.pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(() => {
       this.setState({ loading: false });
       this.historyService.push('/messages');

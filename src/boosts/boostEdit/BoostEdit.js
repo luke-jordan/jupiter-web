@@ -62,7 +62,7 @@ class BoostEdit extends React.Component {
 
   componentDidMount() {
     this.clientsService.getClients().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(clients => {
       const floats = clients.length ? clients[0].floats : [];
       this.setState({ floats, loading: false });
@@ -100,7 +100,7 @@ class BoostEdit extends React.Component {
     this.setState({ loading: true });
 
     obs.pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(() => {
       this.setState({ loading: false });
       this.historyService.push('/boosts');

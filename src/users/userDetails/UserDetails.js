@@ -66,7 +66,7 @@ class UserDetails extends React.Component {
     this.setState({ loading: true, blank: false });
 
     this.usersService.searchUser({ [searchType]: searchValue }).pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(user => {
       this.setState({ loading: false, user });
     }, () => {

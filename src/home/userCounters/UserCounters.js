@@ -35,13 +35,13 @@ export class UserCounters extends React.Component {
 
   componentDidMount() {
     this.usersService.getUsersCount().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(totalCount => {
       this.setState({ totalCount, totalLoading: false });
     });
 
     this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(res => {
       this.setState({
         todayDailyCount: res.dailyCount,
@@ -51,7 +51,7 @@ export class UserCounters extends React.Component {
     });
 
     this.usersService.getDailyWeeklyUsersCount(this.state.todayDate).pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(res => {
       this.setState({
         yesterdayDailyCount: res.dailyCount,

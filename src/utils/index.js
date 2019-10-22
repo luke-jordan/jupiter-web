@@ -44,17 +44,17 @@ export const formatMoney = (amount, currencyCode) => {
 }
 
 export const unmountDecorator = (instance) => {
-  if (instance.$unmount) {
+  if (instance.unmount) {
     throw Error('Unmount decorator can be applied only once');
   }
 
   const unmountFn = instance.componentWillUnmount;
-  instance.unmount$ = new Subject();
+  instance.unmount = new Subject();
   instance.componentWillUnmount = function() {
     if (unmountFn) {
       unmountFn.apply(this, arguments);
     }
-    this.unmount$.next();
-    this.unmount$.complete();
+    this.unmount.next();
+    this.unmount.complete();
   }
 }

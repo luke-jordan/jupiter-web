@@ -31,13 +31,13 @@ class DataCounters extends React.Component {
 
   componentDidMount() {
     this.boostsService.getActiveBoostsCount().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(boostsCount => {
       this.setState({ boostsCount, boostsLoading: false });
     });
 
     this.messagesService.getActiveMessagesCount().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(messagesCount => {
       this.setState({ messagesCount, messagesLoading: false });
     });

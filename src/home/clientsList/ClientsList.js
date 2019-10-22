@@ -22,7 +22,7 @@ class ClientsList extends React.Component {
 
   componentDidMount() {
     this.clientsService.getClients().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(clients => {
       this.setState({ clients: clients, loading: false });
     });

@@ -32,7 +32,7 @@ class MessagesList extends React.Component {
 
   componentDidMount() {
     this.messagesService.getMessages().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(messages => {
       this.setState({ messages, loading: false });
     });
@@ -154,7 +154,7 @@ class MessagesList extends React.Component {
       })
     ).pipe(
       mergeMap(() => this.messagesService.getMessages()),
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(messages => {
       this.setState({ messages, loading: false });
     });

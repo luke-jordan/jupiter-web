@@ -19,7 +19,7 @@ class DropdownMenu extends React.Component {
   }
 
   componentDidMount() {
-    windowClick$.pipe(takeUntil(this.unmount$)).subscribe(this.windowClick);
+    windowClick$.pipe(takeUntil(this.unmount)).subscribe(this.windowClick);
   }
 
   render() {

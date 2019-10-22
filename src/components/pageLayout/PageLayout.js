@@ -18,7 +18,7 @@ class PageLayout extends React.Component {
 
   componentDidMount() {
     this.authService.user.pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe(user => this.setState({ user }));
   }
 
@@ -59,7 +59,7 @@ class PageLayout extends React.Component {
 
   logoutClick = () => {
     this.authService.logout().pipe(
-      takeUntil(this.unmount$)
+      takeUntil(this.unmount)
     ).subscribe();
   }
 }
