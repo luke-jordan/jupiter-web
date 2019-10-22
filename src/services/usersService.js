@@ -5,6 +5,16 @@ import moment from 'moment';
 import { convertAmount, formatMoney } from 'utils';
 
 export class UsersService {
+  historyEventTypes = {
+    USER_LOGIN: 'User logged in',
+    SAVING_PAYMENT_SUCCESSFUL: 'Saving payment successful',
+    WITHDRAWAL_EVENT_CONFIRMED: 'Withdrawal confirmed',
+    WITHDRAWAL_COMPLETED: 'Withdrawal completed',
+    PASSWORD_SET: 'Password changed',
+    USER_REGISTERED: 'Profile created',
+    STATUS_CHANGED: 'User status changed'
+  };
+
   constructor(apiService) {
     this.apiService = apiService;
     this.url = process.env.REACT_APP_ADMIN_URL;
@@ -47,25 +57,30 @@ export class UsersService {
     return this.apiService.get(`${this.url}/user/find`, {
       sendToken: true, params
     }).pipe(
-      tap(user => {
-        this._modifyUser(user);
-        user.pendingTransactions.forEach(transaction => this._modifyUserTransaction(transaction));
-      })
+      tap(user => this._modifyUser(user))
     );
   }
 
   _modifyUser(user) {
-    user.fullNameText = `${user.personalName} ${user.familyName}`;
-    user.sinceDateText = `User since ${moment(user.creationTimeEpochMillis).format('MMM YYYY')}`;
+    user.fullName = `${user.personalName} ${user.familyName}`;
+    user.formattedStartDate = moment(user.creationTimeEpochMillis).format('MMM YYYY');
 
     const currentBalance = user.userBalance.currentBalance;
     currentBalance.amountValue = convertAmount(currentBalance.amount, currentBalance.unit);
     currentBalance.amountMoney = formatMoney(currentBalance.amountValue, currentBalance.currency);
+
+    user.pendingTransactions.forEach(transaction => this._modifyUserTransaction(transaction));
+    user.userHistory.userEvents.forEach(history => this._modifyUserHistory(history));
   }
 
   _modifyUserTransaction(transaction) {
     transaction.amountValue = convertAmount(transaction.amount, transaction.unit);
     transaction.amountMoney = formatMoney(transaction.amountValue, transaction.currency);
-    transaction.creationTimeText = moment(transaction.creationTime).format('DD/MM/YYYY');
+    transaction.formattedCreationDate = moment(transaction.creationTime).format('DD/MM/YYYY');
+  }
+
+  _modifyUserHistory(history) {
+    history.eventTypeText = this.historyEventTypes[history.eventType] || history.eventType;
+    history.formattedDate = moment(history.timestamp).format('DD/MM/YYYY HH:mm');
   }
 }

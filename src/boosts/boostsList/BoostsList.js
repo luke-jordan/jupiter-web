@@ -100,8 +100,8 @@ class BoostsList extends React.Component {
       <td>{boost.boostTypeText}</td>
       <td>{boost.boostCategoryText}</td>
       <td>?</td>
-      <td className="text-center">{boost.startTimeText}</td>
-      <td className="text-center">{boost.endTimeText}</td>
+      <td className="text-center">{boost.formattedStartDate}</td>
+      <td className="text-center">{boost.formattedEndDate}</td>
       <td className="text-center">?</td>
       <td className="text-center">{boost.boostBudgetMoney}</td>
       <td className="text-center">{boost.boostRedeemedMoney}</td>

@@ -28,8 +28,8 @@ class UserDetails extends React.Component {
       <div className="user-icon">
         <img className="user-image" src={userIcon} alt="user"/>
         <div className="user-name">
-          <div className="user-name-text">{user.fullNameText}</div>
-          <div className="user-start-date">{user.sinceDateText}</div>
+          <div className="user-name-text">{user.fullName}</div>
+          <div className="user-start-date">User since {user.formattedStartDate}</div>
         </div>
       </div>
       <div className="user-balance">
@@ -42,7 +42,7 @@ class UserDetails extends React.Component {
   renderPendingTransactions() {
     const rows = this.props.user.pendingTransactions.map(transaction => {
       return <tr key={transaction.transactionId}>
-        <td>{transaction.creationTimeText}</td>
+        <td>{transaction.formattedCreationDate}</td>
         <td>{transaction.amountMoney}</td>
         <td className="transaction-buttons">
           <button className="button button-outline button-small">Mark as received</button>

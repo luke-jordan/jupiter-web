@@ -5,6 +5,15 @@ import moment from 'moment';
 import { convertAmount, formatMoney } from 'utils';
 
 export class BoostsService {
+  boostTypes = {
+    GAME: 'Game',
+    SIMPLE: 'Simple'
+  };
+
+  boostCategories = {
+    TIME_LIMITED: 'Time limited'
+  };
+
   constructor(apiService) {
     this.apiService = apiService;
     this.url = process.env.REACT_APP_ADMIN_URL;
@@ -36,19 +45,13 @@ export class BoostsService {
   }
 
   _modifyBoost = (boost) => {
-    boost.boostTypeText = {
-      GAME: 'Game',
-      SIMPLE: 'Simple'
-    }[boost.boostType];
+    boost.boostTypeText = this.boostTypes[boost.boostType] || boost.boostType;
+    boost.boostCategoryText = this.boostCategories[boost.boostCategory] || boost.boostCategory;
 
-    boost.boostCategoryText = {
-      TIME_LIMITED: 'Time limited'
-    }[boost.boostCategory];
+    boost.formattedStartDate = moment(boost.startTime).format('DD/MM/YY hh:mmA');
 
-    boost.startTimeText = moment(boost.startTime).format('DD/MM/YY hh:mmA');
-
-    const endTime = moment(boost.endTime);
-    boost.endTimeText = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
+    const endDate = moment(boost.endTime);
+    boost.formattedEndDate = endDate.isAfter(moment().add(10, 'years')) ? '--' : endDate.format('DD/MM/YY hh:mmA');
 
     boost.boostBudgetValue = convertAmount(boost.boostBudget, boost.boostUnit);
     boost.boostBudgetMoney = formatMoney(boost.boostBudgetValue, boost.boostCurrency);

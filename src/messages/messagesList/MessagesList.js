@@ -106,8 +106,8 @@ class MessagesList extends React.Component {
       <td>{message.presentationTypeText}</td>
       <td>{message.templates.template.DEFAULT.title}</td>
       <td>{message.displayTypeText}</td>
-      <td className="text-center">{message.startTimeText}</td>
-      <td className="text-center">{message.endTimeText}</td>
+      <td className="text-center">{message.formattedStartDate}</td>
+      <td className="text-center">{message.formattedEndDate}</td>
       <td className="text-center">{message.totalMessageCount}</td>
       <td className="text-center">{message.unfetchedMessageCount}</td>
       <td className="text-center">{message.messagePriority}</td>

@@ -2,6 +2,19 @@ import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
 export class MessagesService {
+  presentationTypes = {
+    RECURRING: 'Recurring',
+    EVENT_DRIVEN: 'Event-Driven',
+    ONCE_OFF: 'Once-Off'
+  };
+
+  displayTypes = {
+    CARD: 'Card',
+    MODAL: 'Modal',
+    PUSH: 'Push notification',
+    EMAIL: 'Email'
+  };
+
   constructor(apiService) {
     this.apiService = apiService;
     this.url = process.env.REACT_APP_ADMIN_URL;
@@ -45,22 +58,14 @@ export class MessagesService {
   }
 
   _modifyMessage = (message) => {
-    message.presentationTypeText = {
-      RECURRING: 'Recurring',
-      EVENT_DRIVEN: 'Event-Driven',
-      ONCE_OFF: 'Once-Off'
-    }[message.presentationType] || '';
+    message.presentationTypeText = this.presentationTypes[message.presentationType] || message.presentationType;
 
-    message.displayTypeText = {
-      CARD: 'Card',
-      MODAL: 'Modal',
-      PUSH: 'Push notification',
-      EMAIL: 'Email'
-    }[message.templates.template.DEFAULT.display.type] || '';
+    const displayType = message.templates.template.DEFAULT.display.type;
+    message.displayTypeText = this.displayTypes[displayType] || displayType;
 
-    message.startTimeText = moment(message.startTime).format('DD/MM/YY hh:mmA');
+    message.formattedStartDate = moment(message.startTime).format('DD/MM/YY hh:mmA');
 
-    const endTime = moment(message.endTime);
-    message.endTimeText = endTime.isAfter(moment().add(10, 'years')) ? '--' : endTime.format('DD/MM/YY hh:mmA');
+    const endDate = moment(message.endTime);
+    message.formattedEndDate = endDate.isAfter(moment().add(10, 'years')) ? '--' : endDate.format('DD/MM/YY hh:mmA');
   }
 }
