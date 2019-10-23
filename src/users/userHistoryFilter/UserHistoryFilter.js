@@ -1,8 +1,10 @@
 import React from 'react';
+import moment from 'moment';
 
 import { inject } from 'utils';
 import Tabs from 'components/tabs/Tabs';
 import Select from 'components/select/Select';
+import DatePicker from 'components/datePicker/DatePicker';
 
 import './UserHistoryFilter.scss';
 
@@ -29,7 +31,17 @@ class UserHistoryFilter extends React.Component {
               <option key={option.value} value={option.value}>{option.text}</option>)}
           </Select>
         </div>
-        <div className="grid-col perfomed-by">
+        <div className="grid-col">
+          <div className="filter-label">Start date:</div>
+          <DatePicker placeholderText="Select date"
+            selected={filter.startDate} onChange={this.startDateChange}/>
+        </div>
+        <div className="grid-col">
+          <div className="filter-label">End date:</div>
+          <DatePicker placeholderText="Select date"
+            selected={filter.endDate} onChange={this.endDateChange}/>
+        </div>
+        <div className="grid-col">
           <div className="filter-label">Performed by:</div>
           <Tabs tabs={this.performedByTabs} activeTab={filter.performedBy}
             onChange={this.performedByChange}/>
@@ -39,15 +51,20 @@ class UserHistoryFilter extends React.Component {
   }
 
   eventTypeChange = event => {
-    this.filterChanged({
-      ...this.props.filter, eventType: event.target.value
-    });
+    this.filterChanged({ ...this.props.filter, eventType: event.target.value });
+  }
+
+  startDateChange = value => {
+    this.filterChanged({ ...this.props.filter, startDate: value });
+  }
+
+  endDateChange = value => {
+    const endDate = value ? moment(value).endOf('day').toDate(): value;
+    this.filterChanged({ ...this.props.filter, endDate });
   }
 
   performedByChange = value => {
-    this.filterChanged({
-      ...this.props.filter, performedBy: value
-    });
+    this.filterChanged({ ...this.props.filter, performedBy: value });
   }
 
   filterChanged(newFilter) {

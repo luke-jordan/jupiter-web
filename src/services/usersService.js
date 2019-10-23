@@ -98,5 +98,6 @@ export class UsersService {
   _modifyUserHistory(history) {
     history.eventTypeText = this.historyEventTypes[history.eventType] || history.eventType;
     history.formattedDate = moment(history.timestamp).format('DD/MM/YYYY HH:mm');
+    history.date = new Date(history.timestamp);
   }
 }

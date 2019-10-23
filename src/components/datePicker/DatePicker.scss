@@ -1,0 +1,22 @@
+@import '~react-datepicker/dist/react-datepicker.css';
+
+.base-input.date-picker {
+  position: relative;
+  .react-datepicker-wrapper {
+    width: 100%;
+  }
+  .base-input {
+    padding-right: 30px;
+  }
+  .calendar-icon {
+    position: absolute;
+    top: calc(50% - 10px);
+    right: 12px;
+    cursor: pointer;
+  }
+  .date-clear {
+    text-align: center;
+    margin-top: -6px;
+    padding-bottom: 6px;
+  }
+}

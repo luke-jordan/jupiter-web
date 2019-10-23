@@ -23,7 +23,10 @@ class UserHistoryPage extends React.Component {
       user: null,
       userEvents: [],
       filter: {
-        eventType: 'ALL', performedBy: 'ALL'
+        eventType: 'ALL',
+        startDate: null,
+        endDate: null,
+        performedBy: 'ALL'
       },
       visibleCount: this.initialVisibleCount,
     };
@@ -145,6 +148,14 @@ class UserHistoryPage extends React.Component {
 
     if (filter.eventType !== 'ALL') {
       newState.userEvents = newState.userEvents.filter(event => event.eventType === filter.eventType);
+    }
+
+    if (filter.startDate) {
+      newState.userEvents = newState.userEvents.filter(event => event.date >= filter.startDate);
+    }
+
+    if (filter.endDate) {
+      newState.userEvents = newState.userEvents.filter(event => event.date <= filter.endDate);
     }
 
     if (filter.performedBy !== 'ALL') {
