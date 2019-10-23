@@ -1,0 +1,47 @@
+@import 'styles/common';
+
+.tabs {
+  display: flex;
+  flex-direction: row;
+  .tab {
+    @include flex-center;
+    flex: 1;
+    height: 50px;
+    position: relative;
+    border: 1px solid $color-silver;
+    border-left-width: 0;
+    border-right-width: 0;
+    padding: 15px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    color: $color-purple;
+    &:first-child {
+      border-left-width: 1px;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    &:last-child {
+      border-right-width: 1px;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    &:not(:first-child):not(.active):after {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: 0;
+      bottom: 15px;
+      width: 1px;
+      background-color: $color-purple;
+    }
+    &.active {
+      @include theme-gradient;
+      border-width: 0;
+      font-weight: 600;
+      color: $color-white;
+      & + .tab:after {
+        display: none;
+      }
+    }
+  }
+}

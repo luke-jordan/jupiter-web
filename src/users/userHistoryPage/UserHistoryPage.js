@@ -5,6 +5,7 @@ import { tempStorage, inject, unmountDecorator } from 'utils';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'components/spinner/Spinner';
 import Input from 'components/input/Input';
+import Tabs from 'components/tabs/Tabs';
 import UserWithBalance from '../userWithBalance/UserWithBalance';
 
 import './UserHistoryPage.scss';
@@ -69,17 +70,25 @@ class UserHistoryPage extends React.Component {
   }
 
   renderFilter() {
+    const filter = this.state.filter;
     return <div className="history-filter">
       <div className="grid-row">
         <div className="grid-col">
           <div className="filter-label">Filter by:</div>
-          <form className="input-group" onSubmit={this.filterEvents}>
+          <form className="input-group" onSubmit={e => { e.preventDefault(); this.filterEvents(); }}>
             <Input name="keyword" placeholder="Type keyword to filter"
-              value={this.state.filter.keyword} onChange={this.filterKeywordChange}/>
+              value={filter.keyword} onChange={this.filterKeywordChange}/>
             <button className="button">Filter</button>
           </form>
         </div>
-        <div className="grid-col">{/* performed by */}</div>
+        <div className="grid-col perfomed-tabs">
+          <div className="filter-label">Performed by:</div>
+          <Tabs tabs={[
+            { text: 'All', value: 'all' },
+            { text: 'User', value: 'user' },
+            { text: 'Admin', value: 'admin' }
+          ]} activeTab={filter.performed} onChange={this.filterPerformedChange}/>
+        </div>
       </div>
     </div>;
   }
@@ -149,15 +158,20 @@ class UserHistoryPage extends React.Component {
   filterKeywordChange = event => {
     this.setState({
       filter: {
-        ...this.state.filter,
-        keyword: event.target.value
+        ...this.state.filter, keyword: event.target.value
       }
     });
   }
 
-  filterEvents = event => {
-    event.preventDefault();
+  filterPerformedChange = value => {
+    this.setState({
+      filter: {
+        ...this.state.filter, performed: value
+      }
+    }, this.filterEvents);
+  }
 
+  filterEvents = () => {
     const state = this.state;
 
     const newState = {
