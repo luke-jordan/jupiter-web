@@ -5,35 +5,8 @@
     padding-bottom: 15px;
     border-bottom: 1px solid $color-silver;
   }
-
   .show-more-history {
     padding-top: 8px;
     text-align: center;
-  }
-
-  .history-filter {
-    margin: 18px 0;
-    .grid-col {
-      flex-direction: row;
-      align-items: center;
-    }
-    .filter-label {
-      padding-right: 10px;
-      color: $color-grey;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .input-group {
-      flex: 0 0 350px;
-    }
-    .perfomed-tabs {
-      .filter-label {
-        flex: 1;
-        text-align: right;
-      } 
-      .tabs {
-        flex: 0 0 300px;
-      }
-    }
   }
 }

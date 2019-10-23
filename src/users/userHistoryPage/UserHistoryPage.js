@@ -4,9 +4,8 @@ import { takeUntil } from 'rxjs/operators';
 import { tempStorage, inject, unmountDecorator } from 'utils';
 import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'components/spinner/Spinner';
-import Input from 'components/input/Input';
-import Tabs from 'components/tabs/Tabs';
 import UserWithBalance from '../userWithBalance/UserWithBalance';
+import UserHistoryFilter from '../userHistoryFilter/UserHistoryFilter';
 
 import './UserHistoryPage.scss';
 
@@ -24,7 +23,7 @@ class UserHistoryPage extends React.Component {
       user: null,
       userEvents: [],
       filter: {
-        keyword: '', performed: 'all'
+        eventType: 'ALL', performedBy: 'ALL'
       },
       visibleCount: this.initialVisibleCount,
     };
@@ -61,36 +60,12 @@ class UserHistoryPage extends React.Component {
     } else if (state.user) {
       return <>
         <UserWithBalance user={state.user}/>
-        {this.renderFilter()}
+        <UserHistoryFilter filter={state.filter} onChange={this.filterChange}/>
         {this.renderHistory()}
       </>;
     } else {
       return null;
     }
-  }
-
-  renderFilter() {
-    const filter = this.state.filter;
-    return <div className="history-filter">
-      <div className="grid-row">
-        <div className="grid-col">
-          <div className="filter-label">Filter by:</div>
-          <form className="input-group" onSubmit={e => { e.preventDefault(); this.filterEvents(); }}>
-            <Input name="keyword" placeholder="Type keyword to filter"
-              value={filter.keyword} onChange={this.filterKeywordChange}/>
-            <button className="button">Filter</button>
-          </form>
-        </div>
-        <div className="grid-col perfomed-tabs">
-          <div className="filter-label">Performed by:</div>
-          <Tabs tabs={[
-            { text: 'All', value: 'all' },
-            { text: 'User', value: 'user' },
-            { text: 'Admin', value: 'admin' }
-          ]} activeTab={filter.performed} onChange={this.filterPerformedChange}/>
-        </div>
-      </div>
-    </div>;
   }
 
   renderHistory() {
@@ -155,41 +130,24 @@ class UserHistoryPage extends React.Component {
     this.setState({ visibleCount: this.state.visibleCount + this.initialVisibleCount });
   }
 
-  filterKeywordChange = event => {
-    this.setState({
-      filter: {
-        ...this.state.filter, keyword: event.target.value
-      }
-    });
+  filterChange = filter => {
+    this.setState({ filter }, () => this.filterEvents());
   }
 
-  filterPerformedChange = value => {
-    this.setState({
-      filter: {
-        ...this.state.filter, performed: value
-      }
-    }, this.filterEvents);
-  }
-
-  filterEvents = () => {
+  filterEvents() {
     const state = this.state;
+    const filter = state.filter;
 
     const newState = {
       visibleCount: this.initialVisibleCount,
       userEvents: state.user.userHistory.userEvents.slice()
     };
 
-    if (state.filter.keyword) {
-      const keyword = state.filter.keyword.toLowerCase();
-      newState.userEvents = newState.userEvents.filter(event => {
-        return (
-          event.eventTypeText.toLowerCase().includes(keyword) ||
-          event.eventType.toLowerCase().includes(keyword)
-        );
-      });
+    if (filter.eventType !== 'ALL') {
+      newState.userEvents = newState.userEvents.filter(event => event.eventType === filter.eventType);
     }
 
-    if (state.filter.performed) {
+    if (filter.performedBy !== 'ALL') {
       // filter by performed
     }
 

@@ -61,6 +61,22 @@ export class UsersService {
     );
   }
 
+  getEventTypeOptions() {
+    const options = Object.entries(this.historyEventTypes)
+      .map(([value, text]) => ({ value, text }))
+      .sort((a, b) => {
+        if (a.text > b.text) {
+          return 1;
+        } else if (a.text < b.text) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+    options.unshift({ text: 'All', value: 'ALL' });
+    return options;
+  }
+
   _modifyUser(user) {
     user.fullName = `${user.personalName} ${user.familyName}`;
     user.formattedStartDate = moment(user.creationTimeEpochMillis).format('MMM YYYY');
