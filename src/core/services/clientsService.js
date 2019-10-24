@@ -12,7 +12,7 @@ export class ClientsService {
 
   getClients() {
     return forkJoin(
-      this.apiService.get(`${this.url}/client/fetch`, { sendToken: true }),
+      this.apiService.get(`${this.url}/client/list`, { sendToken: true }),
       this.dataService.getCountries()
     ).pipe(
       map(res => {
