@@ -9,6 +9,11 @@
     color: $color-grey2;
     margin-bottom: 15px;
   }
+  .user-details.card {
+    border: 1px solid $color-silver;
+    border-radius: 0;
+    box-shadow: none;
+  }
   .user-not-found {
     font-size: 14px;
     color: $color-red2;

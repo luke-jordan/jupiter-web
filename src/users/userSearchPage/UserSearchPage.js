@@ -5,7 +5,8 @@ import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
 import UserSearch from 'components/userSearch/UserSearch';
 import Spinner from 'components/spinner/Spinner';
 import { inject, unmountDecorator } from 'utils';
-import UserDetails from '../userDetails/UserDetails';
+import UserWithBalance from '../userWithBalance/UserWithBalance';
+import UserTransactions from '../userTransactions/UserTransactions';
 
 import './UserSearchPage.scss';
 
@@ -39,13 +40,25 @@ class UserSearchPage extends React.Component {
     } else if (state.loading) {
       return <div className="text-center"><Spinner/></div>;
     } else if (state.user) {
-      return <>
-        <div className="user-found">USER FOUND:</div>
-        <UserDetails user={state.user}/>
-      </>;
+      return this.renderUserDetails();
     } else {
       return <div className="user-not-found">USER NOT FOUND: Please check the user details and try again</div>;
     }
+  }
+
+  renderUserDetails() {
+    const state = this.state;
+    return <>
+      <div className="user-found">USER FOUND:</div>
+      <div className="card user-details">
+        <div className="card-header">
+          <UserWithBalance user={state.user}/>
+        </div>
+        <div className="card-body">
+          <UserTransactions user={state.user}/>
+        </div>
+      </div>
+    </>;
   }
 
   componentDidMount() {

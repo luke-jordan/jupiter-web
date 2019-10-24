@@ -50,8 +50,9 @@ class UserHistoryPage extends React.Component {
   }
 
   render() {
+    const userLink = `/users${this.historyService.location.search}`;
     return <div className="user-history-page">
-      <PageBreadcrumb link={{ to: '/', text: 'Home' }} title="User History"/>
+      <PageBreadcrumb link={{ to: userLink, text: 'User' }} title="User History"/>
       <div className="page-content">{this.renderContent()}</div>
     </div>;
   }

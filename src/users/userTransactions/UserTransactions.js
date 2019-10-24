@@ -2,29 +2,17 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { inject, tempStorage } from 'utils';
-import UserWithBalance from '../userWithBalance/UserWithBalance';
 
-import './UserDetails.scss';
+import './UserTransactions.scss';
 import arrowRightWhite from 'assets/images/arrow-right-white.svg';
 
-class UserDetails extends React.Component {
+class UserTransactions extends React.Component {
   constructor() {
     super();
     this.historyService = inject('HistoryService');
   }
 
   render() {
-    return <div className="user-details card">
-      <div className="card-header">
-        <UserWithBalance user={this.props.user}/>
-      </div>
-      <div className="card-body">
-        {this.renderPendingTransactions()}
-      </div>
-    </div>;
-  }
-
-  renderPendingTransactions() {
     const rows = this.props.user.pendingTransactions.map(transaction => {
       return <tr key={transaction.transactionId}>
         <td>{transaction.formattedCreationDate}</td>
@@ -62,4 +50,4 @@ class UserDetails extends React.Component {
   }
 }
 
-export default UserDetails;
+export default UserTransactions;
