@@ -1,9 +1,9 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { capitalize, unmountDecorator, inject } from 'utils';
-import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
-import Spinner from 'components/spinner/Spinner';
+import { capitalize, unmountDecorator, inject } from 'src/utils';
+import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
+import Spinner from 'src/components/spinner/Spinner';
 import MessageForm from '../messageForm/MessageForm';
 
 import './MessageEdit.scss';

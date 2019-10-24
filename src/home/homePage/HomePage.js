@@ -3,7 +3,7 @@ import React from 'react';
 import UserCounters from '../userCounters/UserCounters';
 import DataCounters from '../dataCounters/DataCounters';
 import ClientsList from '../clientsList/ClientsList';
-import UserSearch from 'components/userSearch/UserSearch';
+import UserSearch from 'src/components/userSearch/UserSearch';
 
 import './HomePage.scss';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { inject } from 'utils';
+import { inject } from 'src/utils';
 import LoginForm from '../loginForm/LoginForm';
 import OtpForm from '../otpForm/OtpForm';
 

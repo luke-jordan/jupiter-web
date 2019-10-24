@@ -1,10 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 
-import { inject } from 'utils';
-import Tabs from 'components/tabs/Tabs';
-import Select from 'components/select/Select';
-import DatePicker from 'components/datePicker/DatePicker';
+import { inject } from 'src/utils';
+import Tabs from 'src/components/tabs/Tabs';
+import Select from 'src/components/select/Select';
+import DatePicker from 'src/components/datePicker/DatePicker';
 
 import './UserHistoryFilter.scss';
 

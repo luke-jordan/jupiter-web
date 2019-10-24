@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Select from 'components/select/Select';
+import Select from 'src/components/select/Select';
 
 import './UserStatusForm.scss';
 

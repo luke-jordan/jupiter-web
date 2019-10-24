@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Spinner from 'components/spinner/Spinner';
-import Input from 'components/input/Input';
+import Spinner from 'src/components/spinner/Spinner';
+import Input from 'src/components/input/Input';
 
 import './OtpForm.scss';
 

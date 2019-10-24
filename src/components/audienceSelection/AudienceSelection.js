@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Input from 'components/input/Input';
-import Select from 'components/select/Select';
+import Input from 'src/components/input/Input';
+import Select from 'src/components/select/Select';
 
 import './AudienceSelection.scss';
 

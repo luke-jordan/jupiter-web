@@ -1,10 +1,10 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
-import UserSearch from 'components/userSearch/UserSearch';
-import Spinner from 'components/spinner/Spinner';
-import { inject, unmountDecorator } from 'utils';
+import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
+import UserSearch from 'src/components/userSearch/UserSearch';
+import Spinner from 'src/components/spinner/Spinner';
+import { inject, unmountDecorator } from 'src/utils';
 import UserWithBalance from '../userWithBalance/UserWithBalance';
 import UserStatusForm from '../userStatusForm/UserStatusForm';
 import UserTransactions from '../userTransactions/UserTransactions';

@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 import './Checkbox.scss';
-import checkBoxImg from 'assets/images/check-box.svg';
+import checkBoxImg from 'src/assets/images/check-box.svg';
 
 const Checkbox = props => {
   const rootClass = classNames('base-input checkbox', { disabled: props.disabled });

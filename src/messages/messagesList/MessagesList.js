@@ -4,15 +4,15 @@ import { forkJoin } from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 import classNames from 'classnames';
 
-import { inject, unmountDecorator } from 'utils';
-import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
-import DropdownMenu from 'components/dropdownMenu/DropdownMenu';
-import Spinner from 'components/spinner/Spinner';
-import Checkbox from 'components/checkbox/Checkbox';
+import { inject, unmountDecorator } from 'src/utils';
+import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
+import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
+import Spinner from 'src/components/spinner/Spinner';
+import Checkbox from 'src/components/checkbox/Checkbox';
 
 import './MessagesList.scss';
-import sortIcon from 'assets/images/sort-by.svg';
-import addIcon from 'assets/images/add.svg';
+import sortIcon from 'src/assets/images/sort-by.svg';
+import addIcon from 'src/assets/images/add.svg';
 
 class MessagesList extends React.Component {
   constructor() {

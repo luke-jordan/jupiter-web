@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import './PageBreadcrumb.scss';
-import arrowIcon from 'assets/images/arrow-left-silver.svg';
+import arrowIcon from 'src/assets/images/arrow-left-silver.svg';
 
 const PageBreadcrumb = props => {
   const link = props.link;

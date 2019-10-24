@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import moment from 'moment';
 
-import { convertAmount, formatMoney } from 'utils';
+import { convertAmount, formatMoney } from 'src/utils';
 
 export class BoostsService {
   boostTypes = {

@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { takeUntil } from 'rxjs/operators';
 
-import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
-import Spinner from 'components/spinner/Spinner';
-import Checkbox from 'components/checkbox/Checkbox';
-import { unmountDecorator, inject } from 'utils';
+import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
+import Spinner from 'src/components/spinner/Spinner';
+import Checkbox from 'src/components/checkbox/Checkbox';
+import { unmountDecorator, inject } from 'src/utils';
 
 import './BoostsList.scss';
-import addIcon from 'assets/images/add.svg';
+import addIcon from 'src/assets/images/add.svg';
 
 class BoostsList extends React.Component {
   constructor() {

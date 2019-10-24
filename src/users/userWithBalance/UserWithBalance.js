@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './UserWithBalance.scss';
-import userIcon from 'assets/images/user-circle-blue.svg';
+import userIcon from 'src/assets/images/user-circle-blue.svg';
 
 const UserWithBalance = props => {
   const user = props.user;

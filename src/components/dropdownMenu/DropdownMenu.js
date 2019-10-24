@@ -2,10 +2,10 @@ import React from 'react';
 import { fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { unmountDecorator, inject } from 'utils';
+import { unmountDecorator, inject } from 'src/utils';
 
 import './DropdownMenu.scss';
-import moreIcon from 'assets/images/more.svg';
+import moreIcon from 'src/assets/images/more.svg';
 
 const windowClick$ = fromEvent(window, 'click');
 

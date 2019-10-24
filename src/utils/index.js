@@ -1,7 +1,7 @@
 import currency from 'currency.js';
 import { Subject } from 'rxjs';
 
-import bottle from 'services/bottle';
+import bottle from 'src/services/bottle';
 
 export const inject = className => {
   if (className in bottle.container) {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { inject, tempStorage } from 'utils';
+import { inject, tempStorage } from 'src/utils';
 
 import './UserTransactions.scss';
-import arrowRightWhite from 'assets/images/arrow-right-white.svg';
+import arrowRightWhite from 'src/assets/images/arrow-right-white.svg';
 
 class UserTransactions extends React.Component {
   constructor() {

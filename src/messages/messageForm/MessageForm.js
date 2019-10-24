@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import Input from 'components/input/Input';
-import Select from 'components/select/Select';
-import TextArea from 'components/textArea/TextArea';
+import Input from 'src/components/input/Input';
+import Select from 'src/components/select/Select';
+import TextArea from 'src/components/textArea/TextArea';
 
 import './MessageForm.scss';
 

@@ -2,15 +2,15 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject, unmountDecorator } from 'utils';
-import Spinner from 'components/spinner/Spinner';
-import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
+import { inject, unmountDecorator } from 'src/utils';
+import Spinner from 'src/components/spinner/Spinner';
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 
 import './DataCounters.scss';
-import giftImage from 'assets/images/gift.svg';
-import addImage from 'assets/images/add.svg';
-import arrowRightPurple from 'assets/images/arrow-right-purple.svg';
-import letterImage from 'assets/images/letter.svg';
+import giftImage from 'src/assets/images/gift.svg';
+import addImage from 'src/assets/images/add.svg';
+import arrowRightPurple from 'src/assets/images/arrow-right-purple.svg';
+import letterImage from 'src/assets/images/letter.svg';
 
 class DataCounters extends React.Component {
   constructor() {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { tempStorage, inject, unmountDecorator } from 'utils';
-import PageBreadcrumb from 'components/pageBreadcrumb/PageBreadcrumb';
-import Spinner from 'components/spinner/Spinner';
+import { tempStorage, inject, unmountDecorator } from 'src/utils';
+import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
+import Spinner from 'src/components/spinner/Spinner';
 import UserWithBalance from '../userWithBalance/UserWithBalance';
 import UserHistoryFilter from '../userHistoryFilter/UserHistoryFilter';
 

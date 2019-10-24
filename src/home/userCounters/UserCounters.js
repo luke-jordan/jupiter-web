@@ -2,12 +2,12 @@ import React from 'react';
 import moment from 'moment';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject, unmountDecorator } from 'utils';
-import Spinner from 'components/spinner/Spinner';
-import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
+import { inject, unmountDecorator } from 'src/utils';
+import Spinner from 'src/components/spinner/Spinner';
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 
 import './UserCounters.scss';
-import userCirleImage from 'assets/images/user-circle.svg';
+import userCirleImage from 'src/assets/images/user-circle.svg';
 
 export class UserCounters extends React.Component {
   constructor() {

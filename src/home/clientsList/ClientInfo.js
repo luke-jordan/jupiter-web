@@ -1,12 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { errorBoundary } from 'components/errorBoundary/ErrorBoundary';
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 
 import './ClientInfo.scss';
-import currencyImage from 'assets/images/currency.svg';
-import arrowRightPurple2Image from 'assets/images/arrow-right-purple2.svg';
-import arrowRightWhite from 'assets/images/arrow-right-white.svg';
+import currencyImage from 'src/assets/images/currency.svg';
+import arrowRightPurple2Image from 'src/assets/images/arrow-right-purple2.svg';
+import arrowRightWhite from 'src/assets/images/arrow-right-white.svg';
 
 class ClientInfo extends React.Component {
   render() {

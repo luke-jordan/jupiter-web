@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDatePicker from "react-datepicker";
 
 import './DatePicker.scss';
-import calendarIcon from 'assets/images/calendar.svg';
+import calendarIcon from 'src/assets/images/calendar.svg';
 
 class DatePicker extends React.Component {
   render() {

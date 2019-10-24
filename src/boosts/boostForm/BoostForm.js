@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Select from 'components/select/Select';
-import Input from 'components/input/Input';
-import TextArea from 'components/textArea/TextArea';
-import AudienceSelection from 'components/audienceSelection/AudienceSelection';
+import Select from 'src/components/select/Select';
+import Input from 'src/components/input/Input';
+import TextArea from 'src/components/textArea/TextArea';
+import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 
 import './BoostForm.scss';
 

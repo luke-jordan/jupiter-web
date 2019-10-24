@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-import { inject } from 'utils';
+import { inject } from 'src/utils';
 
 const AdminRoute = ({ component: Component, ...rest }) => {
   const authService = inject('AuthService');

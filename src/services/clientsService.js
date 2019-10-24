@@ -1,7 +1,7 @@
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { convertAmount, getCountryByCode, formatMoney } from 'utils';
+import { convertAmount, getCountryByCode, formatMoney } from 'src/utils';
 
 export class ClientsService {
   constructor(apiService, dataService) {

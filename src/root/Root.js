@@ -1,14 +1,14 @@
 import React from 'react';
 import { Router, Switch } from 'react-router-dom';
 
-import { inject } from 'utils';
-import PageLayout from 'components/pageLayout/PageLayout';
-import AdminRoute from 'components/adminRoute/AdminRoute';
-import LoginPage from 'login/loginPage/LoginPage';
-import HomePage from 'home/homePage/HomePage';
-import MessagesPage from 'messages/messagesPage/MessagesPage';
-import BoostsPage from 'boosts/boostsPage/BoostsPage';
-import UsersPage from 'users/usersPage/UsersPage';
+import { inject } from 'src/utils';
+import PageLayout from 'src/components/pageLayout/PageLayout';
+import AdminRoute from 'src/components/adminRoute/AdminRoute';
+import LoginPage from 'src/login/loginPage/LoginPage';
+import HomePage from 'src/home/homePage/HomePage';
+import MessagesPage from 'src/messages/messagesPage/MessagesPage';
+import BoostsPage from 'src/boosts/boostsPage/BoostsPage';
+import UsersPage from 'src/users/usersPage/UsersPage';
 
 const ClientsAndFloatsPage = () => 'Clients and floats page';
 const NotFoundPage = () => 'Page not exit'

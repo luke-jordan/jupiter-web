@@ -2,10 +2,10 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject, unmountDecorator } from 'utils';
+import { inject, unmountDecorator } from 'src/utils';
 
 import './PageLayout.scss';
-import logoImage from 'assets/images/logo.svg';
+import logoImage from 'src/assets/images/logo.svg';
 
 class PageLayout extends React.Component {
   constructor() {
