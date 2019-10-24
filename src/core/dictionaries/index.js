@@ -1,9 +1,13 @@
 export const userStatusMap = {
-  USER_HAS_SAVED: 'User has saved'
+  USER_HAS_SAVED: 'User has saved',
+  TEST_1: 'Status 1',
+  TEST_2: 'Status 2'
 };
 
 export const userKycStatusMap = {
-  NO_INFO: 'No information'
+  NO_INFO: 'No information',
+  TEST_1: 'KYC 1',
+  TEST_2: 'KYC 2'
 };
 
 export const userHistoryEventTypeMap = {

@@ -4,7 +4,9 @@ import classNames from 'classnames';
 import './Input.scss';
 
 const Input = props => {
-  const rootClass = classNames('base-input input', { disabled: props.disabled });
+  const rootClass = classNames('base-input input', {
+    disabled: props.disabled, attention: props.attention
+  });
   
   return <div className={rootClass}>
     <input className="input-control"

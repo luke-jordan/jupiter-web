@@ -20,7 +20,9 @@ class UserSearchPage extends React.Component {
 
     this.state = {
       loading: false,
+      error: null,
       user: null,
+      statusData: null,
       blank: false
     };
 
@@ -36,15 +38,19 @@ class UserSearchPage extends React.Component {
 
   renderContent() {
     const state = this.state;
+
     if (state.blank) {
       return null;
-    } else if (state.loading) {
-      return <div className="text-center"><Spinner/></div>;
-    } else if (state.user) {
-      return this.renderUserDetails();
-    } else {
-      return <div className="user-not-found">USER NOT FOUND: Please check the user details and try again</div>;
     }
+
+    if (state.error) {
+      return <div className="user-not-found">{state.error}</div>;
+    }
+
+    return <>
+      {state.loading && <Spinner overlay/>}
+      {state.user && this.renderUserDetails()}
+    </>;
   }
 
   renderUserDetails() {
@@ -56,7 +62,8 @@ class UserSearchPage extends React.Component {
           <UserWithBalance user={state.user}/>
         </div>
         <div className="card-body">
-          <UserStatusForm user={state.user}/>
+          <UserStatusForm user={state.user} statusData={state.statusData}
+            onChange={this.statusFormChange} onSubmitStatus={this.statusFormSubmit}/>
           <UserTransactions user={state.user}/>
         </div>
       </div>
@@ -78,20 +85,56 @@ class UserSearchPage extends React.Component {
     const searchValue = params.get('searchValue');
     const searchType = params.get('searchType');
 
+    const notFound = 'USER NOT FOUND: Please check the user details and try again';
+
     if (!searchValue || !searchType) {
-      this.setState({ blank: true });
+      this.setState({ error: notFound });
       return;
     }
 
-    this.setState({ loading: true, blank: false });
+    this.setState({ loading: true, blank: false, error: null });
 
     this.usersService.searchUser({ [searchType]: searchValue }).pipe(
       takeUntil(this.unmount)
     ).subscribe(user => {
-      this.setState({ loading: false, user });
+      this.setState({
+        loading: false,
+        error: null,
+        user,
+        statusData: {
+          userStatus: user.userStatus, userStatusChangeReason: '',
+          kycStatus: user.kycStatus, kycStatusChangeReason: ''
+        }
+      });
     }, () => {
-      this.setState({ loading: false, user: null });
+      this.setState({ loading: false, error: notFound, user: null });
     });
+  }
+
+  statusFormChange = statusData => {
+    this.setState({ statusData });
+  }
+
+  statusFormSubmit = type => {
+    this.setState({ loading: true });
+
+    setTimeout(() => {
+      const state = this.state;
+      const newState = {
+        user: { ...state.user }, loading: false,
+        statusData: { ...state.statusData }
+      };
+
+      if (type === 'status') {
+        newState.user.userStatus = state.statusData.userStatus;
+        newState.statusData.userStatusChangeReason = '';
+      } else if (type === 'kyc') {
+        newState.user.kycStatus = state.statusData.kycStatus;
+        newState.statusData.kycStatusChangeReason = '';
+      }
+
+      this.setState(newState);
+    }, 500);
   }
 }
 

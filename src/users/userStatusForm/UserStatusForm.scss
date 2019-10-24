@@ -11,4 +11,8 @@
   .form-group {
     margin-bottom: 15px;
   }
+  .grid-row .grid-col:nth-child(3) {
+    flex-direction: row;
+    align-items: flex-end;
+  }
 }

@@ -8,6 +8,9 @@
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 8px;
+  &.attention {
+    color: $color-purple;
+  }
 }
 
 .input-group {
@@ -51,12 +54,14 @@
 }
 
 .base-input {
-  &.disabled {
-    .input-control {
-      border: 0;
-      background-color: $color-silver2;
-      cursor: not-allowed;
-    }
+  &.disabled .input-control {
+    border: 0;
+    background-color: $color-silver2;
+    cursor: not-allowed;
+  }
+  &.attention .input-control {
+    border-color: $color-purple;
+    border-radius: 0;
   }
   .input-control {
     border: 1px solid $color-silver;
