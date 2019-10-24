@@ -4,7 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import UserSearch from 'src/components/userSearch/UserSearch';
 import Spinner from 'src/components/spinner/Spinner';
-import { inject, unmountDecorator } from 'src/utils';
+import { inject, unmountDecorator } from 'src/core/utils';
 import UserWithBalance from '../userWithBalance/UserWithBalance';
 import UserStatusForm from '../userStatusForm/UserStatusForm';
 import UserTransactions from '../userTransactions/UserTransactions';

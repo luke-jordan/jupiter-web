@@ -1,7 +1,7 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject, unmountDecorator } from 'src/utils';
+import { inject, unmountDecorator } from 'src/core/utils';
 import Spinner from 'src/components/spinner/Spinner';
 import ClientInfo from './ClientInfo';
 

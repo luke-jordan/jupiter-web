@@ -1,7 +1,7 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { capitalize, unmountDecorator, inject } from 'src/utils';
+import { capitalize, unmountDecorator, inject } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import MessageForm from '../messageForm/MessageForm';

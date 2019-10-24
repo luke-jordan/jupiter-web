@@ -4,7 +4,7 @@ import { forkJoin } from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 import classNames from 'classnames';
 
-import { inject, unmountDecorator } from 'src/utils';
+import { inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 import Spinner from 'src/components/spinner/Spinner';

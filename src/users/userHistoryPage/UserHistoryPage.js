@@ -1,7 +1,7 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { tempStorage, inject, unmountDecorator } from 'src/utils';
+import { tempStorage, inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import UserWithBalance from '../userWithBalance/UserWithBalance';

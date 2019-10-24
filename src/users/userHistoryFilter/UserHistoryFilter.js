@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import { inject } from 'src/utils';
+import { inject } from 'src/core/utils';
 import Tabs from 'src/components/tabs/Tabs';
 import Select from 'src/components/select/Select';
 import DatePicker from 'src/components/datePicker/DatePicker';

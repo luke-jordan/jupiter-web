@@ -1,7 +1,7 @@
 import { ajax } from 'rxjs/ajax';
 import { map } from 'rxjs/operators';
 
-import { inject } from 'src/utils';
+import { inject } from 'src/core/utils';
 
 export class ApiService {
   defaultOptions = {

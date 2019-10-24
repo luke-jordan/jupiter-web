@@ -2,7 +2,7 @@ import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 import moment from 'moment';
 
-import { capitalize, inject, unmountDecorator } from 'src/utils';
+import { capitalize, inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import BoostForm from '../boostForm/BoostForm';

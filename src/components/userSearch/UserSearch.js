@@ -2,7 +2,7 @@ import React from 'react';
 
 import Input from 'src/components/input/Input';
 import RadioButton from 'src/components/radioButton/RadioButton';
-import { inject } from 'src/utils';
+import { inject } from 'src/core/utils';
 
 import './UserSearch.scss';
 

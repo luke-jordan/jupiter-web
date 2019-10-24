@@ -2,7 +2,7 @@ import React from 'react';
 import { fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { unmountDecorator, inject } from 'src/utils';
+import { unmountDecorator, inject } from 'src/core/utils';
 
 import './DropdownMenu.scss';
 import moreIcon from 'src/assets/images/more.svg';
