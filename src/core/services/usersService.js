@@ -3,26 +3,9 @@ import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { convertAmount, formatMoney } from 'src/core/utils';
+import { userHistoryEventTypeMap } from 'src/core/dictionaries';
 
 export class UsersService {
-  userStatuses = {
-    USER_HAS_SAVED: 'User has saved'
-  };
-
-  kycStatuses = {
-    NO_INFO: 'No information'
-  };
-
-  historyEventTypes = {
-    USER_LOGIN: 'User logged in',
-    SAVING_PAYMENT_SUCCESSFUL: 'Saving payment successful',
-    WITHDRAWAL_EVENT_CONFIRMED: 'Withdrawal confirmed',
-    WITHDRAWAL_COMPLETED: 'Withdrawal completed',
-    PASSWORD_SET: 'Password changed',
-    USER_REGISTERED: 'Profile created',
-    STATUS_CHANGED: 'User status changed'
-  };
-
   constructor(apiService) {
     this.apiService = apiService;
     this.url = process.env.REACT_APP_ADMIN_URL;
@@ -69,24 +52,6 @@ export class UsersService {
     );
   }
 
-  getUserStatuesOptions
-
-  getEventTypeOptions() {
-    const options = Object.entries(this.historyEventTypes)
-      .map(([value, text]) => ({ value, text }))
-      .sort((a, b) => {
-        if (a.text > b.text) {
-          return 1;
-        } else if (a.text < b.text) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-    options.unshift({ text: 'All', value: 'ALL' });
-    return options;
-  }
-
   _modifyUser(user) {
     user.fullName = `${user.personalName} ${user.familyName}`;
     user.formattedStartDate = moment(user.creationTimeEpochMillis).format('MMM YYYY');
@@ -106,7 +71,7 @@ export class UsersService {
   }
 
   _modifyUserHistory(history) {
-    history.eventTypeText = this.historyEventTypes[history.eventType] || history.eventType;
+    history.eventTypeText = userHistoryEventTypeMap[history.eventType] || history.eventType;
     history.formattedDate = moment(history.timestamp).format('DD/MM/YYYY HH:mm');
     history.date = new Date(history.timestamp);
   }

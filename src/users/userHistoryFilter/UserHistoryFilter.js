@@ -1,7 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 
-import { inject } from 'src/core/utils';
+import { inject, dictToOptions } from 'src/core/utils';
+import { userHistoryEventTypeMap } from 'src/core/dictionaries';
 import Tabs from 'src/components/tabs/Tabs';
 import Select from 'src/components/select/Select';
 import DatePicker from 'src/components/datePicker/DatePicker';
@@ -12,7 +13,7 @@ class UserHistoryFilter extends React.Component {
   constructor() {
     super();
     this.usersService = inject('UsersService');
-    this.eventTypeOptions = this.usersService.getEventTypeOptions();
+    this.eventTypesOptions = dictToOptions(userHistoryEventTypeMap);
     this.performedByTabs = [
       { text: 'All', value: 'ALL' },
       { text: 'User', value: 'USER' },
@@ -27,7 +28,7 @@ class UserHistoryFilter extends React.Component {
         <div className="grid-col">
           <div className="filter-label">Event type:</div>
           <Select name="eventType" onChange={this.eventTypeChange} value={filter.eventType}>
-            {this.eventTypeOptions.map(option =>
+            {this.eventTypesOptions.map(option =>
               <option key={option.value} value={option.value}>{option.text}</option>)}
           </Select>
         </div>

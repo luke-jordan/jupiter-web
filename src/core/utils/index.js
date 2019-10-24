@@ -70,3 +70,17 @@ export const tempStorage = {
     return value;
   }
 };
+
+export const dictToOptions = dictMap => {
+  return Object.entries(dictMap)
+    .map(([value, text]) => ({ value, text }))
+    .sort((a, b) => {
+      if (a.text > b.text) {
+        return 1;
+      } else if (a.text < b.text) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+};
