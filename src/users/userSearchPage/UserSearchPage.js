@@ -6,6 +6,7 @@ import UserSearch from 'components/userSearch/UserSearch';
 import Spinner from 'components/spinner/Spinner';
 import { inject, unmountDecorator } from 'utils';
 import UserWithBalance from '../userWithBalance/UserWithBalance';
+import UserStatusForm from '../userStatusForm/UserStatusForm';
 import UserTransactions from '../userTransactions/UserTransactions';
 
 import './UserSearchPage.scss';
@@ -55,6 +56,7 @@ class UserSearchPage extends React.Component {
           <UserWithBalance user={state.user}/>
         </div>
         <div className="card-body">
+          <UserStatusForm user={state.user}/>
           <UserTransactions user={state.user}/>
         </div>
       </div>

@@ -5,6 +5,14 @@ import moment from 'moment';
 import { convertAmount, formatMoney } from 'utils';
 
 export class UsersService {
+  userStatuses = {
+    USER_HAS_SAVED: 'User has saved'
+  };
+
+  kycStatuses = {
+    NO_INFO: 'No information'
+  };
+
   historyEventTypes = {
     USER_LOGIN: 'User logged in',
     SAVING_PAYMENT_SUCCESSFUL: 'Saving payment successful',
@@ -60,6 +68,8 @@ export class UsersService {
       tap(user => this._modifyUser(user))
     );
   }
+
+  getUserStatuesOptions
 
   getEventTypeOptions() {
     const options = Object.entries(this.historyEventTypes)

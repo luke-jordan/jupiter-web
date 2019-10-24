@@ -2,22 +2,22 @@
 
 .user-transactions {
   position: relative;
-  .table {
-    max-width: 650px;
-    td, th {
-      padding: 8px 12px;
-    }
-  }
   .transactions-header {
     color: $color-grey;
     font-weight: 600;
     font-size: 14px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   .transaction-buttons {
     text-align: left;
     .button {
       margin-right: 10px;
+    }
+  }
+  .table {
+    max-width: 650px;
+    td, th {
+      padding: 8px 12px;
     }
   }
   .view-history {

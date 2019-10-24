@@ -1,0 +1,14 @@
+@import 'styles/common';
+
+.user-status-form {
+  margin-bottom: 25px;
+  .status-header {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: $color-grey;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+}
