@@ -9,9 +9,9 @@ import HomePage from 'src/home/homePage/HomePage';
 import MessagesPage from 'src/messages/messagesPage/MessagesPage';
 import BoostsPage from 'src/boosts/boostsPage/BoostsPage';
 import UsersPage from 'src/users/usersPage/UsersPage';
+import ClientsPage from 'src/clients/clientsPage/ClientsPage';
 
-const ClientsAndFloatsPage = () => 'Clients and floats page';
-const NotFoundPage = () => 'Page not exit'
+const PageNotFound = () => <div className="no-data">Page not found</div>;
 
 class Root extends React.Component {
   render() {
@@ -23,8 +23,8 @@ class Root extends React.Component {
           <AdminRoute path="/users" component={UsersPage}/>
           <AdminRoute path="/boosts" component={BoostsPage}/>
           <AdminRoute path="/messages" component={MessagesPage}/>
-          <AdminRoute path="/clients" component={ClientsAndFloatsPage}/>
-          <AdminRoute component={NotFoundPage}/>
+          <AdminRoute path="/clients" component={ClientsPage}/>
+          <AdminRoute component={PageNotFound}/>
         </Switch>
       </PageLayout>
     </Router>;

@@ -44,6 +44,7 @@ class ClientInfo extends React.Component {
   }
 
   renderFloatInfo(float) {
+    const client = this.props.client;
     return <div className="float-info">
       <div className="float-icon">
         <img src={currencyImage} alt=""/>
@@ -54,7 +55,7 @@ class ClientInfo extends React.Component {
       </div>
       <div className="float-alerts">
         <div className="alerts-count">0<div className="indicator"/></div>
-        <NavLink className="view-alerts" to="/clients">
+        <NavLink className="view-alerts" to={`/clients/${client.clientId}/float/${float.floatId}/alerts`}>
           View Alerts <img src={arrowRightPurple2Image} alt="arrow"/>
         </NavLink>
       </div>
@@ -62,6 +63,7 @@ class ClientInfo extends React.Component {
   }
 
   renderBalanceInfo(float) {
+    const client = this.props.client;
     return <div className="balance-info">
       {/* Total float balance */}
       <div className="balance-details">
@@ -98,7 +100,7 @@ class ClientInfo extends React.Component {
       </div>
 
       <div className="balance-actions">
-        <NavLink className="button" to="/clients">
+        <NavLink className="button" to={`/clients/${client.clientId}/float/${float.floatId}`}>
           Mange float <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
         </NavLink>
       </div>
