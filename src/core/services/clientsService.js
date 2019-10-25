@@ -33,6 +33,12 @@ export class ClientsService {
     );
   }
 
+  getFloat(clientId, floatId) {
+    return this.apiService.get(`${this.url}/client/fetch`, {
+      params: { clientId, floatId }, sendToken: true
+    })
+  }
+
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';

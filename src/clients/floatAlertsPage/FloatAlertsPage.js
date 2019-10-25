@@ -1,17 +1,52 @@
 import React from 'react';
+import { takeUntil } from 'rxjs/operators';
 
+import { inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
+import Spinner from 'src/components/spinner/Spinner';
 
 import './FloatAlertsPage.scss';
 
 class FloatAlertsPage extends React.Component {
+  constructor() {
+    super();
+    this.clientsService = inject('ClientsService');
+
+    this.state = {
+      loading: false,
+      float: null
+    };
+
+    unmountDecorator(this);
+  }
+
+  componentDidMount() {
+    this.loadFloat();
+  }
+
   render() {
+    const state = this.state;
+    const alerts = state.float && state.float.floatAlerts;
+
     return <div className="float-alerts-page">
-      <PageBreadcrumb title="Alerts" link={{ to: '/clients', text: 'Clients' }}/>
+      <PageBreadcrumb title={state.float ? `Alerts: ${state.float.floatName}` : 'Alerts'}
+        link={{ to: '/clients', text: 'Clients' }}/>
       <div className="page-content">
-        float alerts
+        {state.loading ?
+          <div className="text-center"><Spinner/></div> :
+          <pre>{JSON.stringify(alerts, null, 2)}</pre>}
       </div>
     </div>;
+  }
+
+  loadFloat() {
+    this.setState({ loading: true });
+    const { clientId, floatId } = this.props.match.params;
+    this.clientsService.getFloat(clientId, floatId).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(float => {
+      this.setState({ loading: false, float });
+    });
   }
 }
 

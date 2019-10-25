@@ -1,0 +1,28 @@
+@import 'src/styles/common';
+
+.client-float-page {
+  .float-title {
+    flex-direction: row;
+    align-items: center;
+    .float-name {
+      padding-left: 10px;
+      color: $color-grey;
+      font-size: 18px;
+    }
+  }
+
+  .float-balance {
+    text-align: right;
+    font-weight: bold;
+    .balance-label {
+      font-size: 12px;
+      color: $color-blue;
+      text-transform: uppercase;
+    }
+    .balance-value {
+      font-size: 25px;
+      color: $color-grey;
+      padding-top: 5px;
+    }
+  }
+}
