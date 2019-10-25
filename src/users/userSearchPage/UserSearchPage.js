@@ -22,8 +22,7 @@ class UserSearchPage extends React.Component {
       loading: false,
       error: null,
       user: null,
-      statusData: null,
-      blank: false
+      statusData: null
     };
 
     unmountDecorator(this);
@@ -39,18 +38,18 @@ class UserSearchPage extends React.Component {
   renderContent() {
     const state = this.state;
 
-    if (state.blank) {
-      return null;
-    }
-
     if (state.error) {
       return <div className="user-not-found">{state.error}</div>;
     }
 
-    return <>
-      {state.loading && <Spinner overlay/>}
-      {state.user && this.renderUserDetails()}
-    </>;
+    if (state.loading || state.user) {
+      return <>
+        {state.loading && <Spinner overlay/>}
+        {state.user && this.renderUserDetails()}
+      </>;
+    }
+
+    return null;
   }
 
   renderUserDetails() {
@@ -71,28 +70,25 @@ class UserSearchPage extends React.Component {
   }
 
   componentDidMount() {
-    this.loadUserDetails();
+    this.searchUser();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.location.search !== prevProps.location.search) {
-      this.loadUserDetails();
+      this.searchUser();
     }
   }
 
-  loadUserDetails() {
+  searchUser() {
     const params = new URLSearchParams(this.props.location.search);
     const searchValue = params.get('searchValue');
     const searchType = params.get('searchType');
 
-    const notFound = 'USER NOT FOUND: Please check the user details and try again';
-
     if (!searchValue || !searchType) {
-      this.setState({ error: notFound });
       return;
     }
 
-    this.setState({ loading: true, blank: false, error: null });
+    this.setState({ loading: true, error: null });
 
     this.usersService.searchUser({ [searchType]: searchValue }).pipe(
       takeUntil(this.unmount)
@@ -107,7 +103,10 @@ class UserSearchPage extends React.Component {
         }
       });
     }, () => {
-      this.setState({ loading: false, error: notFound, user: null });
+      this.setState({
+        loading: false, user: null,
+        error: 'USER NOT FOUND: Please check the user details and try again'
+      });
     });
   }
 
