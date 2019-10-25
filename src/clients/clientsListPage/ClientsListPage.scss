@@ -1,0 +1,9 @@
+@import 'src/styles/common';
+
+.clients-list-page {
+  .client-info {
+    box-shadow: none;
+    border: 1px solid $color-silver;
+    border-radius: 0;
+  }
+}

@@ -2,7 +2,7 @@ import React from 'react';
 
 import UserCounters from '../userCounters/UserCounters';
 import DataCounters from '../dataCounters/DataCounters';
-import ClientsList from '../clientsList/ClientsList';
+import ClientsList from 'src/components/clientsList/ClientsList';
 import UserSearch from 'src/components/userSearch/UserSearch';
 
 import './HomePage.scss';
@@ -13,6 +13,7 @@ const HomePage = () => {
       <UserCounters/>
       <UserSearch/>
       <DataCounters/>
+      <div className="clients-header">Clients & Floats</div>
       <ClientsList/>
     </div>
   </div>;
