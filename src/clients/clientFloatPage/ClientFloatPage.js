@@ -1,12 +1,16 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
+import { NavLink } from 'react-router-dom';
 
 import { inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
+import FloatAllocationTable from '../floatAllocationTable/FloatAllocationTable';
+import FloatRefferalCodesTable from '../floatRefferalCodesTable/FloatRefferalCodesTable';
 
 import './ClientFloatPage.scss';
 import currencyIcon from 'src/assets/images/currency.svg';
+import arrowRightPurple2Image from 'src/assets/images/arrow-right-purple2.svg';
 
 class ClientFloatPage extends React.Component {
   constructor() {
@@ -41,15 +45,24 @@ class ClientFloatPage extends React.Component {
 
     return <>
       {this.renderHeader()}
+      <FloatAllocationTable float={state.float}/>
+      <FloatRefferalCodesTable floar={state.floar}/>
     </>;
   }
 
   renderHeader() {
     const float = this.state.float;
+    const alertsLink = `${this.props.location.pathname}/alerts`;
+
     return <div className="grid-row float-header">
-      <div className="grid-col float-title">
-        <img src={currencyIcon} alt="currency"/>
-        <div className="float-name">Float: <b>{float.floatName}</b></div>
+      <div className="grid-col float-info">
+        <img className="float-icon" src={currencyIcon} alt="currency"/>
+        <div className="float-title">
+          <div className="float-name">Float: <b>{float.floatName}</b></div>
+          <NavLink className="link" to={alertsLink}>
+            View Alerts <img src={arrowRightPurple2Image} alt="arrow"/>
+          </NavLink>
+        </div>
       </div>
       <div className="grid-col float-balance">
         <div className="balance-label">Total float balance</div>

@@ -55,7 +55,7 @@ class ClientInfo extends React.Component {
       </div>
       <div className="float-alerts">
         <div className="alerts-count">0<div className="indicator"/></div>
-        <NavLink className="view-alerts" to={`/clients/${client.clientId}/float/${float.floatId}/alerts`}>
+        <NavLink className="link" to={`/clients/${client.clientId}/float/${float.floatId}/alerts`}>
           View Alerts <img src={arrowRightPurple2Image} alt="arrow"/>
         </NavLink>
       </div>

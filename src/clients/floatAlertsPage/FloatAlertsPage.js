@@ -25,12 +25,15 @@ class FloatAlertsPage extends React.Component {
   }
 
   render() {
-    const state = this.state;
+    const { state, props } = this;
+
+    const title = state.float ? `Alerts: ${state.float.floatName}` : 'Alerts';
+    const link = props.location.pathname.slice(0, props.location.pathname.lastIndexOf('/'));
+
     const alerts = state.float && state.float.floatAlerts;
 
     return <div className="float-alerts-page">
-      <PageBreadcrumb title={state.float ? `Alerts: ${state.float.floatName}` : 'Alerts'}
-        link={{ to: '/clients', text: 'Clients' }}/>
+      <PageBreadcrumb title={title} link={{ to: link, text: 'Float' }}/>
       <div className="page-content">
         {state.loading ?
           <div className="text-center"><Spinner/></div> :
