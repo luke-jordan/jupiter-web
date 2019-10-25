@@ -1,13 +1,23 @@
 export const userStatusMap = {
-  USER_HAS_SAVED: 'User has saved',
-  TEST_1: 'Status 1',
-  TEST_2: 'Status 2'
+  CREATED: 'User created',
+  PASSWORD_SET: 'User has password',
+  ACCOUNT_OPENED: 'User account created',
+  USER_HAS_INITIATED_SAVE: 'User has initiated save',
+  USER_HAS_SAVED: 'User has cash in account',
+  USER_HAS_WITHDRAWN: 'User has completed withdrawal',
+  SUSPENDED_FOR_KYC: 'Suspended by failed KYC'
 };
 
 export const userKycStatusMap = {
   NO_INFO: 'No information',
-  TEST_1: 'KYC 1',
-  TEST_2: 'KYC 2'
+  CONTACT_VERIFIED: 'Phone number or email verified',
+  PENDING_VERIFICATION_AS_PERSON: 'Pending verification',
+  VERIFIED_AS_PERSON: 'Verified as person',
+  FAILED_VERIFICATION: 'Verification failed',
+  FLAGGED_FOR_REVIEW: 'Flagged for review',
+  PENDING_INFORMATION: 'Pending information',
+  REVIEW_CLEARED: 'Review cleared',
+  REVIEW_FAILED: 'Review failed'
 };
 
 export const userHistoryEventTypeMap = {
