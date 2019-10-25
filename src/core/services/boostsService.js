@@ -3,17 +3,9 @@ import { tap, map } from 'rxjs/operators';
 import moment from 'moment';
 
 import { convertAmount, formatMoney } from 'src/core/utils';
+import { boostTypeMap, boostCategoryMap } from 'src/core/constants';
 
 export class BoostsService {
-  boostTypes = {
-    GAME: 'Game',
-    SIMPLE: 'Simple'
-  };
-
-  boostCategories = {
-    TIME_LIMITED: 'Time limited'
-  };
-
   constructor(apiService) {
     this.apiService = apiService;
     this.url = process.env.REACT_APP_ADMIN_URL;
@@ -45,8 +37,8 @@ export class BoostsService {
   }
 
   _modifyBoost = (boost) => {
-    boost.boostTypeText = this.boostTypes[boost.boostType] || boost.boostType;
-    boost.boostCategoryText = this.boostCategories[boost.boostCategory] || boost.boostCategory;
+    boost.boostTypeText = boostTypeMap[boost.boostType] || boost.boostType;
+    boost.boostCategoryText = boostCategoryMap[boost.boostCategory] || boost.boostCategory;
 
     boost.formattedStartDate = moment(boost.startTime).format('DD/MM/YY hh:mmA');
 

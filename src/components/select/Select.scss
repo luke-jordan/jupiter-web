@@ -4,12 +4,11 @@
   cursor: pointer;
   .input-control {
     position: relative;
-    padding: 16px 15px;
-    padding-right: 35px;
   }
   .select-value {
     @include ellipsis;
     cursor: pointer;
+    padding: 6px 20px 6px 0;
   }
   .select-arrow {
     $borderWidth: 5px;

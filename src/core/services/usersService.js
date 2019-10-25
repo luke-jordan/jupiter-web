@@ -3,7 +3,7 @@ import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { convertAmount, formatMoney } from 'src/core/utils';
-import { userHistoryEventTypeMap } from 'src/core/dictionaries';
+import { userHistoryEventTypeMap } from 'src/core/constants';
 
 export class UsersService {
   constructor(apiService) {

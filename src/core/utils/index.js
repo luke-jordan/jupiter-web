@@ -64,15 +64,15 @@ export const tempStorage = {
   set: function(key, value) {
     this._map.set(key, value)
   },
-  take: function(key) {
+  get: function(key) {
     const value = this._map.get(key);
     this._map.delete(key);
     return value;
   }
 };
 
-export const dictToOptions = dictMap => {
-  return Object.entries(dictMap)
+export const mapToOptions = mapObj => {
+  return Object.entries(mapObj)
     .map(([value, text]) => ({ value, text }))
     .sort((a, b) => {
       if (a.text > b.text) {

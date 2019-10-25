@@ -2,16 +2,16 @@ import React from 'react';
 
 import Select from 'src/components/select/Select';
 import Input from 'src/components/input/Input';
-import { dictToOptions } from 'src/core/utils';
-import { userStatusMap, userKycStatusMap } from 'src/core/dictionaries';
+import { mapToOptions } from 'src/core/utils';
+import { userStatusMap, userKycStatusMap } from 'src/core/constants';
 
 import './UserStatusForm.scss';
 
 class UserStatusForm extends React.Component {
   constructor() {
     super();
-    this.userStatusOptions = dictToOptions(userStatusMap);
-    this.kysStatusOptions = dictToOptions(userKycStatusMap);
+    this.userStatusOptions = mapToOptions(userStatusMap);
+    this.kysStatusOptions = mapToOptions(userKycStatusMap);
   }
 
   render() {

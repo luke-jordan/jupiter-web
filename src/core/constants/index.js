@@ -19,3 +19,25 @@ export const userHistoryEventTypeMap = {
   USER_REGISTERED: 'Profile created',
   STATUS_CHANGED: 'User status changed'
 };
+
+export const boostTypeMap = {
+  GAME: 'Game',
+  SIMPLE: 'Simple'
+};
+
+export const boostCategoryMap = {
+  TIME_LIMITED: 'Time limited'
+};
+
+export const messagePresentationTypeMap = {
+  RECURRING: 'Recurring',
+  EVENT_DRIVEN: 'Event-Driven',
+  ONCE_OFF: 'Once-Off'
+};
+
+export const messageDisplayTypeMap = {
+  CARD: 'Card',
+  MODAL: 'Modal',
+  PUSH: 'Push notification',
+  EMAIL: 'Email'
+};

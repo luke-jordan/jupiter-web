@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { messageDisplayTypeMap } from 'src/core/constants';
+import { mapToOptions } from 'src/core/utils';
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
 import TextArea from 'src/components/textArea/TextArea';
@@ -8,6 +10,11 @@ import TextArea from 'src/components/textArea/TextArea';
 import './MessageForm.scss';
 
 class MessageForm extends React.Component {
+  constructor() {
+    super();
+    this.typeOptions = mapToOptions(messageDisplayTypeMap);
+  }
+
   detailsHeaderText = {
     new: 'Enter message details',
     view: 'Message details',
@@ -94,10 +101,8 @@ class MessageForm extends React.Component {
         <div className="form-label">Set display type</div>
         <Select name="type" disabled={this.isView()}
           value={formData.type} onChange={onChange}>
-          <option value="CARD">Card</option>
-          <option value="MODAL">Modal</option>
-          <option value="PUSH">Push notification</option>
-          <option value="EMAIL">Email</option>
+          {this.typeOptions.map(item => 
+            <option key={item.value} value={item.value}>{item.text}</option>)}
         </Select>
       </div>
       {/* Send to */}

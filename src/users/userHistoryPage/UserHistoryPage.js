@@ -35,7 +35,7 @@ class UserHistoryPage extends React.Component {
   }
 
   componentDidMount() {
-    const user = tempStorage.take('user-history');
+    const user = tempStorage.get('user-history');
     if (user) {
       this.userLoaded(user);
     } else {

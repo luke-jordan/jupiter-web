@@ -1,20 +1,9 @@
 import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
+import { messagePresentationTypeMap, messageDisplayTypeMap } from 'src/core/constants';
+
 export class MessagesService {
-  presentationTypes = {
-    RECURRING: 'Recurring',
-    EVENT_DRIVEN: 'Event-Driven',
-    ONCE_OFF: 'Once-Off'
-  };
-
-  displayTypes = {
-    CARD: 'Card',
-    MODAL: 'Modal',
-    PUSH: 'Push notification',
-    EMAIL: 'Email'
-  };
-
   constructor(apiService) {
     this.apiService = apiService;
     this.url = process.env.REACT_APP_ADMIN_URL;
@@ -58,10 +47,10 @@ export class MessagesService {
   }
 
   _modifyMessage = (message) => {
-    message.presentationTypeText = this.presentationTypes[message.presentationType] || message.presentationType;
+    message.presentationTypeText = messagePresentationTypeMap[message.presentationType] || message.presentationType;
 
     const displayType = message.templates.template.DEFAULT.display.type;
-    message.displayTypeText = this.displayTypes[displayType] || displayType;
+    message.displayTypeText = messageDisplayTypeMap[displayType] || displayType;
 
     message.formattedStartDate = moment(message.startTime).format('DD/MM/YY hh:mmA');
 
