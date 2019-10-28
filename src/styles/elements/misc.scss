@@ -3,6 +3,8 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+  border: 0;
+  background-color: transparent;
   text-decoration: none;
   &.inactive {
     opacity: 0.5;
@@ -18,7 +20,21 @@
 }
 
 .section-header {
-  margin: 40px 0 15px;
+  margin: 30px 0 10px;
   font-size: 16px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  .header-text {
+    flex: 1;
+  }
+  .header-actions {
+    text-align: right;
+    .link {
+      text-decoration: underline;
+    }
+    .button, .link {
+      margin-left: 8px;
+    }
+  }
 }

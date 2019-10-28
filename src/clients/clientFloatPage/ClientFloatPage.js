@@ -45,7 +45,7 @@ class ClientFloatPage extends React.Component {
 
     return <>
       {this.renderHeader()}
-      <FloatAllocationTable float={state.float}/>
+      <FloatAllocationTable float={state.float} onSave={this.floatSave}/>
       <FloatRefferalCodesTable floar={state.floar}/>
     </>;
   }
@@ -78,6 +78,11 @@ class ClientFloatPage extends React.Component {
     ).subscribe(float => {
       this.setState({ loading: false, float });
     });
+  }
+
+  floatSave = data => {
+    // TODO: float update
+    console.log(data);
   }
 }
 

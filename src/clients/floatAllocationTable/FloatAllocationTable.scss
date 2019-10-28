@@ -1,3 +1,31 @@
+@import 'src/styles/common';
+
 .float-allocation-table {
   max-width: 800px;
+  .table {
+    th, td {
+      padding: 15px 15px 16px;
+      height: 40px;
+    }
+  }
+  .table.edit {
+    tbody td {
+      padding: 5px 15px;
+    }
+    tbody tr {
+      background-color: $color-silver2;
+      td:nth-child(2) {
+        font-weight: bold;
+        color: $color-grey;
+      }
+    }
+    .base-input {
+      display: inline-block;
+      width: 80px;
+      .input-control {
+        padding: 9px 12px;
+        height: auto;
+      }
+    }
+  }
 }
