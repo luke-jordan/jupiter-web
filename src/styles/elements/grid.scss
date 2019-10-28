@@ -3,10 +3,18 @@
   flex-direction: row;
   margin: 0 -10px;
 }
+
 .grid-col {
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin: 0 10px;
+  padding: 0 10px;
   min-width: 0;
+}
+
+@for $i from 1 through 12 {
+  .grid-col-#{$i} {
+    @extend .grid-col;
+    flex: 0 1 #{percentage($i/12)};
+  }
 }

@@ -114,7 +114,7 @@ class BoostForm extends React.Component {
       </div>
       <div className="grid-row">
         {/* Required save */}
-        <div className="grid-col">
+        <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">How much must a user save to get it?</div>
             <Input name="requiredSave" type="number" value={formData.requiredSave}
@@ -122,14 +122,13 @@ class BoostForm extends React.Component {
           </div>
         </div>
         {/* Per user amount */}
-        <div className="grid-col">
+        <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">How much is it worth (per user)?</div>
             <Input name="perUserAmount" type="number" value={formData.perUserAmount}
               onChange={onChange} disabled={this.isView()}/>
           </div>
         </div>
-        <div className="grid-col"></div>
       </div>
     </>;
   }

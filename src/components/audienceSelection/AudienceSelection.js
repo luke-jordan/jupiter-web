@@ -14,7 +14,7 @@ class AudienceSelection extends React.Component {
         <div className="section-text">Who is eligible</div>
       </div>
       <div className="grid-row">
-        <div className="grid-col">
+        <div className="grid-col-4">
           {/* Audience */}
           <div className="form-group">
             <div className="form-label">Audience:</div>
@@ -28,46 +28,62 @@ class AudienceSelection extends React.Component {
           </div>
         </div>
 
-        <div className="grid-col">
-          {/* Sample size */}
-          {props.formData.audience === 'random_sample' && <div className="form-group">
-            <div className="form-label">Proportion of client:</div>
-            <Input name="audienceSample" value={props.formData.audienceSample}
-              onChange={props.onChange} disabled={props.isView}/>
-          </div>}
-
-          {/* Date from */}
-          {props.formData.audience === 'sign_up_cohort' && <div className="form-group">
-            <div className="form-label">From:</div>
-            <Input type="date" name="audienceDateFrom" value={props.formData.audienceDateFrom}
-              onChange={props.onChange} disabled={props.isView}/>
-          </div>}
-
-          {/* Activity from */}
-          {props.formData.audience === 'activity_count' && <div className="form-group">
-            <div className="form-label">From:</div>
-            <Input type="number" name="audienceActivityFrom" value={props.formData.audienceActivityFrom}
-              onChange={props.onChange} disabled={props.isView}/>
-          </div>}
-        </div>
-
-        <div className="grid-col">
-          {/* Date to */}
-          {props.formData.audience === 'sign_up_cohort' && <div className="form-group">
-            <div className="form-label">To:</div>
-            <Input type="date" name="audienceDateTo" value={props.formData.audienceDateTo}
-              onChange={props.onChange} disabled={props.isView}/>
-          </div>}
-
-          {/* Activity to */}
-          {props.formData.audience === 'activity_count' && <div className="form-group">
-            <div className="form-label">To:</div>
-            <Input type="number" name="audienceActivityTo" value={props.formData.audienceActivityTo}
-              onChange={props.onChange} disabled={props.isView}/>
-          </div>}
-        </div>
+        {props.formData.audience === 'random_sample' && this.renderSampleSize()}
+        {props.formData.audience === 'sign_up_cohort' && this.renderDateRange()}
+        {props.formData.audience === 'activity_count' && this.renderActivityRange()}
       </div>
     </div>;
+  }
+
+  renderSampleSize() {
+    const props = this.props;
+    return <div className="grid-col-4">
+      <div className="form-group">
+        <div className="form-label">Proportion of client:</div>
+        <Input name="audienceSample" value={props.formData.audienceSample}
+          onChange={props.onChange} disabled={props.isView}/>
+      </div>
+    </div>;
+  }
+
+  renderDateRange() {
+    const props = this.props;
+    return <>
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">From:</div>
+          <Input type="date" name="audienceDateFrom" value={props.formData.audienceDateFrom}
+            onChange={props.onChange} disabled={props.isView}/>
+        </div>
+      </div>
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">To:</div>
+          <Input type="date" name="audienceDateTo" value={props.formData.audienceDateTo}
+            onChange={props.onChange} disabled={props.isView}/>
+        </div>
+      </div>
+    </>;
+  }
+
+  renderActivityRange() {
+    const props = this.props;
+    return <>
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">From:</div>
+          <Input type="number" name="audienceActivityFrom" value={props.formData.audienceActivityFrom}
+            onChange={props.onChange} disabled={props.isView}/>
+        </div>
+      </div>
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">To:</div>
+          <Input type="number" name="audienceActivityTo" value={props.formData.audienceActivityTo}
+            onChange={props.onChange} disabled={props.isView}/>
+        </div>
+      </div>
+    </>;
   }
 }
 
