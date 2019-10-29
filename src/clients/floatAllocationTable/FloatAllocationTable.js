@@ -153,7 +153,7 @@ class FloatAllocationTable extends React.Component {
 
   cancelClick = () => {
     this.setState({
-      edit: false, data: this.floatToTableData(this.props.float)
+      edit: false, data: this.floatToTableData(this.props.float), changes: {}
     });
   }
 

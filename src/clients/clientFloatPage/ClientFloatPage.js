@@ -39,20 +39,14 @@ class ClientFloatPage extends React.Component {
 
   renderContent() {
     const state = this.state;
-
-    if (state.loading) {
-      return <div className="text-center"><Spinner/></div>;
-    }
-
-    if (state.float) {
-      return <>
+    return <>
+      {state.loading && <Spinner overlay/>}
+      {state.float && <>
         {this.renderHeader()}
         <FloatAllocationTable float={state.float} onSave={this.floatSave}/>
         <FloatRefferalCodesTable float={state.float} onAction={this.refferalCodeAction}/>
-      </>;
-    }
-
-    return null;
+      </>}
+    </>;
   }
 
   renderHeader() {

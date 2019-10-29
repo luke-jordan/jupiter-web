@@ -1,6 +1,10 @@
 @import 'src/styles/common';
 
 .client-float-page {
+  .page-content {
+    min-height: 90px;
+  }
+  
   .float-info {
     display: flex;
     flex-direction: row;
