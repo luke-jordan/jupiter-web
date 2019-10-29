@@ -8,17 +8,30 @@ import { userStatusMap, userKycStatusMap } from 'src/core/constants';
 import './UserStatusForm.scss';
 
 class UserStatusForm extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
+
     this.userStatusOptions = mapToOptions(userStatusMap);
     this.kysStatusOptions = mapToOptions(userKycStatusMap);
+
+    this.state = {
+      data: this.getFormData(props.user)
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.user !== prevProps.user) {
+      this.setState({
+        data: this.getFormData(this.props.user)
+      });
+    }
   }
 
   render() {
-    const { user, statusData } = this.props;
+    const { state, props } = this;
 
-    const userStatusChanged = statusData.userStatus !== user.userStatus;
-    const kycStatusChanged = statusData.kycStatus !== user.kycStatus;
+    const userStatusChanged = state.data.userStatus !== props.user.userStatus;
+    const kycStatusChanged = state.data.kycStatus !== props.user.kycStatus;
 
     return <form className="user-status-form">
       <div className="status-header">Status</div>
@@ -26,7 +39,7 @@ class UserStatusForm extends React.Component {
         <div className="grid-row">
           <div className="grid-col-4">
             <div className="form-label">User Status</div>
-            <Select name="userStatus" value={statusData.userStatus} onChange={this.inputChange}>
+            <Select name="userStatus" value={state.data.userStatus} onChange={this.inputChange}>
               {this.userStatusOptions.map((item) =>
                 <option key={item.value} value={item.value}>{item.text}</option>)}
             </Select>
@@ -35,11 +48,11 @@ class UserStatusForm extends React.Component {
             <div className="grid-col-4">
               <div className="form-label attention">Please provide a reason for the user status change:</div>
               <Input name="userStatusChangeReason" placeholder="Type reason here..." attention
-                value={statusData.userStatusChangeReason} onChange={this.inputChange}/>
+                value={state.data.userStatusChangeReason} onChange={this.inputChange}/>
             </div>
             <div className="grid-col-4">
-              <button type="button" className="button" onClick={() => this.submitStatus('status')}
-                disabled={!statusData.userStatusChangeReason}>Change</button>
+              <button type="button" className="button" onClick={this.userStatusChangeClick}
+                disabled={!state.data.userStatusChangeReason}>Change</button>
             </div>
           </>}
         </div>
@@ -48,7 +61,7 @@ class UserStatusForm extends React.Component {
         <div className="grid-row">
           <div className="grid-col-4">
             <div className="form-label">KYC Status</div>
-            <Select name="kycStatus" value={statusData.kycStatus} onChange={this.inputChange}>
+            <Select name="kycStatus" value={state.data.kycStatus} onChange={this.inputChange}>
               {this.kysStatusOptions.map((item) =>
                 <option key={item.value} value={item.value}>{item.text}</option>)}
             </Select>
@@ -57,11 +70,11 @@ class UserStatusForm extends React.Component {
             <div className="grid-col-4">
               <div className="form-label attention">Please provide a reason for the user KYC change:</div>
               <Input name="kycStatusChangeReason" placeholder="Type reason here..." attention
-                value={statusData.kycStatusChangeReason} onChange={this.inputChange}/>
+                value={state.data.kycStatusChangeReason} onChange={this.inputChange}/>
             </div>
             <div className="grid-col-4">
-              <button type="button" className="button" onClick={() => this.submitStatus('kyc')}
-                disabled={!statusData.kycStatusChangeReason}>Change</button>
+              <button type="button" className="button" onClick={this.kysStatusChangeClick}
+                disabled={!state.data.kycStatusChangeReason}>Change</button>
             </div>
           </>}
         </div>
@@ -70,16 +83,33 @@ class UserStatusForm extends React.Component {
   }
 
   inputChange = event => {
-    if (this.props.onChange) {
-      const { name, value } = event.target;
-      this.props.onChange({ ...this.props.statusData, [name]: value });
-    }
+    const { name, value } = event.target;
+    this.setState({
+      data: { ...this.state.data, [name]: value }
+    });
   }
 
-  submitStatus = type => {
-    if (this.props.onSubmitStatus) {
-      this.props.onSubmitStatus(type);
-    }
+  userStatusChangeClick = () => {
+    const { userStatus, userStatusChangeReason } = this.state.data;
+    this.submit({ userStatus, userStatusChangeReason });
+  }
+
+  kysStatusChangeClick = () => {
+    const { kycStatus, kycStatusChangeReason } = this.state.data;
+    this.submit({ kycStatus, kycStatusChangeReason });
+  }
+
+  submit(data) {
+    this.props.onSubmit(data);
+  }
+
+  getFormData(user) {
+    return {
+      userStatus: user.userStatus,
+      userStatusChangeReason: '',
+      kycStatus: user.kycStatus,
+      kycStatusChangeReason: ''
+    };
   }
 }
 

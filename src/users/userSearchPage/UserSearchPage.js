@@ -17,12 +17,12 @@ class UserSearchPage extends React.Component {
     
     this.historyService = inject('HistoryService');
     this.usersService = inject('UsersService');
+    this.modalService = inject('ModalService');
 
     this.state = {
       loading: false,
       error: null,
-      user: null,
-      statusData: null
+      user: null
     };
 
     unmountDecorator(this);
@@ -61,8 +61,7 @@ class UserSearchPage extends React.Component {
           <UserWithBalance user={state.user}/>
         </div>
         <div className="card-body">
-          <UserStatusForm user={state.user} statusData={state.statusData}
-            onChange={this.statusFormChange} onSubmitStatus={this.statusFormSubmit}/>
+          <UserStatusForm user={state.user} onSubmit={this.userStatusChange}/>
           <UserTransactions user={state.user}/>
         </div>
       </div>
@@ -96,11 +95,7 @@ class UserSearchPage extends React.Component {
       this.setState({
         loading: false,
         error: null,
-        user,
-        statusData: {
-          userStatus: user.userStatus, userStatusChangeReason: '',
-          kycStatus: user.kycStatus, kycStatusChangeReason: ''
-        }
+        user
       });
     }, () => {
       this.setState({
@@ -114,28 +109,14 @@ class UserSearchPage extends React.Component {
     this.setState({ statusData });
   }
 
-  statusFormSubmit = type => {
+  userStatusChange = data => {
+    // TODO: Update user (api needed)
+    console.log(data);
+
     this.setState({ loading: true });
-
-    // TODO: update user (api needed)
-    console.error('No API for user update');
-
     setTimeout(() => {
-      const state = this.state;
-      const newState = {
-        user: { ...state.user }, loading: false,
-        statusData: { ...state.statusData }
-      };
-
-      if (type === 'status') {
-        newState.user.userStatus = state.statusData.userStatus;
-        newState.statusData.userStatusChangeReason = '';
-      } else if (type === 'kyc') {
-        newState.user.kycStatus = state.statusData.kycStatus;
-        newState.statusData.kycStatusChangeReason = '';
-      }
-
-      this.setState(newState);
+      this.setState({ loading: false, user: Object.assign({}, this.state.user) });
+      this.modalService.showInfo('Info', 'User update API is not implemented yet');
     }, 500);
   }
 }
