@@ -8,6 +8,7 @@ import { BoostsService } from './boostsService';
 import { MessagesService } from './messagesService';
 import { ClientsService } from './clientsService';
 import { DataService } from './dataService';
+import { ModalService } from './modalService';
 
 // register services
 const bottle = new Bottle();
@@ -19,5 +20,6 @@ bottle.service('BoostsService', BoostsService, 'ApiService');
 bottle.service('MessagesService', MessagesService, 'ApiService');
 bottle.service('ClientsService', ClientsService, 'ApiService', 'DataService');
 bottle.service('DataService', DataService);
+bottle.service('ModalService', ModalService);
 
 export default bottle;

@@ -17,6 +17,7 @@ class ClientFloatPage extends React.Component {
     super();
 
     this.clientsService = inject('ClientsService');
+    this.modalService = inject('ModalService');
 
     this.state = {
       loading: false,
@@ -83,13 +84,25 @@ class ClientFloatPage extends React.Component {
   }
 
   floatSave = data => {
-    // TODO: update float (api needed)
-    console.error('No API for float update');
+    // TODO: Float update (api needed)
+    console.log(data);
+
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.setState({ loading: false });
+      this.modalService.showInfo('Info', 'Float update API is not implemented yet');
+    }, 500);
   }
 
   refferalCodeAction = (action, item) => {
-    // TODO: create/deactive refferal code (api needed)
-    console.error('No API for refferal code create/deactive');
+    // TODO: Refferal codes management (api needed)
+    console.log(action, item);
+
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.setState({ loading: false });
+      this.modalService.showInfo('Info', 'Refferal codes API is not implemented yet');
+    }, 500);
   }
 }
 

@@ -108,8 +108,8 @@ class FloatAllocationTable extends React.Component {
     const rows = this.itemsConfig.filter(item => state.changes[item.name]).map(item => {
       return <tr key={item.name}>
         <td>{item.title}</td>
-        <td>{state.changes[item.name].oldValue}</td>
-        <td>{state.changes[item.name].newValue}</td>
+        <td>{state.changes[item.name].oldValue}{item.unit}</td>
+        <td>{state.changes[item.name].newValue}{item.unit}</td>
       </tr>
     });
 
@@ -162,16 +162,18 @@ class FloatAllocationTable extends React.Component {
   }
 
   continueClick = () => {
-    this.setState({
-      edit: false,
-      confirmOpen: false,
-      confirmValue: ''
-    });
-
     const data = {};
     Object.entries(this.state.changes).forEach(([key, value]) => data[key] = value.newValue);
 
     this.props.onSave(data);
+
+    this.setState({
+      edit: false,
+      confirmOpen: false,
+      confirmValue: '',
+      changes: {},
+      data: this.floatToTableData(this.props.float)
+    });
   }
 
   inputChange = event => {
