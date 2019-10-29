@@ -6,7 +6,7 @@ import { inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import FloatAllocationTable from '../floatAllocationTable/FloatAllocationTable';
-import FloatRefferalCodesTable from '../floatRefferalCodesTable/FloatRefferalCodesTable';
+import FloatReferralCodesTable from '../floatReferralCodesTable/FloatReferralCodesTable';
 
 import './ClientFloatPage.scss';
 import currencyIcon from 'src/assets/images/currency.svg';
@@ -45,7 +45,7 @@ class ClientFloatPage extends React.Component {
       {state.float && <>
         {this.renderHeader()}
         <FloatAllocationTable float={state.float} onSave={this.floatSave}/>
-        <FloatRefferalCodesTable float={state.float} onAction={this.refferalCodeAction}/>
+        <FloatReferralCodesTable float={state.float} onAction={this.referralCodeAction}/>
       </>}
     </>;
   }
@@ -94,14 +94,14 @@ class ClientFloatPage extends React.Component {
     }, 500);
   }
 
-  refferalCodeAction = (action, item) => {
+  referralCodeAction = (action, item) => {
     // TODO: Refferal codes management (api needed)
     console.log(action, item);
 
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false });
-      this.modalService.showInfo('Info', 'Refferal codes API is not implemented yet');
+      this.modalService.showInfo('Info', 'Referral codes API is not implemented yet');
     }, 500);
   }
 }

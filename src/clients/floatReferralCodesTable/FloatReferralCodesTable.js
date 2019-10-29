@@ -7,9 +7,9 @@ import Select from 'src/components/select/Select';
 import TextArea from 'src/components/textArea/TextArea';
 import Modal from 'src/components/modal/Modal';
 
-import './FloatRefferalCodesTable.scss';
+import './FloatReferralCodesTable.scss';
 
-class FloatRefferalCodesTable extends React.Component {
+class FloatReferralCodesTable extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -19,7 +19,7 @@ class FloatRefferalCodesTable extends React.Component {
   }
 
   render() {
-    return <div className="float-refferal-codes-table">
+    return <div className="float-referral-codes-table">
       {this.renderHeader()}
       {this.renderTable()}
       {this.renderEditModal()}
@@ -75,9 +75,9 @@ class FloatRefferalCodesTable extends React.Component {
 
   renderEditModal() {
     const state = this.state;
-    return <Modal className="float-refferal-code-modal"
+    return <Modal className="float-referral-code-modal"
       open={state.editOpen} 
-      header="Add refferal code"
+      header="Add referral code"
       onClose={this.closeModal}>
       <form onSubmit={this.submitCode}>
         <div className="grid-row">
@@ -171,4 +171,4 @@ class FloatRefferalCodesTable extends React.Component {
   }
 }
 
-export default FloatRefferalCodesTable;
+export default FloatReferralCodesTable;
