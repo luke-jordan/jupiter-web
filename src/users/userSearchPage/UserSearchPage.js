@@ -117,6 +117,9 @@ class UserSearchPage extends React.Component {
   statusFormSubmit = type => {
     this.setState({ loading: true });
 
+    // TODO: update user (api needed)
+    console.error('No API for user update');
+
     setTimeout(() => {
       const state = this.state;
       const newState = {

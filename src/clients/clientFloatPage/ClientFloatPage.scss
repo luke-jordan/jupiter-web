@@ -2,6 +2,7 @@
 
 .client-float-page {
   .float-info {
+    display: flex;
     flex-direction: row;
     align-items: center;
     .float-icon {

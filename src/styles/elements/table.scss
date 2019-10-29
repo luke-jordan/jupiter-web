@@ -21,3 +21,15 @@
     word-break: break-word;
   }
 }
+
+.table.table-compact {
+  td, th {
+    border-width: 0 0 1px 0;
+  }
+  td:first-child, th:first-child {
+    padding-left: 0;
+  }
+  td:last-child, th:last-child {
+    padding-right: 0;
+  }
+}

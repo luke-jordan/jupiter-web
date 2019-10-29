@@ -2,24 +2,45 @@ import React from 'react';
 import classNames from 'classnames';
 
 import Input from 'src/components/input/Input';
+import Modal from 'src/components/modal/Modal';
 
 import './FloatAllocationTable.scss';
 
 class FloatAllocationTable extends React.Component {
+  itemsConfig = [{
+    name: 'bonusPoolShareOfAccrual',
+    title: 'Bonus pool share of accrual',
+    unit: '%'
+  }, {
+    name: 'clientShareOfAccrual',
+    title: 'Client share of accrual',
+    unit: '%'
+  }, {
+    name: 'accrualRateAnnualBps',
+    title: 'Accrual rate annual bps',
+    unit: 'bps'
+  }, {
+    name: 'prudentialFactor',
+    title: 'Prudential Factor',
+    unit: '%'
+  }];
+
   constructor(props) {
     super();
 
     this.state = {
       edit: false,
-      confirm: false,
-      data: this.getTableData(props.float)
+      data: this.floatToTableData(props.float),
+      changes: {},
+      confirmOpen: false,
+      confirmValue: '',
     };
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.float !== prevProps.float) {
       this.setState({
-        data: this.getTableData(this.props.float)
+        data: this.floatToTableData(this.props.float)
       });
     }
   }
@@ -28,17 +49,23 @@ class FloatAllocationTable extends React.Component {
     return <div className="float-allocation-table">
       {this.renderHeader()}
       {this.renderTable()}
+      {this.renderConfirm()}
     </div>;
   }
 
   renderHeader() {
-    const { edit } = this.state;
+    const state = this.state;
+    const hasChanges = Object.keys(state.changes).length > 0;
+
     return <div className="section-header">
       <div className="header-text">Float Allocation</div>
       <div className="header-actions">
-        {edit ?
+        {state.edit ?
           <>
-            <button className="button button-outline button-small" onClick={this.saveClick}>Save</button>
+            <button className="button button-outline button-small" onClick={this.saveClick}
+              disabled={!hasChanges}>
+              Save
+            </button>
             <button className="link" onClick={this.cancelClick}>Cancel</button>
           </> :
           <button className="button button-outline button-small" onClick={this.editClick}>Edit</button>
@@ -48,7 +75,22 @@ class FloatAllocationTable extends React.Component {
   }
 
   renderTable() {
-    const className = classNames('table', { edit: this.state.edit });
+    const state = this.state;
+
+    const rows = this.itemsConfig.map(item => {
+      return <tr key={item.name}>
+        <td>{item.title}</td>
+        <td>
+          {state.edit ?
+            <><Input type="number" name={item.name}
+                value={state.data[item.name]} onChange={this.inputChange}/> {item.unit}</> :
+            `${state.data[item.name]}${item.unit}`}
+        </td>
+      </tr>;
+    });
+
+    const className = classNames('table', { edit: state.edit });
+
     return <table className={className}>
       <thead>
         <tr>
@@ -56,36 +98,53 @@ class FloatAllocationTable extends React.Component {
           <th style={{width: 200}}>Value</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>Bonus pool share of accrual</td>
-          <td>{this.renderInputCell({ name: 'bonusPoolShareOfAccrual', unit: '%' })}</td>
-        </tr>
-        <tr>
-          <td>Client share of accrual</td>
-          <td>{this.renderInputCell({ name: 'clientShareOfAccrual', unit: '%' })}</td>
-        </tr>
-        <tr>
-          <td>Accrual rate annual bps</td>
-          <td>{this.renderInputCell({ name: 'accrualRateAnnualBps', unit: 'bps' })}</td>
-        </tr>
-        <tr>
-          <td>Prudential Factor</td>
-          <td>{this.renderInputCell({ name: 'prudentialFactor', unit: '%' })}</td>
-        </tr>
-      </tbody>
+      <tbody>{rows}</tbody>
     </table>;
   }
 
-  renderInputCell({ name, unit }) {
-    const state = this.state;
-    if (state.edit) {
-      return <>
-        <Input type="number" name={name} value={state.data[name]} onChange={this.inputChange}/> {unit}
-      </>;
-    } else {
-      return `${state.data[name]}${unit}`;
-    }
+  renderConfirm() {
+    const { props, state } = this;
+
+    const rows = this.itemsConfig.filter(item => state.changes[item.name]).map(item => {
+      return <tr key={item.name}>
+        <td>{item.title}</td>
+        <td>{state.changes[item.name].oldValue}</td>
+        <td>{state.changes[item.name].newValue}</td>
+      </tr>
+    });
+
+    return <Modal className="float-allocation-table-confirm"
+      open={state.confirmOpen}
+      header="Confirm Changes"
+      onClose={this.closeConfirm}>
+      <div className="confirm-message">
+        You are about to make the following changes to Float: <b>{props.float.floatName}</b>
+      </div>
+      <table className="table table-compact">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th style={{width: 150}}>Value</th>
+            <th style={{width: 150}}>Amended value</th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <div className="confirm-message">
+        Please type <b>"confirmed"</b> in the box below to agree to the above changes:
+      </div>
+      <Input className="confirm-input" value={state.confirmValue}
+        onChange={e => this.setState({ confirmValue: e.target.value })}/>
+      <div className="grid-row confirm-actions">
+        <div className="grid-col">
+          <span className="link" onClick={this.closeConfirm}>Cancel</span>
+        </div>
+        <div className="grid-col text-right">
+          <button className="button" disabled={state.confirmValue !== 'confirmed'}
+            onClick={this.continueClick}>Continue</button>
+        </div>
+      </div>
+    </Modal>;
   }
 
   editClick = () => {
@@ -94,30 +153,50 @@ class FloatAllocationTable extends React.Component {
 
   cancelClick = () => {
     this.setState({
-      edit: false,
-      data: this.getTableData(this.props.float)
+      edit: false, data: this.floatToTableData(this.props.float)
     });
   }
 
   saveClick = () => {
-    this.setState({ edit: false });
-    const data = this.state.data;
-    this.props.onSave({
-      bonusPoolShareOfAccrual: data.bonusPoolShareOfAccrual / 100,
-      clientShareOfAccrual: data.clientShareOfAccrual / 100,
-      accrualRateAnnualBps: data.accrualRateAnnualBps,
-      prudentialFactor: data.prudentialFactor / 100
+    this.setState({ confirmOpen: true });
+  }
+
+  continueClick = () => {
+    this.setState({
+      edit: false,
+      confirmOpen: false,
+      confirmValue: ''
     });
+
+    const data = {};
+    Object.entries(this.state.changes).forEach(([key, value]) => data[key] = value.newValue);
+
+    this.props.onSave(data);
   }
 
   inputChange = event => {
     const { name, value } = event.target;
-    this.setState({
-      data: { ...this.state.data, [name]: value }
-    });
+
+    const data = { ...this.state.data, [name]: value };
+    const changes = { ...this.state.changes };
+
+    const oldValue = this.floatToTableData(this.props.float)[name];
+    const newValue = data[name];
+
+    if (+newValue !== oldValue) {
+      changes[name] = { oldValue, newValue };
+    } else {
+      delete changes[name];
+    }
+
+    this.setState({ data, changes });
   }
 
-  getTableData(float) {
+  closeConfirm = () => {
+    this.setState({ confirmOpen: false, confirmValue: '' });
+  }
+
+  floatToTableData(float) {
     return {
       bonusPoolShareOfAccrual: float.bonusPoolShareOfAccrual * 100,
       clientShareOfAccrual: float.clientShareOfAccrual * 100,

@@ -29,3 +29,31 @@
     }
   }
 }
+
+.float-allocation-table-confirm {
+  .modal-content {
+    max-width: 700px;
+  }
+  .confirm-message {
+    font-size: 14px;
+    color: $color-grey2;
+  }
+  .table {
+    margin: 15px 0 20px;
+    th:nth-child(3),
+    td:nth-child(3) {
+      font-weight: bold;
+      color: $color-red2;
+    }
+  }
+  .confirm-input {
+    width: 200px;
+    margin: 10px 0;
+    .input-control {
+      font-weight: bold;
+    }
+  }
+  .confirm-actions {
+    align-items: flex-end;
+  }
+}

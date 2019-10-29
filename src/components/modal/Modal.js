@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './Modal.scss';
-import closeIcon from 'assets/images/close.svg';
+import closeIcon from 'src/assets/images/close.svg';
 
 class Modal extends React.Component {
   render() {
@@ -12,8 +12,10 @@ class Modal extends React.Component {
       return null;
     }
 
+    const rootClass = `modal ${this.props.className || ''}`;
+
     return ReactDOM.createPortal(
-      <div className="modal" onClick={this.modalClick}>
+      <div className={rootClass} onClick={this.modalClick}>
         <div className="modal-content">
           <div className="modal-header">
             {props.header}

@@ -19,7 +19,7 @@ class ClientFloatPage extends React.Component {
     this.clientsService = inject('ClientsService');
 
     this.state = {
-      loading: true,
+      loading: false,
       float: null
     };
 
@@ -39,15 +39,20 @@ class ClientFloatPage extends React.Component {
 
   renderContent() {
     const state = this.state;
+
     if (state.loading) {
       return <div className="text-center"><Spinner/></div>;
     }
 
-    return <>
-      {this.renderHeader()}
-      <FloatAllocationTable float={state.float} onSave={this.floatSave}/>
-      <FloatRefferalCodesTable floar={state.floar}/>
-    </>;
+    if (state.float) {
+      return <>
+        {this.renderHeader()}
+        <FloatAllocationTable float={state.float} onSave={this.floatSave}/>
+        <FloatRefferalCodesTable float={state.float}/>
+      </>;
+    }
+
+    return null;
   }
 
   renderHeader() {
@@ -72,7 +77,10 @@ class ClientFloatPage extends React.Component {
   }
 
   loadFloat() {
+    this.setState({ loading: true });
+
     const { clientId, floatId } = this.props.match.params;
+
     this.clientsService.getFloat(clientId, floatId).pipe(
       takeUntil(this.unmount)
     ).subscribe(float => {
@@ -81,8 +89,9 @@ class ClientFloatPage extends React.Component {
   }
 
   floatSave = data => {
-    // TODO: float update
-    console.log(data);
+    // TODO: update float (api needed)
+    console.error('No API for float update');
+    this.loadFloat();
   }
 }
 
