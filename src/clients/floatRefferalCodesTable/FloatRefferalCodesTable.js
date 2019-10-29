@@ -1,5 +1,8 @@
 import React from 'react';
 
+import TagList from 'src/components/tagList/TagList';
+import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
+
 import './FloatRefferalCodesTable.scss';
 
 class FloatRefferalCodesTable extends React.Component {
@@ -20,6 +23,24 @@ class FloatRefferalCodesTable extends React.Component {
   }
 
   renderTable() {
+    const props = this.props;
+
+    const rows = [{}].map((item, index) => {
+      return <tr key={index}>
+        <td>#name</td>
+        <td>beta</td>
+        <td>10</td>
+        <td>R12.99</td>
+        <td><TagList tags="tag1,tag2,tag3"/></td>
+        <td>
+          <DropdownMenu items={[
+            { text: 'Duplicate', click: () => props.onAction('duplicate', item) },
+            { text: 'Deactivate', click: () => props.onAction('deactivate', item) }
+          ]}/>
+        </td>
+      </tr>
+    });
+
     return <table className="table">
       <thead>
         <tr>
@@ -32,9 +53,8 @@ class FloatRefferalCodesTable extends React.Component {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td colSpan="6" className="no-data">No codes</td>
-        </tr>
+        {rows.length ? rows :
+          <tr><td colSpan="6" className="no-data">No codes</td></tr>}
       </tbody>
     </table>;
   }

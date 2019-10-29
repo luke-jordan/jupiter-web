@@ -66,7 +66,7 @@ class FloatAllocationTable extends React.Component {
               disabled={!hasChanges}>
               Save
             </button>
-            <button className="link" onClick={this.cancelClick}>Cancel</button>
+            <button className="link text-underline" onClick={this.cancelClick}>Cancel</button>
           </> :
           <button className="button button-outline button-small" onClick={this.editClick}>Edit</button>
         }
@@ -137,7 +137,7 @@ class FloatAllocationTable extends React.Component {
         onChange={e => this.setState({ confirmValue: e.target.value })}/>
       <div className="grid-row confirm-actions">
         <div className="grid-col">
-          <span className="link" onClick={this.closeConfirm}>Cancel</span>
+          <span className="link text-underline" onClick={this.closeConfirm}>Cancel</span>
         </div>
         <div className="grid-col text-right">
           <button className="button" disabled={state.confirmValue !== 'confirmed'}

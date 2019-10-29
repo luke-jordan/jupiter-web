@@ -48,7 +48,7 @@ class ClientFloatPage extends React.Component {
       return <>
         {this.renderHeader()}
         <FloatAllocationTable float={state.float} onSave={this.floatSave}/>
-        <FloatRefferalCodesTable float={state.float}/>
+        <FloatRefferalCodesTable float={state.float} onAction={this.refferalCodeAction}/>
       </>;
     }
 
@@ -91,7 +91,11 @@ class ClientFloatPage extends React.Component {
   floatSave = data => {
     // TODO: update float (api needed)
     console.error('No API for float update');
-    this.loadFloat();
+  }
+
+  refferalCodeAction = (action, item) => {
+    // TODO: create/deactive refferal code (api needed)
+    console.error('No API for refferal code create/deactive');
   }
 }
 
