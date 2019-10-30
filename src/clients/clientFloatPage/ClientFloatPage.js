@@ -66,7 +66,7 @@ class ClientFloatPage extends React.Component {
       </div>
       <div className="grid-col float-balance">
         <div className="balance-label">Total float balance</div>
-        <div className="balance-value">R0,001</div>
+        <div className="balance-value">{float.floatBalance.amountMoney}</div>
       </div>
     </div>;
   }

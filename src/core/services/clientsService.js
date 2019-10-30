@@ -39,6 +39,7 @@ export class ClientsService {
       params: { clientId, floatId }, sendToken: true
     }).pipe(
       tap(float => {
+        this._modifyFloat(float);
         float.floatAlerts.forEach(floatAlert => this._modifyAlert(floatAlert));
       })
     );
@@ -58,17 +59,25 @@ export class ClientsService {
     floatBalance.amountValue = convertAmount(floatBalance.amount, floatBalance.unit);
     floatBalance.amountMoney = formatMoney(floatBalance.amountValue, floatBalance.currency);
 
-    floatMonthGrowth.amountValue = convertAmount(floatMonthGrowth.amount, floatMonthGrowth.unit);
-    floatMonthGrowth.amountMoney = formatMoney(floatMonthGrowth.amountValue, floatMonthGrowth.currency);
+    if (float.floatMonthGrowth) {
+      floatMonthGrowth.amountValue = convertAmount(floatMonthGrowth.amount, floatMonthGrowth.unit);
+      floatMonthGrowth.amountMoney = formatMoney(floatMonthGrowth.amountValue, floatMonthGrowth.currency);
+    }
 
-    bonusPoolBalance.amountValue = convertAmount(bonusPoolBalance.amount, bonusPoolBalance.unit);
-    bonusPoolBalance.amountMoney = formatMoney(bonusPoolBalance.amountValue, bonusPoolBalance.currency);
+    if (bonusPoolBalance) {
+      bonusPoolBalance.amountValue = convertAmount(bonusPoolBalance.amount, bonusPoolBalance.unit);
+      bonusPoolBalance.amountMoney = formatMoney(bonusPoolBalance.amountValue, bonusPoolBalance.currency);
+    }
 
-    bonusInflowSum.amountValue = convertAmount(bonusInflowSum.amount, bonusInflowSum.unit);
-    bonusInflowSum.amountMoney = formatMoney(bonusInflowSum.amountValue, bonusInflowSum.currency);
+    if (bonusInflowSum) {
+      bonusInflowSum.amountValue = convertAmount(bonusInflowSum.amount, bonusInflowSum.unit);
+      bonusInflowSum.amountMoney = formatMoney(bonusInflowSum.amountValue, bonusInflowSum.currency);
+    }
 
-    bonusOutflow.amountValue = convertAmount(bonusOutflow.amount, bonusOutflow.unit);
-    bonusOutflow.amountMoney = formatMoney(bonusOutflow.amountValue, bonusOutflow.currency);
+    if (bonusOutflow) {
+      bonusOutflow.amountValue = convertAmount(bonusOutflow.amount, bonusOutflow.unit);
+      bonusOutflow.amountMoney = formatMoney(bonusOutflow.amountValue, bonusOutflow.currency);
+    }
   }
 
   _modifyAlert(floatAlert) {
