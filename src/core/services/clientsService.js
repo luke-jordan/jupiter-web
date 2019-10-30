@@ -1,5 +1,6 @@
 import { forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
+import moment from 'moment';
 
 import { convertAmount, getCountryByCode, formatMoney } from 'src/core/utils';
 
@@ -36,7 +37,11 @@ export class ClientsService {
   getFloat(clientId, floatId) {
     return this.apiService.get(`${this.url}/client/fetch`, {
       params: { clientId, floatId }, sendToken: true
-    })
+    }).pipe(
+      tap(float => {
+        float.floatAlerts.forEach(floatAlert => this._modifyAlert(floatAlert));
+      })
+    );
   }
 
   _modifyClient(client, countries) {
@@ -64,5 +69,9 @@ export class ClientsService {
 
     bonusOutflow.amountValue = convertAmount(bonusOutflow.amount, bonusOutflow.unit);
     bonusOutflow.amountMoney = formatMoney(bonusOutflow.amountValue, bonusOutflow.currency);
+  }
+
+  _modifyAlert(floatAlert) {
+    floatAlert.formattedDate = moment(floatAlert.updatedTimeMillis).format('DD/MM/YY hh:mmA');
   }
 }

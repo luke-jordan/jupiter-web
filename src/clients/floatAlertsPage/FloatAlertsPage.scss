@@ -1,0 +1,48 @@
+@import 'src/styles/common';
+
+.float-alerts-page {
+  .page-content {
+    min-height: 90px;
+  }
+
+  .alerts-filter {
+    .grid-col {
+      display: flex;
+      align-items: center;
+    }
+    .grid-col:nth-child(2) {
+      justify-content: flex-end;
+    }
+    .filter-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: $color-grey;
+      padding-right: 10px;
+    }
+    .input-group {
+      width: 400px;
+    }
+    .tabs {
+      width: 250px;
+    }
+  }
+
+  .table {
+    margin-top: 25px;
+    td:nth-child(n+2) {
+      font-size: 12px;
+    }
+    .alert-icon {
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    .alert-action {
+      .link {
+        display: inline-block;
+        margin-top: 4px;
+        font-weight: normal;
+        font-size: 11px;
+      }
+    }
+  }
+}

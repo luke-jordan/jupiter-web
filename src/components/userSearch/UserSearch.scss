@@ -27,5 +27,8 @@
   .input-group {
     max-width: 650px;
     margin: 0 auto;
+    .input-control {
+      border: 0;
+    }
   }
 }
