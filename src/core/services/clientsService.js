@@ -51,9 +51,9 @@ export class ClientsService {
     });
   }
 
-  updateFloatAllocation(clientId, floatId, changes) {
+  updateFloatAccrual(clientId, floatId, newAccrualVars) {
     return this.updateClient({
-      clientId, floatId, newAccrualVars: changes,
+      clientId, floatId, newAccrualVars,
       operation: 'ADJUST_ACCRUAL_VARS'
     });
   }

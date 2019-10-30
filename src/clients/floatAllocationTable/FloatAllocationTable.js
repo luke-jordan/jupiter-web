@@ -30,18 +30,26 @@ class FloatAllocationTable extends React.Component {
 
     this.state = {
       edit: false,
-      data: this.floatToTableData(props.float),
-      changes: {},
       confirmOpen: false,
       confirmValue: '',
+      changes: null,
+      ...this.getFloatData(props.float)
     };
+  }
+
+  getFloatData(float) {
+    const data = {
+      bonusPoolShareOfAccrual: (float.bonusPoolShareOfAccrual * 100).toFixed(0),
+      clientShareOfAccrual: (float.clientShareOfAccrual * 100).toFixed(0),
+      accrualRateAnnualBps: float.accrualRateAnnualBps + '',
+      prudentialFactor: (float.prudentialFactor * 100).toFixed(0)
+    };
+    return { data, initialData: { ...data } };
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.float !== prevProps.float) {
-      this.setState({
-        data: this.floatToTableData(this.props.float)
-      });
+      this.setState(this.getFloatData(this.props.float));
     }
   }
 
@@ -55,15 +63,13 @@ class FloatAllocationTable extends React.Component {
 
   renderHeader() {
     const state = this.state;
-    const hasChanges = Object.keys(state.changes).length > 0;
-
     return <div className="section-header">
       <div className="header-text">Float Allocation</div>
       <div className="header-actions">
         {state.edit ?
           <>
             <button className="button button-outline button-small" onClick={this.saveClick}
-              disabled={!hasChanges}>
+              disabled={!state.changes}>
               Save
             </button>
             <button className="link text-underline" onClick={this.cancelClick}>Cancel</button>
@@ -105,18 +111,21 @@ class FloatAllocationTable extends React.Component {
   renderConfirm() {
     const { props, state } = this;
 
+    if (!state.confirmOpen) {
+      return;
+    }
+
     const rows = this.itemsConfig.filter(item => state.changes[item.name]).map(item => {
       return <tr key={item.name}>
         <td>{item.title}</td>
         <td>{state.changes[item.name].oldValue}{item.unit}</td>
-        <td>{state.changes[item.name].newValue}{item.unit}</td>
+        <td>{state.changes[item.name].newValue || 0}{item.unit}</td>
       </tr>
     });
 
-    return <Modal className="float-allocation-table-confirm"
-      open={state.confirmOpen}
+    return <Modal className="float-allocation-table-confirm" open
       header="Confirm Changes"
-      onClose={this.closeConfirm}>
+      onClose={this.cancelConfirm}>
       <div className="confirm-message">
         You are about to make the following changes to Float: <b>{props.float.floatName}</b>
       </div>
@@ -137,7 +146,7 @@ class FloatAllocationTable extends React.Component {
         onChange={e => this.setState({ confirmValue: e.target.value })}/>
       <div className="grid-row confirm-actions">
         <div className="grid-col">
-          <span className="link text-underline" onClick={this.closeConfirm}>Cancel</span>
+          <span className="link text-underline" onClick={this.cancelConfirm}>Cancel</span>
         </div>
         <div className="grid-col text-right">
           <button className="button" disabled={state.confirmValue !== 'confirmed'}
@@ -153,7 +162,9 @@ class FloatAllocationTable extends React.Component {
 
   cancelClick = () => {
     this.setState({
-      edit: false, data: this.floatToTableData(this.props.float), changes: {}
+      edit: false,
+      data: { ...this.state.initialData },
+      changes: null
     });
   }
 
@@ -161,57 +172,50 @@ class FloatAllocationTable extends React.Component {
     this.setState({ confirmOpen: true });
   }
 
-  continueClick = () => {
-    const changes = Object.entries(this.state.changes).reduce((acc, [key, value]) => {
-      acc[key] = value.newValue;
-      return acc;
-    }, {});
+  cancelConfirm = () => {
+    this.setState({ confirmOpen: false, confirmValue: '' });
+  }
 
+  continueClick = () => {
+    const changes = this.state.changes;
+    const dataToSave = {};
     this.itemsConfig.forEach(item => {
       if (item.name in changes) {
-        changes[item.name] = item.unit === '%' ? changes[item.name] / 100 : +changes[item.name];
+        const value = changes[item.name].newValue;
+        dataToSave[item.name] = item.unit === '%' ? value / 100 : +value;
       }
     });
 
-    this.props.onSave(changes);
+    this.props.onSave(dataToSave);
 
     this.setState({
       edit: false,
       confirmOpen: false,
       confirmValue: '',
-      changes: {}
+      changes: null
     });
   }
 
   inputChange = event => {
     const { name, value } = event.target;
-
     const data = { ...this.state.data, [name]: value };
-    const changes = { ...this.state.changes };
-
-    const oldValue = this.floatToTableData(this.props.float)[name];
-    const newValue = data[name];
-
-    if (+newValue !== oldValue) {
-      changes[name] = { oldValue, newValue };
-    } else {
-      delete changes[name];
-    }
-
-    this.setState({ data, changes });
+    this.setState({ data, changes: this.getChanges(data) });
   }
 
-  closeConfirm = () => {
-    this.setState({ confirmOpen: false, confirmValue: '' });
-  }
+  getChanges(data) {
+    const initialData = this.state.initialData;
+    let changes = null;
 
-  floatToTableData(float) {
-    return {
-      bonusPoolShareOfAccrual: float.bonusPoolShareOfAccrual * 100,
-      clientShareOfAccrual: float.clientShareOfAccrual * 100,
-      accrualRateAnnualBps: float.accrualRateAnnualBps,
-      prudentialFactor: float.prudentialFactor * 100
-    };
+    Object.keys(data).forEach(key => {
+      const newValue = data[key];
+      const oldValue = initialData[key];
+      if (newValue !== oldValue) {
+        changes = changes || {};
+        changes[key] = { newValue, oldValue };
+      }
+    });
+
+    return changes;
   }
 }
 
