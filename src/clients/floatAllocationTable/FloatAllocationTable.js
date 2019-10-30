@@ -162,17 +162,24 @@ class FloatAllocationTable extends React.Component {
   }
 
   continueClick = () => {
-    const data = {};
-    Object.entries(this.state.changes).forEach(([key, value]) => data[key] = value.newValue);
+    const changes = Object.entries(this.state.changes).reduce((acc, [key, value]) => {
+      acc[key] = value.newValue;
+      return acc;
+    }, {});
 
-    this.props.onSave(data);
+    this.itemsConfig.forEach(item => {
+      if (item.name in changes) {
+        changes[item.name] = item.unit === '%' ? changes[item.name] / 100 : +changes[item.name];
+      }
+    });
+
+    this.props.onSave(changes);
 
     this.setState({
       edit: false,
       confirmOpen: false,
       confirmValue: '',
-      changes: {},
-      data: this.floatToTableData(this.props.float)
+      changes: {}
     });
   }
 

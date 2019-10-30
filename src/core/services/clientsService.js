@@ -45,6 +45,19 @@ export class ClientsService {
     );
   }
 
+  updateClient(data) {
+    return this.apiService.post(`${this.url}/client/edit`, data, {
+      sendToken: true
+    });
+  }
+
+  updateFloatAllocation(clientId, floatId, changes) {
+    return this.updateClient({
+      clientId, floatId, newAccrualVars: changes,
+      operation: 'ADJUST_ACCRUAL_VARS'
+    });
+  }
+
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';

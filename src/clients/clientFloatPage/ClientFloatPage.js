@@ -44,7 +44,7 @@ class ClientFloatPage extends React.Component {
       {state.loading && <Spinner overlay/>}
       {state.float && <>
         {this.renderHeader()}
-        <FloatAllocationTable float={state.float} onSave={this.floatSave}/>
+        <FloatAllocationTable float={state.float} onSave={this.saveFloatAllocation}/>
         <FloatReferralCodesTable float={state.float} onAction={this.referralCodeAction}/>
       </>}
     </>;
@@ -83,15 +83,18 @@ class ClientFloatPage extends React.Component {
     });
   }
 
-  floatSave = data => {
-    // TODO: Float update (api needed)
-    console.log(data);
-
+  saveFloatAllocation = changes => {
     this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false });
-      this.modalService.showInfo('Info', 'Float update API is not implemented yet');
-    }, 500);
+
+    const { clientId, floatId } = this.props.match.params;
+    this.clientsService.updateFloatAllocation(clientId, floatId, changes).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.setState({
+        loading: false,
+        float: Object.assign({}, this.state.float, changes)
+      });
+    });
   }
 
   referralCodeAction = (action, item) => {
