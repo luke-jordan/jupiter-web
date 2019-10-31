@@ -7,6 +7,7 @@ import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import FloatAllocationTable from '../floatAllocationTable/FloatAllocationTable';
 import FloatReferralCodesTable from '../floatReferralCodesTable/FloatReferralCodesTable';
+import FloatBalanceEdit from '../floatBalanceEdit/FloatBalanceEdit';
 
 import './ClientFloatPage.scss';
 import currencyIcon from 'src/assets/images/currency.svg';
@@ -21,7 +22,8 @@ class ClientFloatPage extends React.Component {
 
     this.state = {
       loading: false,
-      float: null
+      float: null,
+      balanceEdit: false
     };
 
     unmountDecorator(this);
@@ -35,6 +37,7 @@ class ClientFloatPage extends React.Component {
     return <div className="client-float-page">
       <PageBreadcrumb title="Manage Float" link={{ to: '/clients', text: 'Clients' }}/>
       <div className="page-content">{this.renderContent()}</div>
+      {this.renderBalanceEdit()}
     </div>;
   }
 
@@ -67,8 +70,16 @@ class ClientFloatPage extends React.Component {
       <div className="grid-col float-balance">
         <div className="balance-label">Total float balance</div>
         <div className="balance-value">{float.floatBalance.amountMoney}</div>
+        <span className="link text-underline" onClick={() => this.toggleBalanceEdit(true)}>Change balance</span>
       </div>
     </div>;
+  }
+
+  renderBalanceEdit() {
+    return this.state.balanceEdit ?
+      <FloatBalanceEdit balance={this.state.float.floatBalance}
+        onClose={() => this.toggleBalanceEdit(false)}
+        onChange={this.changeBalance}/> : null;
   }
 
   loadFloat() {
@@ -107,6 +118,25 @@ class ClientFloatPage extends React.Component {
       this.setState({ loading: false });
       this.modalService.showInfo('Info', 'Referral codes API is not implemented yet');
     }, 500);
+  }
+
+  toggleBalanceEdit(balanceEdit) {
+    this.setState({ balanceEdit });
+  }
+
+  changeBalance = amount => {
+    this.setState({ loading: true, balanceEdit: false });
+
+    const float = this.state.float;
+    this.clientsService.updateFloatBalance({
+      clientId: float.clientId,
+      floatId: float.floatId,
+      amount: amount * 100,
+      unit: 'WHOLE_CENT',
+      currency: float.floatBalance.currency
+    }).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => this.loadFloat());
   }
 }
 

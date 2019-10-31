@@ -1,0 +1,15 @@
+@import 'src/styles/common';
+
+.float-balance-edit {
+  .modal-content .modal-body {
+    padding: 30px 20px;
+  }
+  .balance-edit-message {
+    margin: 20px 0;
+    font-size: 14px;
+    color: $color-grey2;
+  }
+  .change-button {
+    width: 100%;
+  }
+}

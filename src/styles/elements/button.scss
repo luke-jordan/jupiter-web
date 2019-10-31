@@ -1,6 +1,7 @@
 .button {
   @include theme-gradient;
   display: inline-flex;
+  justify-content: center;
   text-transform: uppercase;
   border-radius: 10px;
   font-size: 14px;

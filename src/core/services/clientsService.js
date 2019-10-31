@@ -60,6 +60,14 @@ export class ClientsService {
     });
   }
 
+  updateFloatBalance({ clientId, floatId, amount, currency, unit }) {
+    return this.updateClient({
+      clientId, floatId,
+      operation: 'ADD_SUBTRACT_FUNDS',
+      amountToProcess: { amount, currency, unit }
+    });
+  }
+
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';
