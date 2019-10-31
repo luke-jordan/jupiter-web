@@ -51,12 +51,11 @@ export class ClientsService {
     });
   }
 
-  updateFloatAccrual(clientId, floatId, changes, reason) {
+  updateFloatAccrual({ clientId, floatId, newAccrualVars, reasonToLog }) {
     return this.updateClient({
       clientId, floatId,
-      newAccrualVars: changes,
-      operation: 'ADJUST_ACCRUAL_VARS',
-      reasonToLog: reason
+      newAccrualVars, reasonToLog,
+      operation: 'ADJUST_ACCRUAL_VARS'
     });
   }
 
