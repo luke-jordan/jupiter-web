@@ -41,7 +41,7 @@ class FloatAllocationTable extends React.Component {
     const data = {
       bonusPoolShareOfAccrual: (float.bonusPoolShareOfAccrual * 100).toFixed(0),
       clientShareOfAccrual: (float.clientShareOfAccrual * 100).toFixed(0),
-      accrualRateAnnualBps: float.accrualRateAnnualBps + '',
+      accrualRateAnnualBps: float.accrualRateAnnualBps.toString(),
       prudentialFactor: (float.prudentialFactor * 100).toFixed(0)
     };
     return { data, initialData: { ...data } };
@@ -140,9 +140,9 @@ class FloatAllocationTable extends React.Component {
         <tbody>{rows}</tbody>
       </table>
       <div className="reason-message">
-        Please specify <b>reason</b>:
+        Please specify <b>reason</b> for the changes above:
       </div>
-      <Input className="reason-input" value={state.reason}
+      <Input className="reason-input" placeholder="Reason" value={state.reason}
         onChange={e => this.setState({ reason: e.target.value })}/>
       <div className="grid-row confirm-actions">
         <div className="grid-col">
