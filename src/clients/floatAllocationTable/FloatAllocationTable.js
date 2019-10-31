@@ -31,7 +31,7 @@ class FloatAllocationTable extends React.Component {
     this.state = {
       edit: false,
       confirmOpen: false,
-      confirmValue: '',
+      reason: '',
       changes: null,
       ...this.getFloatData(props.float)
     };
@@ -139,17 +139,17 @@ class FloatAllocationTable extends React.Component {
         </thead>
         <tbody>{rows}</tbody>
       </table>
-      <div className="confirm-message">
-        Please type <b>"confirmed"</b> in the box below to agree to the above changes:
+      <div className="reason-message">
+        Please specify <b>reason</b>:
       </div>
-      <Input className="confirm-input" value={state.confirmValue}
-        onChange={e => this.setState({ confirmValue: e.target.value })}/>
+      <Input className="reason-input" value={state.reason}
+        onChange={e => this.setState({ reason: e.target.value })}/>
       <div className="grid-row confirm-actions">
         <div className="grid-col">
           <span className="link text-underline" onClick={this.cancelConfirm}>Cancel</span>
         </div>
         <div className="grid-col text-right">
-          <button className="button" disabled={state.confirmValue !== 'confirmed'}
+          <button className="button" disabled={!state.reason.trim()}
             onClick={this.continueClick}>Continue</button>
         </div>
       </div>
@@ -173,16 +173,16 @@ class FloatAllocationTable extends React.Component {
   }
 
   cancelConfirm = () => {
-    this.setState({ confirmOpen: false, confirmValue: '' });
+    this.setState({ confirmOpen: false, reason: '' });
   }
 
   continueClick = () => {
     const changes = this.state.changes;
-    const dataToSave = {};
+    const dataToSave = { changes: {}, reason: this.state.reason };
     this.itemsConfig.forEach(item => {
       if (item.name in changes) {
         const value = changes[item.name].newValue;
-        dataToSave[item.name] = item.unit === '%' ? value / 100 : +value;
+        dataToSave.changes[item.name] = item.unit === '%' ? value / 100 : +value;
       }
     });
 
@@ -191,7 +191,7 @@ class FloatAllocationTable extends React.Component {
     this.setState({
       edit: false,
       confirmOpen: false,
-      confirmValue: '',
+      reason: '',
       changes: null
     });
   }

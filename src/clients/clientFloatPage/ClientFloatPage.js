@@ -83,17 +83,17 @@ class ClientFloatPage extends React.Component {
     });
   }
 
-  saveFloatAllocation = changes => {
+  saveFloatAllocation = data => {
     this.setState({ loading: true });
 
     const { clientId, floatId } = this.props.match.params;
     
-    this.clientsService.updateFloatAccrual(clientId, floatId, changes).pipe(
+    this.clientsService.updateFloatAccrual(clientId, floatId, data.changes, data.reason).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
       this.setState({
         loading: false,
-        float: Object.assign({}, this.state.float, changes)
+        float: Object.assign({}, this.state.float, data.changes)
       });
     });
   }

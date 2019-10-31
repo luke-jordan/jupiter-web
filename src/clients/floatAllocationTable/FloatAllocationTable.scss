@@ -34,10 +34,6 @@
   .modal-content {
     max-width: 700px;
   }
-  .confirm-message {
-    font-size: 14px;
-    color: $color-grey2;
-  }
   .table {
     margin: 20px 0 30px;
     th:nth-child(3),
@@ -46,7 +42,11 @@
       color: $color-red2;
     }
   }
-  .confirm-input {
+  .reason-message {
+    font-size: 14px;
+    color: $color-grey2;
+  }
+  .reason-input {
     width: 200px;
     margin: 10px 0;
     .input-control {
