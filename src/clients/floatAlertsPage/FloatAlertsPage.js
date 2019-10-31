@@ -6,6 +6,7 @@ import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import Tabs from 'src/components/tabs/Tabs';
 import Input from 'src/components/input/Input';
+import FloatAlertActions from '../floatAlertActions/FloatAlertActions';
 
 import './FloatAlertsPage.scss';
 import alertInfoIcon from 'src/assets/images/alert-info.svg';
@@ -83,7 +84,9 @@ class FloatAlertsPage extends React.Component {
           {floatAlert.logDescription}
         </td>
         <td>{floatAlert.formattedDate}</td>
-        <td>{this.renderAlertActions(floatAlert)}</td>
+        <td>
+          <FloatAlertActions float={this.state.float} floatAlert={floatAlert}/>
+        </td>
       </tr>
     });
 
@@ -100,30 +103,6 @@ class FloatAlertsPage extends React.Component {
           <tr><td colSpan="3" className="no-data">No alerts</td></tr>}
       </tbody>
     </table>
-  }
-
-  renderAlertActions(floatAlert) {
-    let status;
-    let action;
-
-    if (floatAlert.logType === 'ALLOCATION_TOTAL_MISMATCH') {
-      status = 'Allocation mismatch';
-      action = 'Allocate funds';
-    } else if (floatAlert.logType === 'BALANCE_MISMATCH') {
-      status = 'Balance mismatch';
-      action = 'Add/subtract funds';
-    } else if (floatAlert.isResolved) {
-      status = 'Resolved';
-      action = 'Mark as unresolved';
-    } else {
-      status = 'Unresolved';
-      action = 'Mark as resolved';
-    }
-
-    return <div className="alert-action">
-      <b>{status}</b><br/>
-      <span className="link text-underline">{action}</span>
-    </div>;
   }
 
   loadFloat() {

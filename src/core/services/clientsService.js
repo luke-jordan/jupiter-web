@@ -59,11 +59,11 @@ export class ClientsService {
     });
   }
 
-  updateFloatBalance({ clientId, floatId, amount, currency, unit }) {
+  updateFloatBalance({ clientId, floatId, amount, currency, unit, logId }) {
     return this.updateClient({
       clientId, floatId,
       operation: 'ADD_SUBTRACT_FUNDS',
-      amountToProcess: { amount, currency, unit }
+      amountToProcess: { amount, currency, unit }, logId
     });
   }
 

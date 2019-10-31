@@ -77,9 +77,9 @@ class ClientFloatPage extends React.Component {
 
   renderBalanceEdit() {
     return this.state.balanceEdit ?
-      <FloatBalanceEdit balance={this.state.float.floatBalance}
+      <FloatBalanceEdit float={this.state.float}
         onClose={() => this.toggleBalanceEdit(false)}
-        onChange={this.changeBalance}/> : null;
+        onChanged={this.balanceChanged}/> : null;
   }
 
   loadFloat() {
@@ -128,19 +128,9 @@ class ClientFloatPage extends React.Component {
     this.setState({ balanceEdit });
   }
 
-  changeBalance = amount => {
-    this.setState({ loading: true, balanceEdit: false });
-
-    const float = this.state.float;
-    this.clientsService.updateFloatBalance({
-      clientId: float.clientId,
-      floatId: float.floatId,
-      amount: amount * 100,
-      unit: 'WHOLE_CENT',
-      currency: float.floatBalance.currency
-    }).pipe(
-      takeUntil(this.unmount)
-    ).subscribe(() => this.loadFloat());
+  balanceChanged = () => {
+    this.toggleBalanceEdit(false);
+    this.loadFloat();
   }
 }
 
