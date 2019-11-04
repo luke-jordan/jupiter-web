@@ -85,7 +85,8 @@ class FloatAlertsPage extends React.Component {
         </td>
         <td>{floatAlert.formattedDate}</td>
         <td>
-          <FloatAlertActions float={this.state.float} floatAlert={floatAlert}/>
+          <FloatAlertActions float={this.state.float} floatAlert={floatAlert}
+            onCompleted={this.actionCompleted}/>
         </td>
       </tr>
     });
@@ -146,6 +147,10 @@ class FloatAlertsPage extends React.Component {
     }
 
     this.setState({ alerts });
+  }
+
+  actionCompleted = () => {
+    this.loadFloat();
   }
 }
 

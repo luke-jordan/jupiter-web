@@ -75,7 +75,7 @@ class FloatBalanceEdit extends React.Component {
     }).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
-      this.props.onChanged();
+      this.props.onCompleted();
     });
   }
 }

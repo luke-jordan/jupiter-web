@@ -67,6 +67,22 @@ export class ClientsService {
     });
   }
 
+  resolveFloatAlert({ clientId, floatId, logId, reasonToLog }) {
+    return this.updateClient({
+      clientId, floatId,
+      operation: 'RESOLVE_ALERT',
+      reasonToLog, logId
+    });
+  }
+
+  reopenFloatAlert({ clientId, floatId, logId, reasonToLog }) {
+    return this.updateClient({
+      clientId, floatId,
+      operation: 'REOPEN_ALERT',
+      reasonToLog, logId
+    });
+  }
+
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';

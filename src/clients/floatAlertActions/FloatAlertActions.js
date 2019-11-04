@@ -1,6 +1,7 @@
 import React from 'react';
 
 import FloatBalanceEdit from '../floatBalanceEdit/FloatBalanceEdit';
+import FloatAlertResolve from '../floatAlertResolve/FloatAlertResolve';
 
 import './FloatAlertActions.scss';
 
@@ -8,50 +9,63 @@ class FloatAlertActions extends React.Component {
   constructor() {
     super();
     this.state = {
-      editBalance: false
+      actionOpen: false
     };
   }
 
   render() {
-    const config = this.getActionConfig();
-    return <div className="float-alert-actions">
-      <div className="alert-status">{config.status}</div>
-      <span className="link text-underline" onClick={config.click}>{config.action}</span>
-      {this.renderBalanceEdit()}
-    </div>;
+    return <div className="float-alert-actions">{this.renderAction()}</div>;
   }
 
-  renderBalanceEdit() {
-    return this.state.editBalance ?
-      <FloatBalanceEdit float={this.props.float} floatAlert={this.props.floatAlert}
-        onClose={() => this.toggleEditBalance(false)}
-        onChanged={() => this.toggleEditBalance(false)}/> : null;
-  }
+  renderAction() {
+    const { float, floatAlert } = this.props;
+    const { actionOpen } = this.state;
 
-  getActionConfig() {
-    const floatAlert = this.props.floatAlert;
     if (floatAlert.logType === 'ALLOCATION_TOTAL_MISMATCH') {
-      return {
-        status: 'Allocation mismatch', action: 'Allocate funds'
-      };
-    } else if (floatAlert.logType === 'BALANCE_MISMATCH') {
-      return {
-        status: 'Balance mismatch', action: 'Add/subtract funds',
-        click: () => this.toggleEditBalance(true)
-      };
-    } else if (floatAlert.isResolved) {
-      return {
-        status: 'Resolved', action: 'Mark as unresolved'
-      };
-    } else {
-      return {
-        status: 'Unresolved', action: 'Mark as resolved'
-      }
+      return <>
+        {this.renderActionStatus('Allocation mismatch', 'Allocate funds')}
+      </>;
     }
+
+    if (floatAlert.logType === 'BALANCE_MISMATCH') {
+      return <>
+        {this.renderActionStatus('Balance mismatch', 'Add/subtrack funds')}
+        {actionOpen && <FloatBalanceEdit
+          float={float}
+          floatAlert={floatAlert}
+          onClose={this.closeAction}
+          onCompleted={this.actionCompleted}/>}
+      </>;
+    }
+
+    return <>
+      {this.renderActionStatus(
+        floatAlert.isResolved ? 'Resolved': 'Unresolved',
+        `Mark as ${floatAlert.isResolved ? 'unresolved' : 'resolved'}`
+      )}
+      {actionOpen && <FloatAlertResolve
+        float={float}
+        floatAlert={floatAlert}
+        onClose={this.closeAction}
+        onCompleted={this.actionCompleted}/>}
+    </>;
   }
 
-  toggleEditBalance = editBalance => {
-    this.setState({ editBalance });
+  renderActionStatus(status, action) {
+    return <>
+      <div className="alert-status">{status}</div>
+      <span className="link text-underline"
+        onClick={() => this.setState({ actionOpen: true })}>{action}</span>
+    </>;
+  }
+  
+  closeAction = () => {
+    this.setState({ actionOpen: false });
+  }
+
+  actionCompleted = () => {
+    this.setState({ actionOpen: false });
+    this.props.onCompleted();
   }
 }
 

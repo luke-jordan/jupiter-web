@@ -79,7 +79,7 @@ class ClientFloatPage extends React.Component {
     return this.state.balanceEdit ?
       <FloatBalanceEdit float={this.state.float}
         onClose={() => this.toggleBalanceEdit(false)}
-        onChanged={this.balanceChanged}/> : null;
+        onCompleted={this.balanceChanged}/> : null;
   }
 
   loadFloat() {
