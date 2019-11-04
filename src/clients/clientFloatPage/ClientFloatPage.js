@@ -98,9 +98,10 @@ class ClientFloatPage extends React.Component {
     this.setState({ loading: true });
 
     const float = this.state.float;
-    this.clientsService.updateFloatAccrual({
+    this.clientsService.updateClient({
       clientId: float.clientId,
       floatId: float.floatId,
+      operation: 'ADJUST_ACCRUAL_VARS',
       newAccrualVars: data.changes,
       reasonToLog: data.reason
     }).pipe(

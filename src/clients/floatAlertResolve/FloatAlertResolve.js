@@ -59,11 +59,11 @@ class FloatAlertResolve extends React.Component {
     this.setState({ loading: true });
 
     const { float, floatAlert } = this.props;
-    const methodName = floatAlert.isResolved ? 'reopenFloatAlert' : 'resolveFloatAlert';
 
-    this.clientsService[methodName]({
+    this.clientsService.updateClient({
       clientId: float.clientId,
       floatId: float.floatId,
+      operation: floatAlert.isResolved ? 'REOPEN_ALERT' : 'RESOLVE_ALERT',
       reasonToLog: this.state.reason,
       logId: floatAlert.logId
     }).pipe(

@@ -51,38 +51,6 @@ export class ClientsService {
     });
   }
 
-  updateFloatAccrual({ clientId, floatId, newAccrualVars, reasonToLog }) {
-    return this.updateClient({
-      clientId, floatId,
-      newAccrualVars, reasonToLog,
-      operation: 'ADJUST_ACCRUAL_VARS'
-    });
-  }
-
-  updateFloatBalance({ clientId, floatId, amount, currency, unit, logId }) {
-    return this.updateClient({
-      clientId, floatId,
-      operation: 'ADD_SUBTRACT_FUNDS',
-      amountToProcess: { amount, currency, unit }, logId
-    });
-  }
-
-  resolveFloatAlert({ clientId, floatId, logId, reasonToLog }) {
-    return this.updateClient({
-      clientId, floatId,
-      operation: 'RESOLVE_ALERT',
-      reasonToLog, logId
-    });
-  }
-
-  reopenFloatAlert({ clientId, floatId, logId, reasonToLog }) {
-    return this.updateClient({
-      clientId, floatId,
-      operation: 'REOPEN_ALERT',
-      reasonToLog, logId
-    });
-  }
-
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';
