@@ -120,5 +120,18 @@ export class ClientsService {
 
   _modifyAlert(floatAlert) {
     floatAlert.formattedDate = moment(floatAlert.updatedTimeMillis).format('DD/MM/YY hh:mmA');
+
+    if (floatAlert.logType === 'ALLOCATION_TOTAL_MISMATCH') {
+      const context = floatAlert.logContext;
+
+      context.accountsTxTotalValue = convertAmount(context.accountsTxTotal, context.unit);
+      context.accountsTxTotalMoney = formatMoney(context.accountsTxTotalValue, context.currency);
+
+      context.floatAccountsTotalValue = convertAmount(context.floatAccountsTotal, context.unit);
+      context.floatAccountsTotalMoney = formatMoney(context.floatAccountsTotalValue, context.currency);
+
+      context.mismatchValue = convertAmount(context.mismatch, context.unit);
+      context.mismatchMoney = formatMoney(context.mismatchValue, context.currency);
+    }
   }
 }

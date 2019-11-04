@@ -2,6 +2,7 @@ import React from 'react';
 
 import FloatBalanceEdit from '../floatBalanceEdit/FloatBalanceEdit';
 import FloatAlertResolve from '../floatAlertResolve/FloatAlertResolve';
+import FloatAllocateFunds from '../floatAllocateFunds/FloatAllocateFunds';
 
 import './FloatAlertActions.scss';
 
@@ -24,6 +25,11 @@ class FloatAlertActions extends React.Component {
     if (floatAlert.logType === 'ALLOCATION_TOTAL_MISMATCH') {
       return <>
         {this.renderActionStatus('Allocation mismatch', 'Allocate funds')}
+        {actionOpen && <FloatAllocateFunds
+          float={float}
+          floatAlert={floatAlert}
+          onClose={this.closeAction}
+          onCompleted={this.actionCompleted}/>}
       </>;
     }
 

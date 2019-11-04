@@ -1,0 +1,56 @@
+@import 'src/styles/common';
+
+.modal.float-allocate-funds {
+  .modal-body {
+    font-size: 14px;
+    padding: 30px;
+  }
+  .allocate-message {
+    text-align: center;
+    line-height: 1.6;
+    color: $color-grey2;
+  }
+  .allocate-balance {
+    border: 1px solid $color-silver;
+    padding: 15px;
+    max-width: 400px;
+    margin: 20px auto;
+    color: $color-grey2;
+    .grid-row:not(:last-child) {
+      margin-bottom: 10px;
+    }
+    .grid-col-5 {
+      font-weight: bold;
+      text-align: right;
+    }
+    .grid-row:last-child {
+      color: $color-grey;
+      font-weight: bold;
+    }
+    .info-divider {
+      height: 1px;
+      margin-bottom: 10px;
+      background-color: $color-silver;
+    }
+  }
+  .deduct-from {
+    margin: 35px 0;
+    text-align: center;
+    header {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .radio {
+      margin: 0 10px;
+    }
+  }
+  .actions {
+    .grid-col:first-child {
+      display: flex;
+      align-items: flex-end;
+    }
+    .grid-col:last-child {
+      text-align: right;
+    }
+  }
+}
