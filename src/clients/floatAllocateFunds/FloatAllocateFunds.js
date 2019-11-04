@@ -1,14 +1,18 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
+import { inject, unmountDecorator } from 'src/core/utils';
 import Modal from 'src/components/modal/Modal';
 import RadioButton from 'src/components/radioButton/RadioButton';
+import Spinner from 'src/components/spinner/Spinner';
 
 import './FloatAllocateFunds.scss';
 
 class FloatAllocateFunds extends React.Component {
   constructor() {
     super();
+
+    this.clientsService = inject('ClientsService');
 
     this.state = {
       allocateTo: ''
@@ -19,6 +23,8 @@ class FloatAllocateFunds extends React.Component {
       { value: 'COMPANY_SHARE', text: 'Jupiter Savings SA' },
       { value: 'ALL_USERS', text: 'All Users' }
     ];
+
+    unmountDecorator(this);
   }
 
   render() {
@@ -26,23 +32,19 @@ class FloatAllocateFunds extends React.Component {
       className="float-allocate-funds"
       header="Manage float allocation"
       onClose={this.props.onClose}>
-      <div className="allocate-message">
-        <b>The float bank balance and system balance do not match.</b><br/>
-        Please deduct the necessary funds accordingly: 
-      </div>
+      {this.renderMessage()}
       {this.renderBalance()}
       {this.renderDeductFrom()}
-      <div className="grid-row actions">
-        <div className="grid-col">
-          <span className="link text-underline" onClick={this.props.onClose}>Cancel</span>
-        </div>
-        <div className="grid-col">
-          <button className="button" onClick={this.confirm} disabled={!this.state.allocateTo}>
-            Confirm
-          </button>
-        </div>
-      </div>
+      {this.renderActions()}
+      {this.state.loading && <Spinner overlay/>}
     </Modal>
+  }
+
+  renderMessage() {
+    return <div className="allocate-message">
+      <b>The float bank balance and system balance do not match.</b><br/>
+      Please deduct the necessary funds accordingly: 
+    </div>;
   }
 
   renderBalance() {
@@ -77,12 +79,45 @@ class FloatAllocateFunds extends React.Component {
     </div>;
   }
 
+  renderActions() {
+    return <div className="grid-row actions">
+      <div className="grid-col">
+        <span className="link text-underline" onClick={this.props.onClose}>Cancel</span>
+      </div>
+      <div className="grid-col">
+        <button className="button" onClick={this.confirm} disabled={!this.state.allocateTo}>
+          Confirm
+        </button>
+      </div>
+    </div>;
+  }
+
   radioChecked = event => {
     this.setState({ allocateTo: event.target.value });
   }
 
   confirm = () => {
-    console.log(this.state);
+    this.setState({ loading: true });
+
+    const { float, floatAlert } = this.props;
+    const logContext = floatAlert.logContext;
+
+    this.clientsService.updateClient({
+      clientId: float.clientId,
+      floatId: float.floatId,
+      logId: floatAlert.logId,
+      operation: 'ALLOCATE_FUNDS',
+      amountToProcess: {
+        currency: logContext.currency,
+        unit: logContext.unit,
+        amount: logContext.mismatch
+      },
+      allocateTo: this.state.allocateTo,
+    }).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.props.onCompleted();
+    });
   }
 }
 
