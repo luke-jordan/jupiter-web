@@ -62,14 +62,13 @@ class FloatAllocationTable extends React.Component {
   }
 
   renderHeader() {
-    const state = this.state;
     return <div className="section-header">
       <div className="header-text">Float Allocation</div>
       <div className="header-actions">
-        {state.edit ?
+        {this.state.edit ?
           <>
             <button className="button button-outline button-small" onClick={this.saveClick}
-              disabled={!state.changes}>
+              disabled={!this.canSave()}>
               Save
             </button>
             <button className="link text-underline" onClick={this.cancelClick}>Cancel</button>
@@ -216,6 +215,14 @@ class FloatAllocationTable extends React.Component {
     });
 
     return changes;
+  }
+
+  canSave() {
+    const state = this.state;
+    return (
+      state.changes &&
+      Object.entries(state.data).every(([key, value]) => value)
+    );
   }
 }
 
