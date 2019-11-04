@@ -39,10 +39,10 @@ class FloatAllocationTable extends React.Component {
 
   getFloatData(float) {
     const data = {
-      bonusPoolShareOfAccrual: (float.bonusPoolShareOfAccrual * 100).toFixed(0),
-      clientShareOfAccrual: (float.clientShareOfAccrual * 100).toFixed(0),
+      bonusPoolShareOfAccrual: this.processPercent(float.bonusPoolShareOfAccrual),
+      clientShareOfAccrual: this.processPercent(float.clientShareOfAccrual),
       accrualRateAnnualBps: float.accrualRateAnnualBps.toString(),
-      prudentialFactor: (float.prudentialFactor * 100).toFixed(0)
+      prudentialFactor: this.processPercent(float.prudentialFactor)
     };
     return { data, initialData: { ...data } };
   }
@@ -223,6 +223,16 @@ class FloatAllocationTable extends React.Component {
       state.changes &&
       Object.entries(state.data).every(([key, value]) => value)
     );
+  }
+
+  processPercent(value) {
+    value = (value * 100).toFixed(2);
+    if (value.endsWith('00')) {
+      value = value.slice(0, -3);
+    } else if (value.endsWith('0')) {
+      value = value.slice(0, -1);
+    }
+    return value;
   }
 }
 
