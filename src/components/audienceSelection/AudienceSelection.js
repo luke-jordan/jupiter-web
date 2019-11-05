@@ -2,6 +2,7 @@ import React from 'react';
 
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
+import DatePicker from 'src/components/datePicker/DatePicker';
 
 import './AudienceSelection.scss';
 
@@ -52,15 +53,17 @@ class AudienceSelection extends React.Component {
       <div className="grid-col-4">
         <div className="form-group">
           <div className="form-label">From:</div>
-          <Input type="date" name="audienceDateFrom" value={props.formData.audienceDateFrom}
-            onChange={props.onChange} disabled={props.isView}/>
+          <DatePicker selected={props.formData.audienceDateFrom}
+            onChange={value => this.dateChanged('audienceDateFrom', value)}
+            disabled={props.isView}/>
         </div>
       </div>
       <div className="grid-col-4">
         <div className="form-group">
           <div className="form-label">To:</div>
-          <Input type="date" name="audienceDateTo" value={props.formData.audienceDateTo}
-            onChange={props.onChange} disabled={props.isView}/>
+          <DatePicker selected={props.formData.audienceDateTo}
+            onChange={value => this.dateChanged('audienceDateTo', value)}
+            disabled={props.isView}/>
         </div>
       </div>
     </>;
@@ -84,6 +87,12 @@ class AudienceSelection extends React.Component {
         </div>
       </div>
     </>;
+  }
+
+  dateChanged = (name, value) => {
+    this.props.onChange({
+      target: { name, value }
+    });
   }
 }
 

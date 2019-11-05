@@ -135,7 +135,7 @@ class BoostForm extends React.Component {
 
   renderAudienceSelection() {
     const { formData, onChange } = this.props;
-    return <AudienceSelection formData={formData} onChange={onChange}/>;
+    return <AudienceSelection formData={formData} onChange={onChange} isView={this.isView()}/>;
   }
 
   renderPushAndCardDetails() {

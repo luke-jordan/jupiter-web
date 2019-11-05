@@ -21,13 +21,13 @@
   .react-datepicker__triangle::before {
     border-bottom-color: $color-silver;
   }
-  .react-datepicker__day {
-    &.react-datepicker__day--selected,
-    &.react-datepicker__day--keyboard-selected {
-      background-color: $color-purple;
-    }
+  .react-datepicker__day.react-datepicker__day--selected {
+    background-color: $color-purple;
   }
-
+  .react-datepicker__day--keyboard-selected {
+    color: inherit;
+    background-color: transparent;
+  }
 
   .base-input {
     padding-right: 30px;
@@ -42,5 +42,9 @@
     text-align: center;
     margin-top: -6px;
     padding-bottom: 6px;
+  }
+
+  &.disabled .calendar-icon {
+    cursor: not-allowed;
   }
 }
