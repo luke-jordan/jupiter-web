@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 import ClientsListPage from '../clientsListPage/ClientsListPage';
 import ClientFloatPage from '../clientFloatPage/ClientFloatPage';
 import FloatAlertsPage from '../floatAlertsPage/FloatAlertsPage';
@@ -18,4 +19,4 @@ const ClientsPage = () => {
   </div>;
 };
 
-export default ClientsPage;
+export default errorBoundary(ClientsPage);

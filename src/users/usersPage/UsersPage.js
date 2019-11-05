@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 import UserSearchPage from '../userSearchPage/UserSearchPage';
 import UserHistoryPage from '../userHistoryPage/UserHistoryPage';
 
@@ -16,4 +17,4 @@ const UsersPage = props => {
   </div>;
 };
 
-export default UsersPage;
+export default errorBoundary(UsersPage);

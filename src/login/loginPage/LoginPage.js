@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { inject } from 'src/core/utils';
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 import LoginForm from '../loginForm/LoginForm';
 import OtpForm from '../otpForm/OtpForm';
 
@@ -54,4 +55,4 @@ class LoginPage extends React.Component {
   }
 }
 
-export default LoginPage;
+export default errorBoundary(LoginPage);

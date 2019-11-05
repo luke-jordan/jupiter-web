@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 import MessagesList from '../messagesList/MessagesList';
 import MessageEdit from '../messageEdit/MessageEdit';
 
@@ -16,4 +17,4 @@ const MessagesPage = () => {
   </div>;
 };
 
-export default MessagesPage;
+export default errorBoundary(MessagesPage);

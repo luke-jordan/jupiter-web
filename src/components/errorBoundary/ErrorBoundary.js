@@ -1,6 +1,7 @@
 import React from 'react';
 
 import './ErrorBoundary.scss';
+import alertErrorIcon from 'src/assets/images/alert-error.svg';
 
 class ErrorBoundary extends React.Component {
   constructor() {
@@ -16,9 +17,8 @@ class ErrorBoundary extends React.Component {
     const error = this.state.error;
     if (error) {
       return <div className="error-boundary">
-        <div className="card">
-          <div className="card-body">Error: {error.message}</div>
-        </div>
+        <div className="error-icon"><img src={alertErrorIcon} alt="error"/></div>
+        <div className="error-text">{error.message}</div>
       </div>;
     } else {
       return this.props.children;
