@@ -22,7 +22,7 @@ class FloatAlertActions extends React.Component {
     const { float, floatAlert } = this.props;
     const { actionOpen } = this.state;
 
-    if (floatAlert.logType === 'ALLOCATION_TOTAL_MISMATCH') {
+    if (floatAlert.logType === 'BALANCE_MISMATCH') {
       return <>
         {this.renderActionStatus('Allocation mismatch', 'Allocate funds')}
         {actionOpen && <FloatAllocateFunds
@@ -33,7 +33,7 @@ class FloatAlertActions extends React.Component {
       </>;
     }
 
-    if (floatAlert.logType === 'BALANCE_MISMATCH') {
+    if (floatAlert.logType === 'ALLOCATION_TOTAL_MISMATCH') {
       return <>
         {this.renderActionStatus('Balance mismatch', 'Add/subtrack funds')}
         {actionOpen && <FloatBalanceEdit

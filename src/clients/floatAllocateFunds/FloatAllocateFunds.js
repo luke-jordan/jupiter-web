@@ -51,17 +51,17 @@ class FloatAllocateFunds extends React.Component {
     const logContext = this.props.floatAlert.logContext;
     return <div className="allocate-balance">
       <div className="grid-row">
-        <div className="grid-col-7">Bank balance</div>
-        <div className="grid-col-5">{logContext.floatAccountsTotalMoney}</div>
+        <div className="grid-col-7">Float balance</div>
+        <div className="grid-col-5">{logContext.floatBalanceMoney}</div>
       </div>
       <div className="grid-row">
-        <div className="grid-col-7">System balance</div>
-        <div className="grid-col-5">{logContext.accountsTxTotalMoney}</div>
+        <div className="grid-col-7">Float allocation</div>
+        <div className="grid-col-5">{logContext.floatAllocationsMoney}</div>
       </div>
       <div className="info-divider"></div>
       <div className="grid-row">
         <div className="grid-col-7">Total balance difference</div>
-        <div className="grid-col-5">-{logContext.mismatchMoney}</div>
+        <div className="grid-col-5">{logContext.mismatchMoney}</div>
       </div>
     </div>;
   }
