@@ -13,8 +13,10 @@ class FloatAllocateFunds extends React.Component {
     super();
 
     this.clientsService = inject('ClientsService');
+    this.modalService = inject('ModalService');
 
     this.state = {
+      loading: false,
       allocateTo: ''
     };
 
@@ -117,6 +119,9 @@ class FloatAllocateFunds extends React.Component {
       takeUntil(this.unmount)
     ).subscribe(() => {
       this.props.onCompleted();
+    }, () => {
+      this.props.onClose();
+      this.modalService.openCommonError();
     });
   }
 }

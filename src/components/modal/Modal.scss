@@ -40,3 +40,18 @@
 body.modal-open {
   overflow: hidden;
 }
+
+.modal.info-modal {
+  .modal-content {
+    max-width: 450px;
+  }
+  .modal-body {
+    text-align: center;
+  }
+  .info-text {
+    margin-bottom: 20px;
+  }
+  .button {
+    width: 100px;
+  }
+}

@@ -28,15 +28,16 @@ class MessageEdit extends React.Component {
   constructor(props) {
     super();
 
+    this.messagesService = inject('MessagesService');
+    this.historyService = inject('HistoryService');
+    this.modalService = inject('ModalService');
+
     this.state = {
       loading: false,
       mode: props.match.params.mode,
       formData: { ...this.defaultData },
       sentResult: null
     };
-
-    this.messagesService = inject('MessagesService');
-    this.historyService = inject('HistoryService');
 
     unmountDecorator(this);
   }
@@ -133,7 +134,8 @@ class MessageEdit extends React.Component {
       if (mode === 'new') {
         this.setState({ loading: false, sentResult: { success: false } });
       } else {
-        this.historyService.push('/messages');
+        this.setState({ loading: false });
+        this.modalService.openCommonError();
       }
     });
   }

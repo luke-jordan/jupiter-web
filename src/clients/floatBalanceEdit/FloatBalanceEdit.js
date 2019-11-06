@@ -14,6 +14,7 @@ class FloatBalanceEdit extends React.Component {
     super();
 
     this.clientsService = inject('ClientsService');
+    this.modalService = inject('ModalService');
 
     this.state = {
       amount: '',
@@ -79,6 +80,9 @@ class FloatBalanceEdit extends React.Component {
       takeUntil(this.unmount)
     ).subscribe(() => {
       this.props.onCompleted();
+    }, () => {
+      this.props.onClose();
+      this.modalService.openCommonError();
     });
   }
 }

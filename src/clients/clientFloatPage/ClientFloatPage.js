@@ -111,6 +111,9 @@ class ClientFloatPage extends React.Component {
         loading: false,
         float: Object.assign({}, this.state.float, data.changes)
       });
+    }, () => {
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
     });
   }
 
@@ -121,7 +124,7 @@ class ClientFloatPage extends React.Component {
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false });
-      this.modalService.showInfo('Info', 'Referral codes API is not implemented yet');
+      this.modalService.openInfo('Info', 'Referral codes API is not implemented yet');
     }, 500);
   }
 
