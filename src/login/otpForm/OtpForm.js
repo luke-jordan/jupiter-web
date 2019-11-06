@@ -1,5 +1,7 @@
 import React from 'react';
+import { takeUntil } from 'rxjs/operators';
 
+import { inject, unmountDecorator } from 'src/core/utils';
 import Spinner from 'src/components/spinner/Spinner';
 import Input from 'src/components/input/Input';
 
@@ -8,27 +10,35 @@ import './OtpForm.scss';
 class OtpForm extends React.Component {
   constructor() {
     super();
+
+    this.authService = inject('AuthService');
+
     this.state = {
+      loading: false,
+      error: '',
       digits: ['1', '2', '3', '4']
     };
+
+    unmountDecorator(this);
   }
 
   render() {
-    const { loading } = this.props;
-    const { digits } = this.state;
+    const state = this.state;
+
     return <div className="card otp-form">
       <div className="card-header">Please enter the OTP pin sent to:</div>
       <div className="card-body">
-      <div className="phone-num">********87</div>
         <form className="form" onSubmit={this.submit}>
+          {state.error && <div className="login-error">{state.error}</div>}
+          <div className="phone-num">********87</div>
           <div className="digits">
-            {digits.map((digit, index) => {
-              return <Input value={digit} maxLength="1" disabled={loading}
+            {state.digits.map((digit, index) => {
+              return <Input value={digit} maxLength="1" disabled={state.loading}
                 onChange={this.inputChange} name={`digit-${index}`} key={index}/>
             })}
           </div>
-          <div className="form-actions">
-            {loading ? <Spinner/> : <button className="button">Continue</button>}
+          <div className="login-actions">
+            {state.loading ? <Spinner/> : <button className="button">Continue</button>}
           </div>
         </form>
         <div className="otp-help">
@@ -54,10 +64,21 @@ class OtpForm extends React.Component {
 
   submit = (event) => {
     event.preventDefault();
-    const pin = this.state.digits.join('');
-    if (pin.length === 4) {
-      this.props.onSubmit(pin);
+
+    const otp = this.state.digits.join('');
+    if (otp.length < 4) {
+      return;
     }
+
+    this.setState({ loading: true, error: '' });
+
+    this.authService.login({ ...this.props.loginData, otp }).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+
+    }, () => {
+      this.setState({ loading: false, error: 'Incorrect pin' });
+    });
   }
 }
 
