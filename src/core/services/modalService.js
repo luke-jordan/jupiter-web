@@ -19,6 +19,10 @@ export class ModalService {
   }
 
   openModal(modalElement) {
+    if (!(modalElement && modalElement.type === Modal)) {
+      throw Error('Cannot open modal. Provided element should be instance of <Modal .../>');
+    }
+
     if (!this._container) {
       this._container = document.createElement('div');
       document.body.appendChild(this._container);
