@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
+import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 import BoostsList from '../boostsList/BoostsList';
 import BoostEdit from '../boostEdit/BoostEdit';
 
@@ -16,4 +17,4 @@ const BoostsPage = () => {
   </div>;
 }
 
-export default BoostsPage;
+export default errorBoundary(BoostsPage);

@@ -12,9 +12,11 @@ import './BoostEdit.scss';
 class BoostEdit extends React.Component {
   constructor(props) {
     super();
+
     this.boostsService = inject('BoostsService');
     this.historyService = inject('HistoryService');
     this.clientsService = inject('ClientsService');
+    this.modalService = inject('ModalService');
 
     this.state = {
       loading: true,
@@ -26,8 +28,8 @@ class BoostEdit extends React.Component {
         expiryTime: 'END_OF_DAY',
         audience: 'whole_universe',
         audienceSample: 0,
-        audienceDateFrom: '',
-        audienceDateTo: '',
+        audienceDateFrom: null,
+        audienceDateTo: null,
         audienceActivityFrom: 0,
         audienceActivityTo: 5,
         requiredSave: 100,
@@ -104,8 +106,9 @@ class BoostEdit extends React.Component {
     ).subscribe(() => {
       this.setState({ loading: false });
       this.historyService.push('/boosts');
-    }, err => {
-      console.error(err);
+    }, () => {
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
     });
   }
 

@@ -51,22 +51,6 @@ export class ClientsService {
     });
   }
 
-  updateFloatAccrual({ clientId, floatId, newAccrualVars, reasonToLog }) {
-    return this.updateClient({
-      clientId, floatId,
-      newAccrualVars, reasonToLog,
-      operation: 'ADJUST_ACCRUAL_VARS'
-    });
-  }
-
-  updateFloatBalance({ clientId, floatId, amount, currency, unit, logId }) {
-    return this.updateClient({
-      clientId, floatId,
-      operation: 'ADD_SUBTRACT_FUNDS',
-      amountToProcess: { amount, currency, unit }, logId
-    });
-  }
-
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';
@@ -104,5 +88,18 @@ export class ClientsService {
 
   _modifyAlert(floatAlert) {
     floatAlert.formattedDate = moment(floatAlert.updatedTimeMillis).format('DD/MM/YY hh:mmA');
+
+    if (floatAlert.logType === 'BALANCE_MISMATCH') {
+      const context = floatAlert.logContext;
+
+      context.floatAllocationsValue = convertAmount(context.floatAllocations, context.unit);
+      context.floatAllocationsMoney = formatMoney(context.floatAllocationsValue, context.currency);
+
+      context.floatBalanceValue = convertAmount(context.floatBalance, context.unit);
+      context.floatBalanceMoney = formatMoney(context.floatBalanceValue, context.currency);
+
+      context.mismatchValue = convertAmount(context.mismatch, context.unit);
+      context.mismatchMoney = formatMoney(context.mismatchValue, context.currency);
+    }
   }
 }

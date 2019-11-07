@@ -1,5 +1,6 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
+import classNames from 'classnames';
 
 import { inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
@@ -79,13 +80,23 @@ class FloatAlertsPage extends React.Component {
     const rows = this.state.alerts.map(floatAlert => {
       return <tr key={floatAlert.logId}>
         <td>
-          <img className="alert-icon"  alt="alert"
-            src={floatAlert.isRedFlag ? alertErrorIcon : alertInfoIcon}/>
-          {floatAlert.logDescription}
+          <div className="grid-row">
+            <div className="grid-col">
+              <img className="alert-icon"  alt="alert"
+                src={floatAlert.isRedFlag ? alertErrorIcon : alertInfoIcon}/>
+            </div>
+            <div className="grid-col">
+              <div className={classNames('alert-indicator', { unresolved: !floatAlert.isResolved })}></div>
+            </div>
+            <div className="grid-col">
+              {floatAlert.logDescription}
+            </div>
+          </div>
         </td>
         <td>{floatAlert.formattedDate}</td>
         <td>
-          <FloatAlertActions float={this.state.float} floatAlert={floatAlert}/>
+          <FloatAlertActions float={this.state.float} floatAlert={floatAlert}
+            onCompleted={this.actionCompleted}/>
         </td>
       </tr>
     });
@@ -93,7 +104,7 @@ class FloatAlertsPage extends React.Component {
     return <table className="table">
       <thead>
         <tr>
-          <th>Alert</th>
+          <th>Alert ({rows.length})</th>
           <th style={{width: 150}}>Updated</th>
           <th style={{width: 200}}>Action</th>
         </tr>
@@ -146,6 +157,10 @@ class FloatAlertsPage extends React.Component {
     }
 
     this.setState({ alerts });
+  }
+
+  actionCompleted = () => {
+    this.loadFloat();
   }
 }
 

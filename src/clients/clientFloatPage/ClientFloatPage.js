@@ -79,7 +79,7 @@ class ClientFloatPage extends React.Component {
     return this.state.balanceEdit ?
       <FloatBalanceEdit float={this.state.float}
         onClose={() => this.toggleBalanceEdit(false)}
-        onChanged={this.balanceChanged}/> : null;
+        onCompleted={this.balanceChanged}/> : null;
   }
 
   loadFloat() {
@@ -98,9 +98,10 @@ class ClientFloatPage extends React.Component {
     this.setState({ loading: true });
 
     const float = this.state.float;
-    this.clientsService.updateFloatAccrual({
+    this.clientsService.updateClient({
       clientId: float.clientId,
       floatId: float.floatId,
+      operation: 'ADJUST_ACCRUAL_VARS',
       newAccrualVars: data.changes,
       reasonToLog: data.reason
     }).pipe(
@@ -110,6 +111,9 @@ class ClientFloatPage extends React.Component {
         loading: false,
         float: Object.assign({}, this.state.float, data.changes)
       });
+    }, () => {
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
     });
   }
 
@@ -120,7 +124,7 @@ class ClientFloatPage extends React.Component {
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false });
-      this.modalService.showInfo('Info', 'Referral codes API is not implemented yet');
+      this.modalService.openInfo('Info', 'Referral codes API is not implemented yet');
     }, 500);
   }
 

@@ -14,6 +14,7 @@ class FloatBalanceEdit extends React.Component {
     super();
 
     this.clientsService = inject('ClientsService');
+    this.modalService = inject('ModalService');
 
     this.state = {
       amount: '',
@@ -65,17 +66,23 @@ class FloatBalanceEdit extends React.Component {
     const float = this.props.float;
     const floatAlert = this.props.floatAlert;
 
-    this.clientsService.updateFloatBalance({
+    this.clientsService.updateClient({
       clientId: float.clientId,
       floatId: float.floatId,
-      amount: amount * 100,
-      unit: 'WHOLE_CENT',
-      currency: float.floatBalance.currency,
+      operation: 'ADD_SUBTRACT_FUNDS',
+      amountToProcess: {
+        amount: amount * 100,
+        unit: 'WHOLE_CENT',
+        currency: float.floatBalance.currency,
+      },
       logId: floatAlert ? floatAlert.logId : undefined
     }).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
-      this.props.onChanged();
+      this.props.onCompleted();
+    }, () => {
+      this.props.onClose();
+      this.modalService.openCommonError();
     });
   }
 }

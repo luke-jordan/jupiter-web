@@ -16,8 +16,10 @@
     "rxjs": "^6.5.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "env-cmd -f ./env/staging.env react-scripts start",
+    "startMaster": "env-cmd -f ./env/master.env react-scripts start",
+    "build": "env-cmd -f ./env/staging.env react-scripts build",
+    "buildMaster": "env-cmd -f ./env/master.env react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -37,6 +39,7 @@
     ]
   },
   "devDependencies": {
+    "env-cmd": "^10.0.1",
     "node-sass": "^4.13.0"
   }
 }

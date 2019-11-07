@@ -8,8 +8,13 @@
     border-bottom: 0;
     padding: 25px 0 10px;
   }
-  .form-actions {
+  .login-actions {
     height: 50px;
     text-align: center;
+  }
+  .login-error {
+    margin-bottom: 25px;
+    color: $color-red;
+    font-size: 14px;
   }
 }

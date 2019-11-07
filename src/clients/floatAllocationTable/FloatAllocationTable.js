@@ -39,10 +39,10 @@ class FloatAllocationTable extends React.Component {
 
   getFloatData(float) {
     const data = {
-      bonusPoolShareOfAccrual: (float.bonusPoolShareOfAccrual * 100).toFixed(0),
-      clientShareOfAccrual: (float.clientShareOfAccrual * 100).toFixed(0),
+      bonusPoolShareOfAccrual: this.processPercent(float.bonusPoolShareOfAccrual),
+      clientShareOfAccrual: this.processPercent(float.clientShareOfAccrual),
       accrualRateAnnualBps: float.accrualRateAnnualBps.toString(),
-      prudentialFactor: (float.prudentialFactor * 100).toFixed(0)
+      prudentialFactor: this.processPercent(float.prudentialFactor)
     };
     return { data, initialData: { ...data } };
   }
@@ -62,14 +62,13 @@ class FloatAllocationTable extends React.Component {
   }
 
   renderHeader() {
-    const state = this.state;
     return <div className="section-header">
       <div className="header-text">Float Allocation</div>
       <div className="header-actions">
-        {state.edit ?
+        {this.state.edit ?
           <>
             <button className="button button-outline button-small" onClick={this.saveClick}
-              disabled={!state.changes}>
+              disabled={!this.canSave()}>
               Save
             </button>
             <button className="link text-underline" onClick={this.cancelClick}>Cancel</button>
@@ -216,6 +215,24 @@ class FloatAllocationTable extends React.Component {
     });
 
     return changes;
+  }
+
+  canSave() {
+    const state = this.state;
+    return (
+      state.changes &&
+      Object.entries(state.data).every(([key, value]) => value)
+    );
+  }
+
+  processPercent(value) {
+    value = (value * 100).toFixed(2);
+    if (value.endsWith('00')) {
+      value = value.slice(0, -3);
+    } else if (value.endsWith('0')) {
+      value = value.slice(0, -1);
+    }
+    return value;
   }
 }
 

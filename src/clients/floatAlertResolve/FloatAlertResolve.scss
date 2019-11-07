@@ -1,0 +1,16 @@
+@import 'src/styles/common';
+
+.modal.float-alert-resolve {
+  .modal-body {
+    position: relative;
+    font-size: 14px;
+    padding: 30px;
+  }
+  .resolve-message {
+    margin-bottom: 20px;
+    color: $color-grey2;
+  }
+  .button {
+    width: 100%;
+  }
+}

@@ -5,33 +5,39 @@ import { capitalize, unmountDecorator, inject } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import MessageForm from '../messageForm/MessageForm';
+import MessageSentResult from '../messageSentResult/MessageSentResult';
 
 import './MessageEdit.scss';
 
 class MessageEdit extends React.Component {
+  defaultData = {
+    title: '',
+    body: '',
+    quickAction: 'ADD_CASH',
+    type: 'CARD',
+    sendTo: 'whole_universe',
+    sampleSize: 0,
+    priority: 0,
+    recurrence: 'EVENT_DRIVEN',
+    recurringMinIntervalDays: 0,
+    recurringMaxInQueue: 0,
+    eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER',
+    urlToVisit: ''
+  };
+
   constructor(props) {
     super();
-    this.state = {
-      loading: false,
-      mode: props.match.params.mode,
-      formData: {
-        title: '',
-        body: '',
-        quickAction: 'ADD_CASH',
-        type: 'CARD',
-        sendTo: 'whole_universe',
-        sampleSize: 0,
-        priority: 0,
-        recurrence: 'EVENT_DRIVEN',
-        recurringMinIntervalDays: 0,
-        recurringMaxInQueue: 0,
-        eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER',
-        urlToVisit: ''
-      }
-    };
 
     this.messagesService = inject('MessagesService');
     this.historyService = inject('HistoryService');
+    this.modalService = inject('ModalService');
+
+    this.state = {
+      loading: false,
+      mode: props.match.params.mode,
+      formData: { ...this.defaultData },
+      sentResult: null
+    };
 
     unmountDecorator(this);
   }
@@ -51,7 +57,19 @@ class MessageEdit extends React.Component {
         <MessageForm mode={state.mode} formData={state.formData}
           onChange={this.formInputChange} onSubmit={this.formSubmit}/>
       </div>
+      {state.sentResult && <MessageSentResult {...state.sentResult}
+          onAction={this.messageResultAction}/>}
     </div>;
+  }
+
+  messageResultAction = action => {
+    if (action === 'close') {
+      this.setState({ sentResult: null });
+    } else if (action === 'create-new') {
+      this.setState({ sentResult: null, formData: { ...this.defaultData } });
+    } else if (action === 'go-to-home') {
+      this.historyService.push('/');
+    }
   }
 
   loadMessage() {
@@ -107,10 +125,18 @@ class MessageEdit extends React.Component {
     obs.pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
-      this.setState({ loading: false });
-      this.historyService.push('/messages');
-    }, err => {
-      console.error(err);
+      if (mode === 'new') {
+        this.setState({ loading: false, sentResult: { success: true } });
+      } else {
+        this.historyService.push('/messages');
+      }
+    }, () => {
+      if (mode === 'new') {
+        this.setState({ loading: false, sentResult: { success: false } });
+      } else {
+        this.setState({ loading: false });
+        this.modalService.openCommonError();
+      }
     });
   }
 

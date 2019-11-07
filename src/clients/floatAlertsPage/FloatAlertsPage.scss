@@ -32,9 +32,28 @@
     td:nth-child(n+2) {
       font-size: 12px;
     }
-    .alert-icon {
-      vertical-align: middle;
-      margin-right: 10px;
+    .grid-row {
+      margin: 0;
+      .grid-col {
+        padding: 0;
+      }
+      .grid-col:nth-child(-n+2) { // 1 and 2
+        @include flex-center();
+      } 
+      .grid-col:nth-child(1) {
+        flex: 0 1 16px;
+      }
+      .grid-col:nth-child(2) {
+        flex: 0 1 26px;
+      }
+    }
+    .alert-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 100%;
+      &.unresolved {
+        background-color: $color-orange;
+      }
     }
   }
 }

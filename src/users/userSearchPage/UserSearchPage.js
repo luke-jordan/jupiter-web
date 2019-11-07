@@ -116,7 +116,7 @@ class UserSearchPage extends React.Component {
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false, user: Object.assign({}, this.state.user) });
-      this.modalService.showInfo('Info', 'User update API is not implemented yet');
+      this.modalService.openInfo('Info', 'User update API is not implemented yet');
     }, 500);
   }
 }
