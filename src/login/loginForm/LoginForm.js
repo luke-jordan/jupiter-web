@@ -67,7 +67,7 @@ class LoginForm extends React.Component {
 
     this.setState({ loading: true, error: '' });
 
-    this.authService.login({ phoneOrEmail, password }).pipe(
+    this.authService.login({ phoneOrEmail, password, autoOtp: true }).pipe(
       takeUntil(this.unmount)
     ).subscribe(res => {
       if (res.result === 'OTP_NEEDED') {
