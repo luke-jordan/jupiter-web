@@ -18,6 +18,7 @@ class UserSearchPage extends React.Component {
     this.historyService = inject('HistoryService');
     this.usersService = inject('UsersService');
     this.modalService = inject('ModalService');
+    this.authService = inject('AuthService');
 
     this.state = {
       loading: false,
@@ -110,14 +111,18 @@ class UserSearchPage extends React.Component {
   }
 
   userStatusChange = data => {
-    // TODO: Update user (api needed)
-    console.log(data);
-
     this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false, user: Object.assign({}, this.state.user) });
-      this.modalService.openInfo('Info', 'User update API is not implemented yet');
-    }, 500);
+
+    this.usersService.updateUser({
+      systemWideUserId: this.authService.user.value.systemWideUserId, ...data
+    }).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.searchUser(); // reload user
+    }, () => {
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
+    });
   }
 }
 

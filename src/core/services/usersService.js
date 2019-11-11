@@ -52,6 +52,12 @@ export class UsersService {
     );
   }
 
+  updateUser(data) {
+    return this.apiService.post(`${this.url}/user/update`, data, {
+      sendToken: true
+    });
+  }
+
   _modifyUser(user) {
     user.fullName = `${user.personalName} ${user.familyName}`;
     user.formattedStartDate = moment(user.creationTimeEpochMillis).format('MMM YYYY');
