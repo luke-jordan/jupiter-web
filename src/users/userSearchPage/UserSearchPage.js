@@ -63,7 +63,7 @@ class UserSearchPage extends React.Component {
         </div>
         <div className="card-body">
           <UserStatusForm user={state.user} onSubmit={this.userStatusChange}/>
-          <UserTransactions user={state.user}/>
+          <UserTransactions user={state.user} onChanged={this.searchUser}/>
         </div>
       </div>
     </>;
@@ -79,7 +79,7 @@ class UserSearchPage extends React.Component {
     }
   }
 
-  searchUser() {
+  searchUser = () => {
     const params = new URLSearchParams(this.props.location.search);
     const searchValue = params.get('searchValue');
     const searchType = params.get('searchType');
