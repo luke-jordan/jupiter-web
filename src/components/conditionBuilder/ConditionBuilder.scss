@@ -1,6 +1,7 @@
 @import 'src/styles/common';
 
 .condition-builder {
+  padding: 10px;
   .base-input .input-control {
     border-radius: 6px;
     font-size: 12px;
@@ -9,7 +10,7 @@
 
 .condition-builder .condition-group {
   position: relative;
-  padding: 10px 8px 0 8px;
+  padding: 10px 0 0 8px;
   &:not(:last-child) {
     margin-bottom: 10px;
   }

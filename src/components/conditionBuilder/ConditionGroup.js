@@ -7,21 +7,17 @@ import ConditionRule from './ConditionRule';
 class ConditionGroup extends React.Component {
   render() {
     const props = this.props;
-    return <div className="condition-group" ref={el => this.el = el}>
+    return <div className="condition-group">
       <div className="group-operation">
-        <Select className="operation" value={props.op}
-          onChange={e => this.actionClick('group:change-op', { newOp: e.target.value })}>
+        <Select className="operation" value={props.item.op} onChange={this.operationChange}>
           <option value="and">and</option>
           <option value="or">or</option>
         </Select>
       </div>
       <div className="group-actions">
-        <button className="button button-outline"
-          onClick={() => this.actionClick('group:add-rule')}>add rule</button>
-        <button className="button button-outline"
-          onClick={() => this.actionClick('group:add-group')}>add group</button>
-        {!props.isRoot && <button className="button button-outline"
-          onClick={() => this.actionClick('group:delete')}>delete</button>}
+        <button className="button button-outline" onClick={this.addRuleClick}>add rule</button>
+        <button className="button button-outline" onClick={this.addGroupClick}>add group</button>
+        {props.parent && <button className="button button-outline" onClick={this.deleteClick}>delete</button>}
       </div>
       <div className="group-inner">
         {props.item.children.map(this.renderChild)}
@@ -30,15 +26,30 @@ class ConditionGroup extends React.Component {
   }
 
   renderChild = (child, index) => {
-    return child.type === 'match' ?
-      <ConditionRule item={child} key={index} onEvent={this.props.onEvent}/> :
-      <ConditionGroup item={child} key={index} onEvent={this.props.onEvent}/>;
+    const Cmp = child.type === 'match' ? ConditionRule : ConditionGroup;
+    return <Cmp key={index} item={child} parent={this.props.item} onEvent={this.props.onEvent}/>;
   }
 
-  actionClick = (action, extra) => {
-    const props = this.props;
-    props.onEvent(action, { group: props.item, ...extra });
+  operationChange = event => {
+    this.triggerAction('group:change-op', { newValue: event.target.value });
   }
-};
+
+  addRuleClick = () => {
+    this.triggerAction('group:add-rule');
+  }
+
+  addGroupClick = () => {
+    this.triggerAction('group:add-group');
+  }
+
+  deleteClick = () => {
+    this.triggerAction('group:delete');
+  }
+
+  triggerAction = (action, params) => {
+    const props = this.props;
+    props.onEvent({ action, item: props.item, parent: props.parent, ...params });
+  }
+}
 
 export default ConditionGroup;
