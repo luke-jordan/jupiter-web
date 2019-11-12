@@ -22,8 +22,8 @@ class ConditionBuilder extends React.Component {
   }
 
   eventHandler = event => {
-    // Note that state modified directly because condition group can contain arbitrary level of nested groups.
-    // And force update is used to rerender all sub-components.
+    // Note that state modified directly because root object is complex and can contain arbitrary level of nested groups (children).
+    // Force update is used to rerender all sub-components.
 
     switch (event.action) {
       case 'group:add-rule':
