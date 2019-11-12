@@ -24,8 +24,8 @@ class BoostForm extends React.Component {
     return <form className="boost-form" onSubmit={props.onSubmit}>
       {this.renderDetails()}
       {this.renderConditions()}
-      {this.renderAudienceSelection()}
       {this.renderPushAndCardDetails()}
+      {this.renderAudienceSelection()}
       <div className="text-right">
         <button className="button">{this.submitButtonText[props.mode]}</button>
       </div>
@@ -133,16 +133,11 @@ class BoostForm extends React.Component {
     </>;
   }
 
-  renderAudienceSelection() {
-    const { formData, onChange } = this.props;
-    return <AudienceSelection formData={formData} onChange={onChange} isView={this.isView()}/>;
-  }
-
   renderPushAndCardDetails() {
     const { formData, onChange } = this.props;
     return <>
       <div className="form-section">
-        <div className="section-num">4</div>
+        <div className="section-num">3</div>
         <div className="section-text">Push notification &amp; Card details</div>
       </div>
       <div className="grid-row">
@@ -182,6 +177,10 @@ class BoostForm extends React.Component {
         {float.bonusPoolIds.map(id => <option key={id} value={id}>{id}</option>)}
       </optgroup>;
     });
+  }
+
+  renderAudienceSelection() {
+    return !this.isView() && <AudienceSelection/>;
   }
 }
 

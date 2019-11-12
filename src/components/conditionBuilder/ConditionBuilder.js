@@ -34,7 +34,7 @@ class ConditionBuilder extends React.Component {
 
     switch (event.action) {
       case 'group:add-rule':
-        event.item.children.push({ value: '', op: 'is', ...this.getDefPropAndValue() });
+        event.item.children.push({ value: '', op: 'is', ...this.getFirstPropData() });
         break;
 
       case 'group:add-group':
@@ -74,16 +74,21 @@ class ConditionBuilder extends React.Component {
 
     this.forceUpdate();
 
-    console.log(JSON.stringify(this.state.root, null, 2));
+    if (this.props.onChange) {
+      this.props.onChange(this.state.root);
+    }
   }
 
-  getDefPropAndValue() {
+  getFirstPropData() {
     const field = this.props.ruleFields[0];
-    return field ? { prop: field.name, value: this.defaultPropValue[field.expects] } : {};
+    return field ?
+      { prop: field.name, type: field.type, value: this.defaultPropValue[field.expects] } : {};
   }
 
   normalizeItemOnPropChange(item) {
     const field = this.props.ruleFields.find(_field => _field.name === item.prop);
+
+    item.type = field.type;
 
     if (field.expects === 'boolean') {
       item.op = 'is';
@@ -99,7 +104,7 @@ class ConditionBuilder extends React.Component {
     }
 
     if (field.expects === 'epochMillis' && !(field.value instanceof Date)) {
-      item.value = new Date();
+      item.value = new Date().getTime();
     }
   }
 

@@ -15,12 +15,16 @@ class ConditionGroup extends React.Component {
         </Select>
       </div>
       <div className="group-actions">
-        <button className="button button-outline" onClick={this.addRuleClick}>add rule</button>
-        <button className="button button-outline" onClick={this.addGroupClick}>add group</button>
-        {props.parent && <button className="button button-outline" onClick={this.deleteClick}>delete</button>}
+        <button type="button" className="button button-outline" onClick={this.addRuleClick}>
+          add rule</button>
+        <button type="button" className="button button-outline" onClick={this.addGroupClick}>
+          add group</button>
+        {props.parent && <button type="button" className="button button-outline" onClick={this.deleteClick}>
+          delete</button>}
       </div>
       <div className="group-inner">
-        {props.item.children.map(this.renderChild)}
+        {props.item.children.length ? 
+          props.item.children.map(this.renderChild) : <div className="no-conditions">no conditions</div>}
       </div>
     </div>;
   }
