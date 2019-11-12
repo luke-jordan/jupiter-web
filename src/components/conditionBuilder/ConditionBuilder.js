@@ -5,6 +5,13 @@ import ConditionGroup from './ConditionGroup';
 import './ConditionBuilder.scss';
 
 class ConditionBuilder extends React.Component {
+  defaultPropValue = {
+    string: '',
+    number: '',
+    boolean: true,
+    epochMillis: null
+  };
+
   constructor(props) {
     super();
 
@@ -16,18 +23,18 @@ class ConditionBuilder extends React.Component {
   render() {
     return <div className="condition-builder">
       <ConditionGroup item={this.state.root}
-        ruleOptions={this.props.ruleOptions}
+        ruleFields={this.props.ruleFields}
         onEvent={this.eventHandler}/>
     </div>;
   }
 
   eventHandler = event => {
     // Note that state modified directly because root object is complex and can contain arbitrary level of nested groups (children).
-    // Force update is used to rerender all sub-components.
+    // Force update is used to rerender changes.
 
     switch (event.action) {
       case 'group:add-rule':
-        event.item.children.push({ value: '', op: 'is', prop: this.getDefaultRuleOption() });
+        event.item.children.push({ value: '', op: 'is', ...this.getDefPropAndValue() });
         break;
 
       case 'group:add-group':
@@ -44,6 +51,8 @@ class ConditionBuilder extends React.Component {
 
       case 'rule:change-prop':
         event.item.prop = event.newValue;
+        event.item.value = '';
+        this.normalizeItemOnPropChange(event.item);
         break;
 
       case 'rule:change-op':
@@ -68,15 +77,55 @@ class ConditionBuilder extends React.Component {
     console.log(JSON.stringify(this.state.root, null, 2));
   }
 
-  getDefaultRuleOption() {
-    const firstOption = this.props.ruleOptions[0];
-    return firstOption ? firstOption.name : undefined;
+  getDefPropAndValue() {
+    const field = this.props.ruleFields[0];
+    return field ? { prop: field.name, value: this.defaultPropValue[field.expects] } : {};
+  }
+
+  normalizeItemOnPropChange(item) {
+    const field = this.props.ruleFields.find(_field => _field.name === item.prop);
+
+    if (field.expects === 'boolean') {
+      item.op = 'is';
+      if (typeof item.value !== 'boolean') {
+        item.value = true;
+      }
+      return;
+    }
+
+    if (['string', 'number'].includes(field.expects) && typeof item.value !== 'string') {
+      item.value = '';
+      return;
+    }
+
+    if (field.expects === 'epochMillis' && !(field.value instanceof Date)) {
+      item.value = new Date();
+    }
+  }
+
+  getCorrecteOperation(item) {
+    const field = this.props.ruleFields.find(_field => _field.name === item.prop);
+    return (field && field.expects === 'boolean') ? 'is' : item.op;
   }
 }
 
 ConditionBuilder.defaultProps = {
-  root: { children: [], op: 'and' },
-  ruleOptions: [{
+  root: {
+    op: 'and',
+    children: [{
+      op: 'is',
+      value: '123',
+      prop: 'stringProp'
+    }, {
+      op: 'or',
+      children: [{
+        op: 'greater_than',
+        value: '10',
+        prop: 'numberProp'
+      }]
+    }]
+  },
+  ruleFields: [{
     name: 'stringProp',
     type: 'aggregate',
     description: 'String property',

@@ -12,7 +12,7 @@ class DatePicker extends React.Component {
 
     return <div className={rootClass}>
       <ReactDatePicker {...props} className="input-control" ref={picker => this.pickerRef = picker}>
-        {props.selected && <div className="date-clear">
+        {(props.selected && props.allowClear) && <div className="date-clear">
           <span className="link" onClick={this.clearDateClick}>Clear</span>
         </div>}
       </ReactDatePicker>
@@ -37,5 +37,9 @@ class DatePicker extends React.Component {
     }
   }
 }
+
+DatePicker.defaultProp = {
+  allowClear: true
+};
 
 export default DatePicker;

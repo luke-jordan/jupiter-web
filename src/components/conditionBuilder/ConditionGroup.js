@@ -31,7 +31,7 @@ class ConditionGroup extends React.Component {
     return <Cmp key={childIndex}
       item={childItem}
       parent={props.item}
-      ruleOptions={props.ruleOptions}
+      ruleFields={props.ruleFields}
       onEvent={props.onEvent}/>;
   }
 
