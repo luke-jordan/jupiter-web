@@ -5,32 +5,33 @@ import ConditionGroup from './ConditionGroup';
 import './ConditionBuilder.scss';
 
 class ConditionBuilder extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
 
     this.state = {
-      root: {
-        type: 'aggregate',
-        op: 'and',
-        children: []
-      }
+      root: props.root
     };
   }
 
   render() {
     return <div className="condition-builder">
-      <ConditionGroup item={this.state.root} onEvent={this.eventHandler}/>
+      <ConditionGroup item={this.state.root}
+        ruleOptions={this.props.ruleOptions}
+        onEvent={this.eventHandler}/>
     </div>;
   }
 
   eventHandler = event => {
+    // Note that state modified directly because condition group can contain arbitrary level of nested groups.
+    // And force update is used to rerender all sub-components.
+
     switch (event.action) {
       case 'group:add-rule':
-        event.item.children.push({ type: 'match', value: '', op: 'is' });
+        event.item.children.push({ value: '', op: 'is', prop: this.getDefaultRuleOption() });
         break;
 
       case 'group:add-group':
-        event.item.children.push({ type: 'aggregation', op: 'or', children: [] });
+        event.item.children.push({ children: [], op: 'and' });
         break;
 
       case 'group:change-op':
@@ -63,7 +64,39 @@ class ConditionBuilder extends React.Component {
     }
 
     this.forceUpdate();
+
+    console.log(JSON.stringify(this.state.root, null, 2));
+  }
+
+  getDefaultRuleOption() {
+    const firstOption = this.props.ruleOptions[0];
+    return firstOption ? firstOption.name : undefined;
   }
 }
+
+ConditionBuilder.defaultProps = {
+  root: { children: [], op: 'and' },
+  ruleOptions: [{
+    name: 'stringProp',
+    type: 'aggregate',
+    description: 'String property',
+    expects: 'string'
+  }, {
+    name: 'numberProp',
+    type: 'aggregate',
+    description: 'Number property',
+    expects: 'number'
+  }, {
+    name: 'booleanProperty',
+    type: 'match',
+    description: 'Boolean property',
+    expects: 'boolean'
+  }, {
+    name: 'dateProp',
+    type: 'match',
+    description: 'Date property',
+    expects: 'epochMillis'
+  }]
+};
 
 export default ConditionBuilder;

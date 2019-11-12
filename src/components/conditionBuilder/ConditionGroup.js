@@ -25,9 +25,14 @@ class ConditionGroup extends React.Component {
     </div>;
   }
 
-  renderChild = (child, index) => {
-    const Cmp = child.type === 'match' ? ConditionRule : ConditionGroup;
-    return <Cmp key={index} item={child} parent={this.props.item} onEvent={this.props.onEvent}/>;
+  renderChild = (childItem, childIndex) => {
+    const props = this.props;
+    const Cmp = childItem.children ? ConditionGroup : ConditionRule;
+    return <Cmp key={childIndex}
+      item={childItem}
+      parent={props.item}
+      ruleOptions={props.ruleOptions}
+      onEvent={props.onEvent}/>;
   }
 
   operationChange = event => {

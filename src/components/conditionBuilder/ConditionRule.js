@@ -12,9 +12,9 @@ class ConditionRule extends React.Component {
       <div className="grid-row">
         <div className="grid-col">
           <Select value={item.prop} onChange={this.propChange}>
-            <option value="field_1">Field 1</option>
-            <option value="field_2">Field 2</option>
-            <option value="field_3">Field 3</option>
+            {props.ruleOptions.map(option => {
+              return <option key={option.name} value={option.name}>{option.description}</option>;
+            })}
           </Select>
         </div>
         <div className="grid-col">
