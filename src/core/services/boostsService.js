@@ -32,7 +32,7 @@ export class BoostsService {
   }
 
   updateBoost(boostId, updateValues) {
-    // boost update is not implemented yet
+    // TODO: boost update (api needed)
     return of(null);
   }
 
