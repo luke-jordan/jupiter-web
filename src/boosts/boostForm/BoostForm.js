@@ -221,11 +221,10 @@ class BoostForm extends React.Component {
 
   submit = event => {
     event.preventDefault();
-
-    this.props.onSubmit(this.getBoostBody(), this.audienceRef.getAudienceRequestBody());
+    this.props.onSubmit(this.getBoostData(), this.getAudienceData());
   }
 
-  getBoostBody() {
+  getBoostData() {
     const data = this.state.data;
     const body = {};
 
@@ -284,6 +283,10 @@ class BoostForm extends React.Component {
     body.messagesToCreate = [pushNotification, card];
 
     return body;
+  }
+
+  getAudienceData() {
+    return this.audienceRef ? this.audienceRef.getRequestData() : null;
   }
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { of, forkJoin } from 'rxjs';
-import { takeUntil, mergeMap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { capitalize, inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
@@ -17,7 +17,6 @@ class BoostEdit extends React.Component {
     this.historyService = inject('HistoryService');
     this.clientsService = inject('ClientsService');
     this.modalService = inject('ModalService');
-    this.audienceService = inject('AudienceService');
 
     this.state = {
       loading: true,
@@ -62,7 +61,7 @@ class BoostEdit extends React.Component {
     });
   }
 
-  formSubmit = (boostBody, audienceBody) => {
+  formSubmit = (boostData, audienceData) => {
     const mode = this.state.mode;
 
     if (mode === 'view') {
@@ -74,16 +73,13 @@ class BoostEdit extends React.Component {
 
     if (mode === 'edit') {
       // TODO: boost update (api needed)
-      this.modalService.openInfo('Info', 'Boost update API is not implemented yet');
       const boostId = this.props.match.params.id;
-      obs = this.boostsService.updateBoost(boostId, boostBody);
+      console.log(boostId);
+      this.modalService.openInfo('Info', 'Boost update API is not implemented yet');
+      return;
     } else {
       // new or duplicate
-      obs = this.audienceService.createAudience(audienceBody).pipe(
-        mergeMap(res => {
-          return this.boostsService.createBoost({ ...boostBody, audienceId: res.audienceId });
-        })
-      );
+      obs = this.boostsService.createBoost(boostData, audienceData);
     }
 
     this.setState({ loading: true });

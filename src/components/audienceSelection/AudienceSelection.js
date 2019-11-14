@@ -70,7 +70,7 @@ class AudienceSelection extends React.Component {
 
   loadPreview() {
     this.setState({ loading: true });
-    this.audienceService.getPreview(this.getAudienceRequestBody()).pipe(
+    this.audienceService.getPreview(this.getRequestData()).pipe(
       takeUntil(this.unmount)
     ).subscribe(preview => {
       this.setState({ preview, loading: false });
@@ -80,7 +80,7 @@ class AudienceSelection extends React.Component {
     });
   }
 
-  getAudienceRequestBody() {
+  getRequestData() {
     return {
       clientId: this.props.client.clientId,
       isDynamic: true,
