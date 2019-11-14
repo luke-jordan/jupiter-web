@@ -52,7 +52,7 @@ class BoostEdit extends React.Component {
 
   loadData() {
     forkJoin(
-      this.state.mode !== 'new' ? this.boostsService.getBoost(this.props.match.params.id) : of({}),
+      this.state.mode !== 'new' ? this.boostsService.getBoost(this.props.match.params.id) : of(null),
       this.clientsService.getClients()
     ).pipe(
       takeUntil(this.unmount)

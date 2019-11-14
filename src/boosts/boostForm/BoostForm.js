@@ -16,31 +16,25 @@ class BoostForm extends React.Component {
     duplicate: 'Submit'
   };
 
-  constructor() {
+  constructor(props) {
     super();
 
     this.state = {
-      data: {
-        label: '',
-        type: 'SIMPLE',
-        category: 'TIME_LIMITED',
-        expiryTime: 'END_OF_DAY',
-        totalBudget: 1000,
-        source: 'primary_bonus_pool',
-        requiredSave: 100,
-        perUserAmount: 10,
-        pushTitle: '',
-        pushBody: '',
-        cardTitle: '',
-        cardBody: '',
-        currency: 'ZAR'
-      },
+      data: this.getBoostFormData(props.boost),
       audienceCondition: { op: 'and', children: [] }
     };
   }
 
   isView() {
     return this.props.mode === 'view';
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.boost !== prevProps.boost) {
+      this.setState({
+        data: this.getBoostFormData(this.props.boost)
+      });
+    }
   }
 
   render() {
@@ -221,10 +215,49 @@ class BoostForm extends React.Component {
 
   submit = event => {
     event.preventDefault();
-    this.props.onSubmit(this.getBoostData(), this.getAudienceData());
+    this.props.onSubmit(this.getBoostReqData(), this.getAudienceReqData());
   }
 
-  getBoostData() {
+  getBoostFormData(boost) {
+    if (!boost) {
+      return {
+        label: '',
+        type: 'SIMPLE',
+        category: 'TIME_LIMITED',
+        expiryTime: 'END_OF_DAY',
+        totalBudget: 1000,
+        source: 'primary_bonus_pool',
+        requiredSave: 100,
+        perUserAmount: 10,
+        pushTitle: '',
+        pushBody: '',
+        cardTitle: '',
+        cardBody: '',
+        currency: 'ZAR'
+      };
+    }
+
+    const requiredSaveMatch = boost.statusConditions.REDEEMED[0].match(/^save_event_greater_than #\{(\d+):/);
+    const requiredSave = (requiredSaveMatch && requiredSaveMatch[1]) ? requiredSaveMatch[1] : 100;
+
+    return {
+      label: '',
+      type: boost.boostType,
+      category: boost.boostCategory,
+      expiryTime: '',
+      totalBudget: boost.boostBudget,
+      source: boost.fromBonusPoolId,
+      requiredSave,
+      perUserAmount: boost.boostAmount,
+      pushTitle: '',
+      pushBody: '',
+      cardTitle: '',
+      cardBody: '',
+      currency: 'ZAR'
+    };
+  }
+
+  getBoostReqData() {
     const data = this.state.data;
     const body = {};
 
@@ -285,7 +318,7 @@ class BoostForm extends React.Component {
     return body;
   }
 
-  getAudienceData() {
+  getAudienceReqData() {
     return this.audienceRef ? this.audienceRef.getRequestData() : null;
   }
 }
