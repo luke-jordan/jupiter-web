@@ -74,7 +74,7 @@ class BoostsList extends React.Component {
           </th>
           <th style={{ width: 100 }}>Type</th>
           <th style={{ width: 150 }}>Category</th>
-          <th>Name</th>
+          <th>Label</th>
           <th className="text-center" style={{ width: 100 }}>Start date</th>
           <th className="text-center" style={{ width: 100 }}>End date</th>
           <th className="text-center" style={{ width: 80 }}># Users</th>
@@ -99,12 +99,12 @@ class BoostsList extends React.Component {
       </td>
       <td>{boost.boostTypeText}</td>
       <td>{boost.boostCategoryText}</td>
-      <td>?</td>
+      <td>{boost.label}</td>
       <td className="text-center">{boost.formattedStartDate}</td>
       <td className="text-center">{boost.formattedEndDate}</td>
       <td className="text-center">?</td>
       <td className="text-center">{boost.boostBudgetMoney}</td>
-      <td className="text-center">{boost.boostRedeemedMoney}</td>
+      <td className="text-center">{boost.boostRemainingMoney}</td>
       <td>
         {/* <DropdownMenu items={[
           { text: 'View', link: `/boosts/view/${boost.boostId}` },

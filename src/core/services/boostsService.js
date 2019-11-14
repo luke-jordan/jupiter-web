@@ -50,5 +50,8 @@ export class BoostsService {
 
     boost.boostRedeemedValue = convertAmount(boost.boostRedeemed, boost.boostUnit);
     boost.boostRedeemedMoney = formatMoney(boost.boostRedeemedValue, boost.boostCurrency);
+
+    boost.boostRemainingValue = convertAmount(boost.boostBudget - boost.boostRedeemed, boost.boostUnit);
+    boost.boostRemainingMoney = formatMoney(boost.boostRemainingValue, boost.boostCurrency);
   }
 }
