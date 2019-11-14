@@ -267,6 +267,9 @@ class BoostForm extends React.Component {
     const data = this.state.data;
     const body = {};
 
+    // label
+    body.label = data.label;
+
     // type & category
     body.boostTypeCategory = `${data.type}::${data.category}`;
     
