@@ -13,6 +13,12 @@ class ConditionBuilder extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.root !== prevProps.root) {
+      this.setState({ root: this.props.root });
+    }
+  }
+
   render() {
     return <div className="condition-builder">
       <ConditionGroup item={this.state.root}

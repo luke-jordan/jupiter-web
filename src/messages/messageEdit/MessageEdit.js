@@ -45,7 +45,8 @@ class MessageEdit extends React.Component {
         <MessageForm mode={state.mode}
           message={state.message}
           clients={state.clients}
-          onSubmit={this.formSubmit}/>
+          onSubmit={this.formSubmit}
+          ref={ref => this.messageFormRef = ref}/>
       </div>
       {state.sentResult && <MessageSentResult {...state.sentResult}
           onAction={this.messageResultAction}/>}
@@ -56,7 +57,8 @@ class MessageEdit extends React.Component {
     if (action === 'close') {
       this.setState({ sentResult: null });
     } else if (action === 'create-new') {
-      this.setState({ sentResult: null, message: null });
+      this.setState({ sentResult: null });
+      this.messageFormRef.reset();
     } else if (action === 'go-to-home') {
       this.historyService.push('/');
     }

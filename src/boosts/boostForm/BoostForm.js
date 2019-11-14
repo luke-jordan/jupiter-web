@@ -215,6 +215,12 @@ class BoostForm extends React.Component {
 
   submit = event => {
     event.preventDefault();
+    
+    if (this.audienceRef && !this.audienceRef.isValid()) {
+      this.audienceRef.showInvalidMessage();
+      return;
+    }
+
     this.props.onSubmit(this.getBoostReqBody(), this.getAudienceReqBody());
   }
 

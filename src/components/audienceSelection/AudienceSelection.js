@@ -52,12 +52,12 @@ class AudienceSelection extends React.Component {
     </div>;
   }
 
-  conditionChanged = () => {
-    // console.log(this.state.root);
-  }
-
   previewClick = () => {
-    this.loadPreview();
+    if (this.isValid()) {
+      this.loadPreview();
+    } else {
+      this.showInvalidMessage();
+    }
   }
 
   loadProperties() {
@@ -86,6 +86,46 @@ class AudienceSelection extends React.Component {
       isDynamic: true,
       conditions: [this.state.root]
     };
+  }
+
+  reset() {
+    this.setState({ 
+      root: { op: 'and', children: [] },
+      preview: null
+    });
+  }
+
+  isValid() {
+    const root = this.state.root;
+
+    if (!root.children.length) {
+      return true;
+    }
+
+    let valid = true;
+    const checkItem = item => {
+      if (!valid) {
+        return;
+      } else if (item.children) {
+        if (item.children.length) {
+          item.children.forEach(checkItem);
+        } else {
+          valid = false;
+        }
+      } else if (!item.value) {
+        valid = false;
+      }
+    };
+    checkItem(root);
+
+    return valid;
+  }
+
+  showInvalidMessage() {
+    this.modalService.openInfo(
+      'Audience selection',
+      'Some of the conditions are incorrect. Make sure there is no empty groups and values.'
+    );
   }
 }
 

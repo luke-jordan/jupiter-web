@@ -176,6 +176,12 @@ class MessageForm extends React.Component {
 
   submit = event => {
     event.preventDefault();
+
+    if (this.audienceRef && !this.audienceRef.isValid()) {
+      this.audienceRef.showInvalidMessage();
+      return;
+    }
+
     this.props.onSubmit(this.getMessageReqBody(), this.getAudienceReqBody());
   }
 
@@ -250,6 +256,11 @@ class MessageForm extends React.Component {
 
   getAudienceReqBody() {
     return this.audienceRef ? this.audienceRef.getReqBody() : null;
+  }
+
+  reset() {
+    this.setState({ data: this.messageToFormData(null) });
+    this.audienceRef && this.audienceRef.reset();
   }
 }
 
