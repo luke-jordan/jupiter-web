@@ -18,7 +18,7 @@ bottle.service('AuthService', AuthService, 'ApiService', 'HistoryService');
 bottle.service('HistoryService', createBrowserHistory);
 bottle.service('UsersService', UsersService, 'ApiService');
 bottle.service('BoostsService', BoostsService, 'ApiService', 'AudienceService');
-bottle.service('MessagesService', MessagesService, 'ApiService');
+bottle.service('MessagesService', MessagesService, 'ApiService', 'AudienceService');
 bottle.service('ClientsService', ClientsService, 'ApiService', 'DataService');
 bottle.service('DataService', DataService);
 bottle.service('ModalService', ModalService);

@@ -51,8 +51,9 @@ class BoostEdit extends React.Component {
   }
 
   loadData() {
+    const boostId = this.props.match.params.id;
     forkJoin(
-      this.state.mode !== 'new' ? this.boostsService.getBoost(this.props.match.params.id) : of(null),
+      boostId ? this.boostsService.getBoost(boostId) : of(null),
       this.clientsService.getClients()
     ).pipe(
       takeUntil(this.unmount)
@@ -61,7 +62,7 @@ class BoostEdit extends React.Component {
     });
   }
 
-  formSubmit = (boostData, audienceData) => {
+  formSubmit = (boostBody, audienceBody) => {
     const mode = this.state.mode;
 
     if (mode === 'view') {
@@ -69,22 +70,20 @@ class BoostEdit extends React.Component {
       return;
     }
 
-    let obs;
-
     if (mode === 'edit') {
       // TODO: boost update (api needed)
       const boostId = this.props.match.params.id;
       console.log(boostId);
       this.modalService.openInfo('Info', 'Boost update API is not implemented yet');
       return;
-    } else {
-      // new or duplicate
-      obs = this.boostsService.createBoost(boostData, audienceData);
     }
 
     this.setState({ loading: true });
 
-    obs.pipe(takeUntil(this.unmount)).subscribe(() => {
+    // new or duplicate
+    this.boostsService.createBoost(boostBody, audienceBody).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
       this.setState({ loading: false });
       this.historyService.push('/boosts');
     }, () => {

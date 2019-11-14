@@ -20,7 +20,7 @@ class BoostForm extends React.Component {
     super();
 
     this.state = {
-      data: this.getBoostFormData(props.boost),
+      data: this.boostToFormData(props.boost),
       audienceCondition: { op: 'and', children: [] }
     };
   }
@@ -32,7 +32,7 @@ class BoostForm extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.boost !== prevProps.boost) {
       this.setState({
-        data: this.getBoostFormData(this.props.boost)
+        data: this.boostToFormData(this.props.boost)
       });
     }
   }
@@ -215,10 +215,10 @@ class BoostForm extends React.Component {
 
   submit = event => {
     event.preventDefault();
-    this.props.onSubmit(this.getBoostReqData(), this.getAudienceReqData());
+    this.props.onSubmit(this.getBoostReqBody(), this.getAudienceReqBody());
   }
 
-  getBoostFormData(boost) {
+  boostToFormData(boost) {
     if (!boost) {
       return {
         label: '',
@@ -257,7 +257,7 @@ class BoostForm extends React.Component {
     };
   }
 
-  getBoostReqData() {
+  getBoostReqBody() {
     const data = this.state.data;
     const body = {};
 
@@ -318,8 +318,8 @@ class BoostForm extends React.Component {
     return body;
   }
 
-  getAudienceReqData() {
-    return this.audienceRef ? this.audienceRef.getRequestData() : null;
+  getAudienceReqBody() {
+    return this.audienceRef ? this.audienceRef.getReqBody() : null;
   }
 }
 

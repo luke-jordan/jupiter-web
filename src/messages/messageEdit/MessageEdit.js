@@ -1,4 +1,5 @@
 import React from 'react';
+import { forkJoin, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { capitalize, unmountDecorator, inject } from 'src/core/utils';
@@ -10,40 +11,27 @@ import MessageSentResult from '../messageSentResult/MessageSentResult';
 import './MessageEdit.scss';
 
 class MessageEdit extends React.Component {
-  defaultData = {
-    title: '',
-    body: '',
-    quickAction: 'ADD_CASH',
-    type: 'CARD',
-    sendTo: 'whole_universe',
-    sampleSize: 0,
-    priority: 0,
-    recurrence: 'EVENT_DRIVEN',
-    recurringMinIntervalDays: 0,
-    recurringMaxInQueue: 0,
-    eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER',
-    urlToVisit: ''
-  };
-
   constructor(props) {
     super();
 
     this.messagesService = inject('MessagesService');
     this.historyService = inject('HistoryService');
     this.modalService = inject('ModalService');
+    this.clientsService = inject('ClientsService');
 
     this.state = {
       loading: false,
       mode: props.match.params.mode,
-      formData: { ...this.defaultData },
-      sentResult: null
+      message: null,
+      sentResult: null,
+      clients: []
     };
 
     unmountDecorator(this);
   }
 
   componentDidMount() {
-    this.loadMessage();
+    this.loadData();
   }
   
   render() {
@@ -54,8 +42,10 @@ class MessageEdit extends React.Component {
       <PageBreadcrumb title={title} link={{ to: '/messages', text: 'Messages' }}/>
       <div className="page-content">
         {state.loading && <Spinner overlay/>}
-        <MessageForm mode={state.mode} formData={state.formData}
-          onChange={this.formInputChange} onSubmit={this.formSubmit}/>
+        <MessageForm mode={state.mode}
+          message={state.message}
+          clients={state.clients}
+          onSubmit={this.formSubmit}/>
       </div>
       {state.sentResult && <MessageSentResult {...state.sentResult}
           onAction={this.messageResultAction}/>}
@@ -66,42 +56,29 @@ class MessageEdit extends React.Component {
     if (action === 'close') {
       this.setState({ sentResult: null });
     } else if (action === 'create-new') {
-      this.setState({ sentResult: null, formData: { ...this.defaultData } });
+      this.setState({ sentResult: null, message: null });
     } else if (action === 'go-to-home') {
       this.historyService.push('/');
     }
   }
 
-  loadMessage() {
-    if (this.state.mode === 'new') {
-      return;
-    }
+  loadData() {
+    const mode = this.state.mode;
+    const messageId = this.props.match.params.id;
 
     this.setState({ loading: true });
-
-    const id = this.props.match.params.id;
-    this.messagesService.getMessage(id).pipe(
+    
+    forkJoin(
+      messageId ? this.messagesService.getMessage(messageId) : of(null),
+      /(new|duplicate)/.test(mode) ? this.clientsService.getClients() : of([])
+    ).pipe(
       takeUntil(this.unmount)
-    ).subscribe(message => {
-      this.setState({
-        formData: this.messageToFormData(message),
-        loading: false
-      });
-    }, err => {
-      console.error(err);
+    ).subscribe(([message, clients]) => {
+      this.setState({ message, clients, loading: false });
     });
   }
 
-  formInputChange = event => {
-    const { name, value } = event.target;
-    this.setState({
-      formData: { ...this.state.formData, [name]: value }
-    });
-  }
-
-  formSubmit = event => {
-    event.preventDefault();
-
+  formSubmit = (messageBody, audienceBody) => {
     const mode = this.state.mode;
 
     if (mode === 'view') {
@@ -109,106 +86,29 @@ class MessageEdit extends React.Component {
       return;
     }
 
-    const body = this.formDataToRequestBody();
-    let obs;
-
-    if (mode === 'edit') {
-      const id = this.props.match.params.id;
-      obs = this.messagesService.updateMessage(id, body);
-    } else {
-      // new or duplicate
-      obs = this.messagesService.createMessage(body);
-    }
-
     this.setState({ loading: true });
 
-    obs.pipe(
-      takeUntil(this.unmount)
-    ).subscribe(() => {
-      if (mode === 'new') {
-        this.setState({ loading: false, sentResult: { success: true } });
-      } else {
+    if (mode === 'edit') {
+      const messageId = this.props.match.params.id;
+      this.messagesService.updateMessage(messageId, messageBody).pipe(
+        takeUntil(this.unmount)
+      ).subscribe(() => {
         this.historyService.push('/messages');
-      }
-    }, () => {
-      if (mode === 'new') {
-        this.setState({ loading: false, sentResult: { success: false } });
-      } else {
+      }, () => {
         this.setState({ loading: false });
         this.modalService.openCommonError();
-      }
+      });
+      return;
+    }
+
+    // new or duplicate
+    this.messagesService.createMessage(messageBody, audienceBody).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.setState({ loading: false, sentResult: { success: true } });
+    }, () => {
+      this.setState({ loading: false, sentResult: { success: false } });
     });
-  }
-
-  formDataToRequestBody() {
-    const data = this.state.formData;
-
-    const body = {
-      audienceType: 'GROUP',
-      templates: {
-        template: {
-          DEFAULT: {
-            title: data.title,
-            body: data.body,
-            display: { type: data.type },
-            actionToTake: data.quickAction,
-            urlToVisit: data.urlToVisit
-          }
-        }
-      },
-      messagePriority: parseInt(data.priority),
-      presentationType: data.recurrence
-    };
-
-    if (data.recurrence === 'RECURRING') {
-      body.recurrenceParameters = {
-        minIntervalDays: data.recurringMinIntervalDays,
-        maxInQueue: data.recurringMaxInQueue
-      };
-    } else if (data.recurrence === 'EVENT_DRIVEN') {
-      if (this.state.mode === 'edit') {
-        body.flags = [data.eventTypeCategory];
-      } else {
-        body.eventTypeCategory = data.eventTypeCategory;
-      }
-    }
-
-    let selectionMethod = data.sendTo;
-    if (selectionMethod === 'random_sample') {
-      selectionMethod += ` #{${data.sampleSize / 100}}`;
-    }
-
-    body.selectionInstruction = `${selectionMethod} from #{{"client_id":"za_client_co"}}`;
-
-    return body;
-  }
-
-  messageToFormData(message) {
-    const defaultTemplate = message.templates.template.DEFAULT;
-    const recurrenceParameters = message.recurrenceParameters;
-
-    const data = {
-      title: defaultTemplate.title,
-      body: defaultTemplate.body,
-      quickAction: defaultTemplate.actionToTake,
-      type: defaultTemplate.display.type,
-      priority: message.messagePriority,
-      recurrence: message.presentationType,
-      recurringMinIntervalDays: recurrenceParameters ? recurrenceParameters.minIntervalDays : 0,
-      recurringMaxInQueue: recurrenceParameters ? recurrenceParameters.maxInQueue : 0,
-      eventTypeCategory: message.flags ? message.flags[0] : '',
-      urlToVisit: defaultTemplate.urlToVisit
-    };
-
-    if (message.selectionInstruction) {
-      const match = message.selectionInstruction.match(/(whole_universe|random_sample)(?:\s#\{([\d.]+)\})?/);
-      if (match) {
-        data.sendTo = match[1];
-        data.sampleSize = match[2] ? match[2] * 100 : 0
-      }
-    }
-
-    return data;
   }
 }
 

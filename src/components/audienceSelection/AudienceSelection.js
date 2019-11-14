@@ -32,7 +32,7 @@ class AudienceSelection extends React.Component {
     const state = this.state;
     return <div className="audience-selection">
       <div className="form-section">
-        <div className="section-num">{this.props.sectionNumber}</div>
+        <div className="section-num">{this.props.sectionNum}</div>
         <div className="section-text">{this.props.sectionText}</div>
         {this.renderPreview()}
       </div>
@@ -70,7 +70,7 @@ class AudienceSelection extends React.Component {
 
   loadPreview() {
     this.setState({ loading: true });
-    this.audienceService.getPreview(this.getRequestData()).pipe(
+    this.audienceService.getPreview(this.getReqBody()).pipe(
       takeUntil(this.unmount)
     ).subscribe(preview => {
       this.setState({ preview, loading: false });
@@ -80,7 +80,7 @@ class AudienceSelection extends React.Component {
     });
   }
 
-  getRequestData() {
+  getReqBody() {
     return {
       clientId: this.props.client.clientId,
       isDynamic: true,
@@ -90,7 +90,7 @@ class AudienceSelection extends React.Component {
 }
 
 AudienceSelection.defaultProps = {
-  sectionNumber: 4,
+  sectionNum: 4,
   sectionText: 'Audience selection'
 };
 
