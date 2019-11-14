@@ -12,7 +12,7 @@ class Select extends React.Component {
 
   render() {
     const props = this.props;
-    const rootClass = classNames('base-input select', { disabled: props.disabled });
+    const rootClass = classNames('base-input select', { disabled: props.disabled }, props.className);
 
     return <div className={rootClass}>
       <div className="input-control">

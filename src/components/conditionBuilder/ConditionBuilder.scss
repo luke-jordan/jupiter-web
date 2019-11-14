@@ -1,0 +1,113 @@
+@import 'src/styles/common';
+
+.condition-builder {
+  font-size: 12px;
+  .base-input .input-control {
+    border-radius: 6px;
+    font-size: 12px;
+  }
+}
+
+.condition-builder .condition-group {
+  position: relative;
+  padding: 10px 0 0 8px;
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  .group-operation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    .base-input {
+      width: 60px;
+      .input-control {
+        height: 22px;
+        padding: 3px 2px;
+        font-size: 12px;
+        color: $color-grey;
+        border-color: $color-blue;
+      }
+      .select-value {
+        padding: 0 10px 0 4px;
+        text-align: center;
+      }
+      .select-arrow {
+        right: 5px;
+      }
+    }
+  }
+  .group-actions {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    z-index: 1;
+    .button {
+      height: 22px;
+      padding: 0px 10px;
+      font-size: 12px;
+      font-weight: normal;
+      text-transform: lowercase;
+      border-width: 1px;
+      border-radius: 6px;
+      border-color: $color-silver;
+      margin-left: 4px;
+      color: $color-grey;
+    }
+  }
+  .group-inner {
+    position: relative;
+    border: 1px solid $color-silver;
+    border-left: 0;
+    padding: 20px 10px 10px 10px;
+    &:after {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      bottom: -1px;
+      width: 2px;
+      background-color: $color-blue;
+    }
+  }
+  .no-conditions {
+    margin-top: -10px;
+    text-align: center;
+    color: $color-grey2;
+  }
+}
+
+.condition-builder .condition-rule {
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+  .input-control {
+    height: 36px;
+    padding: 4px 15px;
+  }
+  .grid-row {
+    margin: 0 -4px;
+  }
+  [class^="grid-col"] {
+    padding: 0 4px;
+  }
+  .grid-col-1 {
+    padding-top: 8px;
+    .link {
+      font-weight: normal;
+      font-size: 11px;
+      text-decoration: underline;
+    }
+  }
+  .base-input.radio {
+    margin-top: 10px;
+    .radio-icon {
+      width: 16px;
+      height: 16px;
+    }
+    .radio-text {
+      font-size: 12px;
+      padding: 0 8px 0 4px;
+    }
+  }
+}

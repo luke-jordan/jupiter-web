@@ -1,11 +1,13 @@
-import { map, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { map, tap, mergeMap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { messagePresentationTypeMap, messageDisplayTypeMap } from 'src/core/constants';
 
 export class MessagesService {
-  constructor(apiService) {
+  constructor(apiService, audienceService) {
     this.apiService = apiService;
+    this.audienceService = audienceService;
     this.url = process.env.REACT_APP_ADMIN_URL;
   }
 
@@ -40,10 +42,15 @@ export class MessagesService {
     });
   }
 
-  createMessage(data) {
-    return this.apiService.post(`${this.url}/message/instruct/create`, data, {
-      sendToken: true
-    });
+  createMessage(messageData, audienceData) {
+    const audienceObs = audienceData ?
+      this.audienceService.createAudience(audienceData).pipe(
+        tap(res => messageData.audienceId = res.audienceId)
+      ) : of(null);
+
+    return audienceObs.pipe(
+      mergeMap(() => this.apiService.post(`${this.url}/message/instruct/create`, messageData, { sendToken: true }))
+    );
   }
 
   _modifyMessage = (message) => {

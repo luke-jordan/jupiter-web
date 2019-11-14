@@ -26,3 +26,17 @@
     right: 0;
   }
 }
+
+.modal.transaction-change-reason {
+  .modal-body {
+    position: relative;
+    padding: 30px;
+  }
+  .reason-msg {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  .button {
+    width: 100%;
+  }
+}
