@@ -1,6 +1,21 @@
+@import 'src/styles/common';
+
 .audience-selection {
+  position: relative;
   margin-bottom: 30px;
   .form-section {
     margin-bottom: 20px;
+    .button {
+      margin: 0 20px 0 100px;
+    }
+  }
+  .preview-result {
+    font-weight: normal;
+    font-size: 14px;
+    color: $color-green;
+  }
+  .spinner {
+    width: 30px;
+    height: 30px;
   }
 }

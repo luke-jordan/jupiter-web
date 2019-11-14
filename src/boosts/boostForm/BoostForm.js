@@ -4,7 +4,7 @@ import moment from 'moment';
 import Select from 'src/components/select/Select';
 import Input from 'src/components/input/Input';
 import TextArea from 'src/components/textArea/TextArea';
-import ConditionBuilder from 'src/components/conditionBuilder/ConditionBuilder';
+import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 
 import './BoostForm.scss';
 
@@ -208,18 +208,8 @@ class BoostForm extends React.Component {
   }
 
   renderAudienceSelection() {
-    if (!['new', 'duplicate'].includes(this.props.mode)) {
-      return null;
-    }
-
-    return <>
-      <div className="form-section">
-        <div className="section-num">4</div>
-        <div className="section-text">Audience selection</div>
-      </div>
-      <ConditionBuilder ruleFields={this.props.audienceProperties}
-        root={this.state.audienceCondition}/>
-    </>;
+    return /(new|duplicate)/.test(this.props.mode) ?
+      <AudienceSelection client={this.props.clients[0]} ref={ref => this.audienceRef = ref}/> : null;
   }
 
   inputChange = event => {
@@ -232,7 +222,7 @@ class BoostForm extends React.Component {
   submit = event => {
     event.preventDefault();
 
-    this.props.onSubmit(this.getBoostBody(), this.getAudienceBody());
+    this.props.onSubmit(this.getBoostBody(), this.audienceRef.getAudienceRequestBody());
   }
 
   getBoostBody() {
@@ -294,14 +284,6 @@ class BoostForm extends React.Component {
     body.messagesToCreate = [pushNotification, card];
 
     return body;
-  }
-
-  getAudienceBody() {
-    return {
-      clientId: this.props.clients[0].clientId,
-      isDynamic: true,
-      conditions: [this.state.audienceCondition]
-    };
   }
 }
 
