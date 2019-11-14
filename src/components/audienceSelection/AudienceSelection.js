@@ -12,6 +12,7 @@ class AudienceSelection extends React.Component {
     super();
 
     this.audienceService = inject('AudienceService');
+    this.modalService = inject('ModalService');
 
     this.state = {
       loading: false,
@@ -29,11 +30,6 @@ class AudienceSelection extends React.Component {
 
   render() {
     const state = this.state;
-    
-    if (!state.properties.length) {
-      return null;
-    }
-
     return <div className="audience-selection">
       <div className="form-section">
         <div className="section-num">{this.props.sectionNumber}</div>
@@ -78,6 +74,9 @@ class AudienceSelection extends React.Component {
       takeUntil(this.unmount)
     ).subscribe(preview => {
       this.setState({ preview, loading: false });
+    }, () => {
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
     });
   }
 

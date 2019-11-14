@@ -19,6 +19,12 @@ export class BoostsService {
     );
   }
 
+  getBoost(id) {
+    return this.getBoosts().pipe(
+      map(boosts => boosts.find(boost => boost.boostId === id))
+    );
+  }
+
   getActiveBoostsCount() {
     return this.getBoosts().pipe(
       map(res => res.length)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { forkJoin, of } from 'rxjs';
+import { of, forkJoin } from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 
 import { capitalize, inject, unmountDecorator } from 'src/core/utils';
@@ -53,13 +53,12 @@ class BoostEdit extends React.Component {
 
   loadData() {
     forkJoin(
-      this.clientsService.getClients(),
-      ['new', 'duplicate'].includes(this.state.mode) ? this.audienceService.getProperties() : of([])
+      this.state.mode !== 'new' ? this.boostsService.getBoost(this.props.match.params.id) : of({}),
+      this.clientsService.getClients()
     ).pipe(
       takeUntil(this.unmount)
-    ).subscribe(res => {
-      const [clients, audienceProperties] = res;
-      this.setState({ clients, audienceProperties, loading: false });
+    ).subscribe(([boost, clients]) => {
+      this.setState({ boost, clients, loading: false });
     });
   }
 
@@ -74,6 +73,8 @@ class BoostEdit extends React.Component {
     let obs;
 
     if (mode === 'edit') {
+      // TODO: boost update (api needed)
+      this.modalService.openInfo('Info', 'Boost update API is not implemented yet');
       const boostId = this.props.match.params.id;
       obs = this.boostsService.updateBoost(boostId, boostBody);
     } else {
