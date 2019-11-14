@@ -1,13 +1,14 @@
 import { of } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, mergeMap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { convertAmount, formatMoney } from 'src/core/utils';
 import { boostTypeMap, boostCategoryMap } from 'src/core/constants';
 
 export class BoostsService {
-  constructor(apiService) {
+  constructor(apiService, audienceService) {
     this.apiService = apiService;
+    this.audienceService = audienceService;
     this.url = process.env.REACT_APP_ADMIN_URL;
   }
 
@@ -19,21 +20,27 @@ export class BoostsService {
     );
   }
 
+  getBoost(id) {
+    return this.getBoosts().pipe(
+      map(boosts => boosts.find(boost => boost.boostId === id))
+    );
+  }
+
   getActiveBoostsCount() {
     return this.getBoosts().pipe(
       map(res => res.length)
     );
   }
 
-  createBoost(data) {
-    return this.apiService.post(`${this.url}/boost/create`, data, {
-      sendToken: true
-    });
-  }
+  createBoost(boostData, audienceData) {
+    const audienceObs = audienceData ?
+      this.audienceService.createAudience(audienceData).pipe(
+        tap(res => boostData.audienceId = res.audienceId)
+      ) : of(null);
 
-  updateBoost(boostId, updateValues) {
-    // boost update is not implemented yet
-    return of(null);
+    return audienceObs.pipe(
+      mergeMap(() => this.apiService.post(`${this.url}/boost/create`, boostData, { sendToken: true }))
+    );
   }
 
   _modifyBoost = (boost) => {

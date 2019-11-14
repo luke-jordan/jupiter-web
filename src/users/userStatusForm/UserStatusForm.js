@@ -39,7 +39,8 @@ class UserStatusForm extends React.Component {
         <div className="grid-row">
           <div className="grid-col-4">
             <div className="form-label">User Status</div>
-            <Select name="userStatus" value={state.data.userStatus} onChange={this.inputChange}>
+            <Select name="userStatus" value={state.data.userStatus} onChange={this.inputChange}
+              disabled={kycStatusChanged}>
               {this.userStatusOptions.map((item) =>
                 <option key={item.value} value={item.value}>{item.text}</option>)}
             </Select>
@@ -53,6 +54,7 @@ class UserStatusForm extends React.Component {
             <div className="grid-col-4">
               <button type="button" className="button" onClick={this.userStatusChangeClick}
                 disabled={!state.data.userStatusChangeReason}>Change</button>
+              <span className="link" onClick={this.cancelUserStatusChange}>Cancel</span>
             </div>
           </>}
         </div>
@@ -61,7 +63,8 @@ class UserStatusForm extends React.Component {
         <div className="grid-row">
           <div className="grid-col-4">
             <div className="form-label">KYC Status</div>
-            <Select name="kycStatus" value={state.data.kycStatus} onChange={this.inputChange}>
+            <Select name="kycStatus" value={state.data.kycStatus} onChange={this.inputChange}
+              disabled={userStatusChanged}>
               {this.kysStatusOptions.map((item) =>
                 <option key={item.value} value={item.value}>{item.text}</option>)}
             </Select>
@@ -75,6 +78,7 @@ class UserStatusForm extends React.Component {
             <div className="grid-col-4">
               <button type="button" className="button" onClick={this.kysStatusChangeClick}
                 disabled={!state.data.kycStatusChangeReason}>Change</button>
+              <span className="link" onClick={this.cancelKycStatusChange}>Cancel</span>
             </div>
           </>}
         </div>
@@ -90,13 +94,21 @@ class UserStatusForm extends React.Component {
   }
 
   userStatusChangeClick = () => {
-    const { userStatus, userStatusChangeReason } = this.state.data;
-    this.submit({ userStatus, userStatusChangeReason });
+    const data = this.state.data;
+    this.submit({ 
+      fieldToUpdate: 'STATUS',
+      newStatus: data.userStatus,
+      reasonToLog: data.userStatusChangeReason
+    });
   }
 
   kysStatusChangeClick = () => {
-    const { kycStatus, kycStatusChangeReason } = this.state.data;
-    this.submit({ kycStatus, kycStatusChangeReason });
+    const data = this.state.data;
+    this.submit({ 
+      fieldToUpdate: 'KYC',
+      newStatus: data.kycStatus,
+      reasonToLog: data.kycStatusChangeReason
+    });
   }
 
   submit(data) {
@@ -110,6 +122,26 @@ class UserStatusForm extends React.Component {
       kycStatus: user.kycStatus,
       kycStatusChangeReason: ''
     };
+  }
+
+  cancelUserStatusChange = () => {
+    this.setState({
+      data: {
+        ...this.state.data,
+        userStatus: this.props.user.userStatus,
+        userStatusChangeReason: ''
+      }
+    });
+  }
+
+  cancelKycStatusChange = () => {
+    this.setState({
+      data: {
+        ...this.state.data,
+        kycStatus: this.props.user.kycStatus,
+        kycStatusChangeReason: ''
+      }
+    });
   }
 }
 

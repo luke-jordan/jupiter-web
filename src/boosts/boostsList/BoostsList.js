@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import Checkbox from 'src/components/checkbox/Checkbox';
+import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 import { unmountDecorator, inject } from 'src/core/utils';
 
 import './BoostsList.scss';
@@ -22,6 +23,7 @@ class BoostsList extends React.Component {
     };
 
     this.boostsService = inject('BoostsService');
+    this.modalService = inject('ModalService');
 
     unmountDecorator(this);
   }
@@ -106,12 +108,12 @@ class BoostsList extends React.Component {
       <td className="text-center">{boost.boostBudgetMoney}</td>
       <td className="text-center">{boost.boostRemainingMoney}</td>
       <td>
-        {/* <DropdownMenu items={[
+        <DropdownMenu items={[
           { text: 'View', link: `/boosts/view/${boost.boostId}` },
           { text: 'Edit', link: `/boosts/edit/${boost.boostId}` },
           { text: 'Duplicate', link: `/boosts/duplicate/${boost.boostId}` },
           { text: 'Deactivate', click: () => this.deactivateBoosts([boost.boostId]) }
-        ]}/> */}
+        ]}/>
       </td>
     </tr>;
   }
@@ -141,7 +143,9 @@ class BoostsList extends React.Component {
   }
 
   deactivateBoosts(ids) {
+    // TODO: boost deactive (api needed)
     console.log(`Deactivate`, ids);
+    this.modalService.openInfo('Info', 'Boost update API is not implemented yet');
   }
 }
 
