@@ -4,6 +4,7 @@ import { takeUntil } from 'rxjs/operators';
 import { inject, unmountDecorator } from 'src/core/utils';
 import ConditionBuilder from 'src/components/conditionBuilder/ConditionBuilder';
 import Spinner from 'src/components/spinner/Spinner';
+import RadioButton from 'src/components/radioButton/RadioButton';
 
 import './AudienceSelection.scss';
 
@@ -16,6 +17,7 @@ class AudienceSelection extends React.Component {
 
     this.state = {
       loading: false,
+      dynamic: true,
       properties: [],
       root: { op: 'and', children: [] },
       preview: null
@@ -35,6 +37,17 @@ class AudienceSelection extends React.Component {
         <div className="section-num">{this.props.headerNum}</div>
         <div className="section-text">{this.props.headerText}</div>
         {this.renderPreview()}
+      </div>
+      <div className="selection-dynamic">
+        Is audience selection dynamic?
+        <RadioButton value="yes" checked={state.dynamic} onChange={this.dynamicChange}>
+          Yes</RadioButton>
+        <RadioButton value="no" checked={!state.dynamic} onChange={this.dynamicChange}>
+          No</RadioButton>
+      </div>
+      <div className="selection-hint">
+        <b>Set user properties</b>
+        <p>*If you do not specify any properties then this message will be sent to <b>all users</b></p>
       </div>
       <ConditionBuilder root={state.root} ruleFields={state.properties}
         onChange={this.conditionChanged}/>
@@ -60,6 +73,10 @@ class AudienceSelection extends React.Component {
     }
   }
 
+  dynamicChange = e => {
+    this.setState({ dynamic: e.target.value === 'yes' });
+  }
+
   loadProperties() {
     this.audienceService.getProperties().pipe(
       takeUntil(this.unmount)
@@ -83,13 +100,14 @@ class AudienceSelection extends React.Component {
   getReqBody() {
     return {
       clientId: this.props.client.clientId,
-      isDynamic: true,
+      isDynamic: this.state.dynamic,
       conditions: [this.state.root]
     };
   }
 
   reset() {
-    this.setState({ 
+    this.setState({
+      dynamic: true,
       root: { op: 'and', children: [] },
       preview: null
     });
