@@ -20,7 +20,7 @@ class BoostForm extends React.Component {
     super();
 
     this.state = {
-      data: this.boostToFormData(props.boost),
+      data: this.boostToFormData(props),
       audienceCondition: { op: 'and', children: [] }
     };
   }
@@ -30,9 +30,12 @@ class BoostForm extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.boost !== prevProps.boost) {
+    if (
+      this.props.boost !== prevProps.boost ||
+      this.props.clients !== prevProps.clients
+    ) {
       this.setState({
-        data: this.boostToFormData(this.props.boost)
+        data: this.boostToFormData(this.props)
       });
     }
   }
@@ -50,7 +53,7 @@ class BoostForm extends React.Component {
   }
 
   renderDetails() {
-    const state = this.state;
+    const { state, props } = this;
     return <>
       <div className="form-section">
         <div className="section-num">1</div>
@@ -83,6 +86,19 @@ class BoostForm extends React.Component {
             <Select name="category" value={state.data.category}
               onChange={this.inputChange} disabled={this.isView()}>
               <option value="TIME_LIMITED">Time limited</option>
+            </Select>
+          </div>
+        </div>
+      </div>
+      <div className="grid-row">
+        {/* Client ID */}
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">Client ID</div>
+            <Select name="clientId" value={state.data.clientId}
+              onChange={this.inputChange} disabled={this.isView()}>
+              {props.clients.map(client => 
+                <option key={client.clientId} value={client.clientId}>{client.clientName}</option>)}
             </Select>
           </div>
         </div>
@@ -203,7 +219,9 @@ class BoostForm extends React.Component {
 
   renderAudienceSelection() {
     return /(new|duplicate)/.test(this.props.mode) ?
-      <AudienceSelection client={this.props.clients[0]} ref={ref => this.audienceRef = ref}/> : null;
+      <AudienceSelection headerText="Who is Eligible?"
+        client={this.props.clients[0]}
+        ref={ref => this.audienceRef = ref}/> : null;
   }
 
   inputChange = event => {
@@ -224,12 +242,15 @@ class BoostForm extends React.Component {
     this.props.onSubmit(this.getBoostReqBody(), this.getAudienceReqBody());
   }
 
-  boostToFormData(boost) {
+  boostToFormData(props) {
+    const { boost, clients } = props;
+
     if (!boost) {
       return {
         label: '',
         type: 'SIMPLE',
         category: 'TIME_LIMITED',
+        clientId: clients[0] ? clients[0].clientId : '',
         expiryTime: 'END_OF_DAY',
         totalBudget: 1000,
         source: 'primary_bonus_pool',
@@ -250,6 +271,7 @@ class BoostForm extends React.Component {
       label: '',
       type: boost.boostType,
       category: boost.boostCategory,
+      clientId: boost.forClientId,
       expiryTime: '',
       totalBudget: boost.boostBudget,
       source: boost.fromBonusPoolId,
@@ -272,6 +294,9 @@ class BoostForm extends React.Component {
 
     // type & category
     body.boostTypeCategory = `${data.type}::${data.category}`;
+
+    // client id
+    body.forClientId = data.clientId;
     
     // amount per user, 
     body.boostAmountOffered = `${data.perUserAmount}::WHOLE_CURRENCY::${data.currency}`;

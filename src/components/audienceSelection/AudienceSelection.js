@@ -32,8 +32,8 @@ class AudienceSelection extends React.Component {
     const state = this.state;
     return <div className="audience-selection">
       <div className="form-section">
-        <div className="section-num">{this.props.sectionNum}</div>
-        <div className="section-text">{this.props.sectionText}</div>
+        <div className="section-num">{this.props.headerNum}</div>
+        <div className="section-text">{this.props.headerText}</div>
         {this.renderPreview()}
       </div>
       <ConditionBuilder root={state.root} ruleFields={state.properties}
@@ -130,8 +130,8 @@ class AudienceSelection extends React.Component {
 }
 
 AudienceSelection.defaultProps = {
-  sectionNum: 4,
-  sectionText: 'Audience selection'
+  headerNum: 4,
+  headerText: 'Select audience'
 };
 
 export default AudienceSelection;
