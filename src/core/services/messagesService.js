@@ -53,6 +53,18 @@ export class MessagesService {
     );
   }
 
+  filterMessages(allMessages, filter) {
+    const priority = filter.priority.split('-');
+    return allMessages.filter(message => {
+      return (
+        (!filter.type.length || filter.type.includes(message.presentationType)) &&
+        (!filter.format.length || filter.format.includes(message.templates.template.DEFAULT.display.type)) &&
+        (!filter.priority || (message.messagePriority >= priority[0] && message.messagePriority <= priority[1])) &&
+        (!filter.startDate || moment(message.startTime).isSame(filter.startDate, 'day'))
+      );
+    });
+  }
+
   _modifyMessage = (message) => {
     message.presentationTypeText = messagePresentationTypeMap[message.presentationType] || message.presentationType;
 
