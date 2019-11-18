@@ -38,7 +38,7 @@ class DatePicker extends React.Component {
   }
 }
 
-DatePicker.defaultProp = {
+DatePicker.defaultProps = {
   allowClear: true
 };
 

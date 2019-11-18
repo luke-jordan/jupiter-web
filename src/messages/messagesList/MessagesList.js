@@ -9,9 +9,9 @@ import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 import Spinner from 'src/components/spinner/Spinner';
 import Checkbox from 'src/components/checkbox/Checkbox';
+import MessagesFilter from '../messagesFilter/messagesFilter';
 
 import './MessagesList.scss';
-import sortIcon from 'src/assets/images/sort-by.svg';
 import addIcon from 'src/assets/images/add.svg';
 
 class MessagesList extends React.Component {
@@ -22,6 +22,7 @@ class MessagesList extends React.Component {
 
     this.state = {
       loading: true,
+      allMessages: [],
       messages: [],
       checkedMessages: [],
       checkAll: false
@@ -34,7 +35,7 @@ class MessagesList extends React.Component {
     this.messagesService.getMessages().pipe(
       takeUntil(this.unmount)
     ).subscribe(messages => {
-      this.setState({ messages, loading: false });
+      this.setState({ allMessages: messages, messages, loading: false });
     });
   }
 
@@ -54,9 +55,7 @@ class MessagesList extends React.Component {
     const { checkedMessages } = this.state;
     return <div className="page-actions">
       <div className="action-buttons">
-        <button className="button button-outline">
-          Filter by <img className="button-icon" src={sortIcon} alt="sort"/>
-        </button>
+        <MessagesFilter onFilter={this.applyFilter}/>
         <NavLink to="/messages/new" className="button">
           New message <img className="button-icon" src={addIcon} alt="add"/>
         </NavLink>
@@ -157,6 +156,12 @@ class MessagesList extends React.Component {
       takeUntil(this.unmount)
     ).subscribe(messages => {
       this.setState({ messages, loading: false });
+    });
+  }
+
+  applyFilter = filter => {
+    this.setState({
+      messages: this.messagesService.filterMessages(this.state.allMessages, filter)
     });
   }
 }

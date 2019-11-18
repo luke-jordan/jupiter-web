@@ -8,11 +8,11 @@ const Checkbox = props => {
   const rootClass = classNames('base-input checkbox', { disabled: props.disabled });
 
   return <div className={rootClass}>
-    <label className="checkbox-inner" htmlFor={props.name}>
+    <label className="checkbox-inner">
       <input type="checkbox"
         disabled={props.disabled}
         name={props.name}
-        checked={props.checked}
+        checked={!!props.checked}
         onChange={props.onChange}/>
       <div className="checkbox-icon">
         <img className="checkbox-img" src={checkBoxImg} alt="checkbox"/>

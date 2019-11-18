@@ -84,3 +84,7 @@ export const mapToOptions = mapObj => {
       }
     });
 };
+
+export const deepCopy = value => {
+  return JSON.parse(JSON.stringify(value));
+}

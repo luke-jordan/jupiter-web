@@ -1,0 +1,22 @@
+@import 'src/styles/common';
+
+.messages-filter-modal {
+  .filter-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+  }
+  .base-input.checkbox {
+    display: block;
+    margin-bottom: 15px;
+    color: $color-grey2;
+  }
+  .grid-row:not(:last-child) {
+    margin-bottom: 20px;
+  }
+  .cancel-filter {
+    display: flex;
+    align-items: flex-end;
+  }
+}
