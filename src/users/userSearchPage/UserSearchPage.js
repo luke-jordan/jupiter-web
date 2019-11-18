@@ -18,7 +18,6 @@ class UserSearchPage extends React.Component {
     this.historyService = inject('HistoryService');
     this.usersService = inject('UsersService');
     this.modalService = inject('ModalService');
-    this.authService = inject('AuthService');
 
     this.state = {
       loading: false,
@@ -114,7 +113,7 @@ class UserSearchPage extends React.Component {
     this.setState({ loading: true });
 
     this.usersService.updateUser({
-      systemWideUserId: this.authService.user.value.systemWideUserId, ...data
+      systemWideUserId: this.state.user.systemWideUserId, ...data
     }).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
