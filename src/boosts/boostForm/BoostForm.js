@@ -220,7 +220,7 @@ class BoostForm extends React.Component {
   renderAudienceSelection() {
     return /(new|duplicate)/.test(this.props.mode) ?
       <AudienceSelection headerText="Who is Eligible?"
-        client={this.props.clients[0]}
+        clientId={this.state.data.clientId}
         ref={ref => this.audienceRef = ref}/> : null;
   }
 
