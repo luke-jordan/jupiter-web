@@ -174,8 +174,10 @@ class MessageForm extends React.Component {
   }
 
   renderAudienceSelection() {
+    const clients = this.props.clients;
     return /(new|duplicate)/.test(this.props.mode) ?
-      <AudienceSelection client={this.props.clients[0]} headerNum="3"
+      <AudienceSelection headerNum="3"
+        clientId={clients[0] ? clients[0].clientId : null}
         ref={ref => this.audienceRef = ref}/> : null;
   }
 

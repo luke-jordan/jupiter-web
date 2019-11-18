@@ -99,7 +99,7 @@ class AudienceSelection extends React.Component {
 
   getReqBody() {
     return {
-      clientId: this.props.client.clientId,
+      clientId: this.props.clientId,
       isDynamic: this.state.dynamic,
       conditions: [this.state.root]
     };
