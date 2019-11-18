@@ -5,6 +5,8 @@ import Select from 'src/components/select/Select';
 import DatePicker from 'src/components/datePicker/DatePicker';
 import RadioButton from 'src/components/radioButton/RadioButton';
 
+import closeImg from 'src/assets/images/close.svg';
+
 class ConditionRule extends React.Component {
   render() {
     const props = this.props;
@@ -14,27 +16,27 @@ class ConditionRule extends React.Component {
 
     return <div className="condition-rule">
       <div className="grid-row">
-        <div className="grid-col">
+        <div className="grid-col-5">
           <Select value={item.prop} onChange={this.propChange}>
             {props.ruleFields.map(field => {
               return <option key={field.name} value={field.name}>{field.description}</option>;
             })}
           </Select>
         </div>
-        <div className="grid-col">
+        <div className="grid-col-2">
           <Select value={item.op} onChange={this.operatorChange}
             disabled={inputType === 'boolean'}>
-            <option value="is">equals</option>
-            <option value="greater_than">greater than</option>
-            <option value="less_than">less than</option>
+            <option value="is">is</option>
+            <option value="greater_than">is more than</option>
+            <option value="less_than">is less than</option>
           </Select>
         </div>
-        <div className="grid-col">
+        <div className="grid-col-5">
           {this.renderInput(inputType)}
         </div>
-        <div className="grid-col-1">
-          <span className="link" onClick={this.deleteClick}>delete</span>
-        </div>
+      </div>
+      <div className="delete-rule" onClick={this.deleteClick}>
+        <img src={closeImg} alt="delete"/>
       </div>
     </div>;
   }
