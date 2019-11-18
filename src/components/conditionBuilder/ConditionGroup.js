@@ -1,30 +1,34 @@
 import React from 'react';
 
-import Select from 'src/components/select/Select';
+import Tabs from 'src/components/tabs/Tabs';
 
 import ConditionRule from './ConditionRule';
+
+import closeImg from 'src/assets/images/close.svg';
 
 class ConditionGroup extends React.Component {
   render() {
     const props = this.props;
     return <div className="condition-group">
-      <div className="group-operation">
-        <Select className="operation" value={props.item.op} onChange={this.operationChange}>
-          <option value="and">and</option>
-          <option value="or">or</option>
-        </Select>
+      <div className="group-operator">
+        <Tabs tabs={[
+          { text: 'And', value: 'and' },
+          { text: 'Or', value: 'or' }
+        ]} activeTab={props.item.op} onChange={this.operatorChange}/>
       </div>
       <div className="group-actions">
-        <button type="button" className="button button-outline" onClick={this.addRuleClick}>
-          add rule</button>
-        <button type="button" className="button button-outline" onClick={this.addGroupClick}>
-          add group</button>
-        {props.parent && <button type="button" className="button button-outline" onClick={this.deleteClick}>
-          delete</button>}
+        <button type="button" className="button button-small button-outline"
+          onClick={this.addRuleClick}>+ Add rule</button>
+        <button type="button" className="button button-small button-outline"
+          onClick={this.addGroupClick}>+ Add group</button>
+        {props.parent && <button type="button" onClick={this.deleteClick}
+          className="button button-small button-outline delete-group">
+          <img src={closeImg} alt="remove"/>
+        </button>}
       </div>
       <div className="group-inner">
         {props.item.children.length ? 
-          props.item.children.map(this.renderChild) : <div className="no-conditions">no conditions</div>}
+          props.item.children.map(this.renderChild) : <div className="no-rules">no rules</div>}
       </div>
     </div>;
   }
@@ -39,8 +43,8 @@ class ConditionGroup extends React.Component {
       onEvent={props.onEvent}/>;
   }
 
-  operationChange = event => {
-    this.triggerAction('group:change-op', { newValue: event.target.value });
+  operatorChange = operator => {
+    this.triggerAction('group:change-op', { newValue: operator });
   }
 
   addRuleClick = () => {
