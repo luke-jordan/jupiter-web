@@ -8,7 +8,7 @@
   position: relative;
   padding: 18px 0 0 10px;
   &:not(:last-child) {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .group-operator {
     position: absolute;
@@ -29,6 +29,9 @@
     display: flex;
     .button {
       margin-left: 10px;
+      border-color: $color-silver;
+      border-width: 1px;
+      background-color: $color-silver2;
     }
     .delete-group {
       width: 36px;
@@ -41,7 +44,7 @@
     border: 1px solid $color-silver;
     border-radius: 10px;
     padding: 15px;
-    padding-top: 36px;
+    padding-top: 31px;
     box-shadow: -1px 0 0px $color-blue;
   }
   .no-rules {
@@ -53,7 +56,7 @@
 
 .condition-builder .condition-rule {
   position: relative;
-  padding-right: 52px;
+  padding-right: 46px;
   &:not(:last-child) {
     margin-bottom: 12px;
   }
@@ -70,9 +73,9 @@
     position: absolute;
     top: 3px;
     right: 0;
-    background-color: $color-silver2;
     width: 36px;
     height: 36px;
+    border: 1px solid $color-silver;
     border-radius: 100%;
     cursor: pointer;
     @include flex-center;
