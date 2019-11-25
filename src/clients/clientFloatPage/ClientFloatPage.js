@@ -8,6 +8,7 @@ import Spinner from 'src/components/spinner/Spinner';
 import FloatAllocationTable from '../floatAllocationTable/FloatAllocationTable';
 import FloatReferralCodesTable from '../floatReferralCodesTable/FloatReferralCodesTable';
 import FloatBalanceEdit from '../floatBalanceEdit/FloatBalanceEdit';
+import ComparatorRates from '../comparatorRates/ComparatorRates'
 
 import './ClientFloatPage.scss';
 import currencyIcon from 'src/assets/images/currency.svg';
@@ -49,6 +50,7 @@ class ClientFloatPage extends React.Component {
         {this.renderHeader()}
         <FloatAllocationTable float={state.float} onSave={this.saveFloatAllocation}/>
         <FloatReferralCodesTable float={state.float} onAction={this.referralCodeAction}/>
+        <ComparatorRates data={state.float.comparatorRates}/>
       </>}
     </>;
   }

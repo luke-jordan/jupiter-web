@@ -1,0 +1,80 @@
+@import 'src/styles/common';
+
+.comparator-rates {
+  font-size: 14px;
+  max-width: 700px;
+
+  .bank-name {
+    margin: 15px 0;
+    .grid-row {
+      min-height: 50px;
+      align-items: center;
+    }
+    .bank-label {
+      margin-right: 15px;
+      color: #787f83;
+      font-weight: 600;
+    }
+    .bank-value {
+      color: #4d565b;
+    }
+    .base-input {
+      display: inline-block;
+      width: calc(100% - 100px);
+    }
+  }
+
+  .bank-rates-list {
+    margin-bottom: 20px;
+    &.edit {
+      .bank-rate {
+        padding: 10px;
+      }
+    }
+    .bank-rate {
+      border: 1px solid #d8d8d8;
+      border-bottom-width: 0;
+      padding: 18px 10px;
+    }
+    .bank-rate:last-of-type {
+      border-bottom-width: 1px;
+    }
+    div[class*="grid-col-"] {
+      display: flex;
+      align-items: center;
+      .base-input {
+        flex: 1;
+      }
+      .input-control {
+        height: auto;
+      }
+    }
+    .rate-label {
+      color: #787f83;
+      padding-right: 20px;
+    }
+    .rate-currency {
+      color: #4d565b;
+      font-size: 12px;
+      padding: 0 5px;
+    }
+    .rate-value {
+      color: #5353a1;
+      padding: 0 10px;
+    }
+    .add-rate {
+      display: block;
+      text-align: center;
+    }
+  }
+
+  .link {
+    font-weight: normal;
+  }
+
+  &.edit {
+    .bank-rate {
+      padding: 10px;
+    }
+  }
+}
