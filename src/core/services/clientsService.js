@@ -51,6 +51,12 @@ export class ClientsService {
     });
   }
 
+  updateComparatorRates(data) {
+    return this.apiService.post(`${this.url}/client/comparators`, data, {
+      sendToken: true
+    });
+  }
+
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';
