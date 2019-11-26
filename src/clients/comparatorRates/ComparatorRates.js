@@ -1,7 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
+import { takeUntil } from 'rxjs/operators';
 
-import { inject } from 'src/core/utils';
+import { inject, unmountDecorator } from 'src/core/utils';
+import Spinner from 'src/components/spinner/Spinner';
 import BankName from './BankName';
 import BankRates from './BankRates';
 
@@ -12,11 +14,15 @@ class ComparatorRates extends React.Component {
     super();
 
     this.modalService = inject('ModalService');
+    this.clientsService = inject('ClientsService');
 
     this.state = {
+      loading: false,
       edit: false,
       data: this.getDataAsArray(props.data)
     };
+
+    unmountDecorator(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -35,6 +41,7 @@ class ComparatorRates extends React.Component {
       {this.renderHeader()}
       {state.data.length ? state.data.map(this.renderBank) :
         <div className="no-data">No rates</div>}
+      {state.loading && <Spinner overlay/>}
     </div>;
   }
 
@@ -88,12 +95,22 @@ class ComparatorRates extends React.Component {
   saveClick = () => {
     const error = this.validate();
     if (error) {
-      this.modalService.openInfo('Comparitor Interest Rates', error);
+      this.modalService.openInfo('Error', error);
       return;
     }
 
-    this.setState({ edit: false });
-    this.props.onSave(this.getReqBody());
+    this.setState({ loading: true });
+
+    this.clientsService.updateComparatorRates(this.getReqBody()).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.setState({ loading: false, edit: false });
+      this.props.onSaved();
+    }, () => {
+      // TODO: Check if otp needed
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
+    });
   }
 
   bankChange(newData, bankIndex) {
