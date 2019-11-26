@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { inject } from 'src/core/utils';
 import BankName from './BankName';
 import BankRates from './BankRates';
 
@@ -9,6 +10,8 @@ import './ComparatorRates.scss';
 class ComparatorRates extends React.Component {
   constructor(props) {
     super();
+
+    this.modalService = inject('ModalService');
 
     this.state = {
       edit: false,
@@ -83,7 +86,9 @@ class ComparatorRates extends React.Component {
   }
 
   saveClick = () => {
-    if (!this.validate()) {
+    const error = this.validate();
+    if (error) {
+      this.modalService.openInfo('Comparitor Interest Rates', error);
       return;
     }
 
@@ -114,7 +119,39 @@ class ComparatorRates extends React.Component {
   }
 
   validate() {
-    return true;
+    const data = this.state.data;
+
+    for (let i = 0; i < data.length; ++i) {
+      const bank = data[i];
+
+      if (!bank.name.trim()) {
+        return 'Bank name cannot be empty';
+      }
+
+      const dupBank = data.find((_bank, index) => {
+        return index !== i && _bank.name.trim() === bank.name.trim()
+      });
+      if (dupBank) {
+        return `Bank with name "${bank.name}" already exist`;
+      }
+
+      for (let j = 0; j < bank.rates.length; ++j) {
+        const rate = bank.rates[j];
+
+        if (!rate.above || !rate.earns) {
+          return `Above rate and earns value cannot be empty ("${bank.name}" rates)`;
+        }
+
+        const dupRate = bank.rates.find((_rate, index) => {
+          return index !== j && _rate.above === rate.above;
+        });
+        if (dupRate) {
+          return `Rates cannot repeat within the bank ("${bank.name}" rates)`;
+        }
+      }
+    }
+
+    return '';
   }
 
   getReqBody() {
