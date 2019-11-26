@@ -55,7 +55,7 @@ class ComparatorRates extends React.Component {
   }
 
   renderBank = (bank, bankIndex) => {
-    return <div className="bank-rates" key={bankIndex}>
+    return <div key={bankIndex}>
       <BankName bank={bank} edit={this.state.edit}
         onChange={newData => this.bankChange(newData, bankIndex)}
         onRemove={() => this.bankRemove(bankIndex)}/>

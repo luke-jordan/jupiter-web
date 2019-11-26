@@ -11,8 +11,8 @@ const BankName = props => {
     <div className="grid-row">
       <div className="grid-col-10">
         <span className="bank-label">Name:</span>
-        {props.edit ? <Input value={props.bank.name} placeholder="Bank name"
-          onChange={nameChange}/> :
+        {props.edit ?
+          <Input value={props.bank.name} placeholder="Bank name" onChange={nameChange}/> :
           <span className="bank-value">{props.bank.name}</span>}
       </div>
       <div className="grid-col-2 text-right">
