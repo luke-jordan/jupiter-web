@@ -28,13 +28,13 @@ class BankRates extends React.Component {
             <div className="grid-col-6">
               <span className="rate-label">Above</span>
               <span className="rate-currency">R</span>
-              {props.edit ? <Input value={rate.above} name="above"
+              {props.edit ? <Input value={rate.above} name="above" type="number"
                 onChange={e => this.rateChange(e, rateIndex)}/> :
                 <div className="rate-value">{rate.above}</div>}
             </div>
             <div className="grid-col-6">
               <span className="rate-label">earns</span>
-              {props.edit ? <Input value={rate.earns} name="earns"
+              {props.edit ? <Input value={rate.earns} name="earns" type="number"
                 onChange={e => this.rateChange(e, rateIndex)}/> :
                 <div className="rate-value">{rate.earns}</div>}
               <span className="rate-currency">%</span>

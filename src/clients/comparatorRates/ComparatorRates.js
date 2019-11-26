@@ -93,7 +93,7 @@ class ComparatorRates extends React.Component {
     }
 
     this.setState({ edit: false });
-    console.log(this.getReqBody());
+    this.props.onSave(this.getReqBody());
   }
 
   bankChange(newData, bankIndex) {
@@ -155,10 +155,24 @@ class ComparatorRates extends React.Component {
   }
 
   getReqBody() {
-    return this.state.data.reduce((acc, cur) => {
-      acc[cur.name] = Object.fromEntries(cur.rates.map(rate => [rate.above, rate.earns]))
+    const { float, data } = this.props;
+
+    const rates = this.state.data.reduce((acc, cur) => {
+      const obj = { label: cur.name };
+      cur.rates.forEach(rate => obj[rate.above] = rate.earns);
+      acc[cur.name.replace(/\s/g, '_')] = obj;
       return acc;
     }, {});
+
+    return {
+      floatId: float.floatId,
+      clientId: float.clientId,
+      comparatorRates: {
+        intervalUnit: data.intervalUnit,
+        rateUnit: data.rateUnit,
+        rates
+      }
+    };
   }
 }
 

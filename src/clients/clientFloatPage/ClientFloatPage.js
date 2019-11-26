@@ -50,7 +50,8 @@ class ClientFloatPage extends React.Component {
         {this.renderHeader()}
         <FloatAllocationTable float={state.float} onSave={this.saveFloatAllocation}/>
         <FloatReferralCodesTable float={state.float} onAction={this.referralCodeAction}/>
-        <ComparatorRates data={state.float.comparatorRates}/>
+        <ComparatorRates float={state.float} data={state.float.comparatorRates}
+          onSave={this.saveComparatorRates}/>
       </>}
     </>;
   }
@@ -113,6 +114,19 @@ class ClientFloatPage extends React.Component {
         loading: false,
         float: Object.assign({}, this.state.float, data.changes)
       });
+    }, () => {
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
+    });
+  }
+
+  saveComparatorRates = data => {
+    this.setState({ loading: true });
+
+    this.clientsService.updateComparatorRates(data).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.loadFloat(); // reload float
     }, () => {
       this.setState({ loading: false });
       this.modalService.openCommonError();
