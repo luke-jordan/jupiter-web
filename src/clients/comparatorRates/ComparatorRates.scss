@@ -5,18 +5,18 @@
   max-width: 700px;
 
   .bank-name {
-    margin: 15px 0;
+    margin-top: 15px;
     .grid-row {
       min-height: 50px;
       align-items: center;
     }
     .bank-label {
       margin-right: 15px;
-      color: #787f83;
+      color: $color-grey2;
       font-weight: 600;
     }
     .bank-value {
-      color: #4d565b;
+      color: $color-grey;
     }
     .base-input {
       display: inline-block;
@@ -24,52 +24,60 @@
     }
   }
 
-  .bank-rates-list {
-    margin-bottom: 20px;
-    &.edit {
-      .bank-rate {
-        padding: 10px;
+  .bank-rates {
+    margin-bottom: 25px;
+    .bank-rates-list {
+      margin-top: 15px;
+      .bank-rate:last-child {
+        border-bottom-width: 1px;
       }
     }
     .bank-rate {
-      border: 1px solid #d8d8d8;
-      border-bottom-width: 0;
-      padding: 18px 10px;
-    }
-    .bank-rate:last-of-type {
-      border-bottom-width: 1px;
-    }
-    div[class*="grid-col-"] {
       display: flex;
       align-items: center;
-      .base-input {
+      border: 1px solid $color-silver;
+      border-bottom-width: 0;
+      padding: 18px 10px;
+      .grid-row {
         flex: 1;
       }
-      .input-control {
-        height: auto;
+      div[class*="grid-col-"] {
+        display: flex;
+        align-items: center;
+        .base-input {
+          flex: 1;
+        }
+        .input-control {
+          height: auto;
+        }
       }
     }
     .rate-label {
-      color: #787f83;
+      color: $color-grey2;
       padding-right: 20px;
     }
     .rate-currency {
-      color: #4d565b;
+      color: $color-grey;
       font-size: 12px;
-      padding: 0 5px;
+      padding: 0 8px;
     }
     .rate-value {
-      color: #5353a1;
+      color: $color-purple;
       padding: 0 10px;
+    }
+    .rate-remove {
+      text-align: right;
+      width: 40px;
+      padding-right: 10px;
+      img {
+        cursor: pointer;
+      }
     }
     .add-rate {
       display: block;
+      margin-top: 2px;
       text-align: center;
     }
-  }
-
-  .link {
-    font-weight: normal;
   }
 
   &.edit {
