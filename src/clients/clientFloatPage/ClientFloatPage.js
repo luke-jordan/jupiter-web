@@ -85,7 +85,7 @@ class ClientFloatPage extends React.Component {
         onCompleted={this.balanceChanged}/> : null;
   }
 
-  loadFloat() {
+  loadFloat = () => {
     this.setState({ loading: true });
 
     const { clientId, floatId } = this.props.match.params;
