@@ -19,16 +19,16 @@ class ComparatorRates extends React.Component {
     this.state = {
       loading: false,
       edit: false,
-      data: this.getDataAsArray(props.data)
+      data: this.getDataAsArray(props.float)
     };
 
     unmountDecorator(this);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.data !== prevProps.data) {
+    if (this.props.float !== prevProps.float) {
       this.setState({
-        data: this.getDataAsArray(this.props.data)
+        data: this.getDataAsArray(this.props.float)
       });
     }
   }
@@ -88,7 +88,7 @@ class ComparatorRates extends React.Component {
   cancelClick = () => {
     this.setState({
       edit: false,
-      data: this.getDataAsArray(this.props.data)
+      data: this.getDataAsArray(this.props.float)
     });
   }
 
@@ -125,8 +125,8 @@ class ComparatorRates extends React.Component {
     });
   }
 
-  getDataAsArray(data) {
-    return Object.values(data.rates).map(bank => {
+  getDataAsArray(float) {
+    return Object.values(float.comparatorRates.rates).map(bank => {
       return {
         name: bank.label,
         rates: Object.entries(bank).filter(([key]) => key !== 'label')
@@ -172,7 +172,7 @@ class ComparatorRates extends React.Component {
   }
 
   getReqBody() {
-    const { float, data } = this.props;
+    const float = this.props.float
 
     const rates = this.state.data.reduce((acc, cur) => {
       const obj = { label: cur.name };
@@ -185,8 +185,8 @@ class ComparatorRates extends React.Component {
       floatId: float.floatId,
       clientId: float.clientId,
       comparatorRates: {
-        intervalUnit: data.intervalUnit,
-        rateUnit: data.rateUnit,
+        intervalUnit: float.comparatorRates.intervalUnit,
+        rateUnit: float.comparatorRates.rateUnit,
         rates
       }
     };

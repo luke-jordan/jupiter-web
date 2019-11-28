@@ -49,9 +49,8 @@ class ClientFloatPage extends React.Component {
       {state.float && <>
         {this.renderHeader()}
         <FloatAllocationTable float={state.float} onSave={this.saveFloatAllocation}/>
-        <FloatReferralCodesTable float={state.float} onAction={this.referralCodeAction}/>
-        <ComparatorRates float={state.float} data={state.float.comparatorRates}
-          onSaved={this.loadFloat}/>
+        <FloatReferralCodesTable float={state.float} onSaved={this.loadFloat}/>
+        <ComparatorRates float={state.float} onSaved={this.loadFloat}/>
       </>}
     </>;
   }
@@ -118,17 +117,6 @@ class ClientFloatPage extends React.Component {
       this.setState({ loading: false });
       this.modalService.openCommonError();
     });
-  }
-
-  referralCodeAction = (action, item) => {
-    // TODO: Refferal codes management (api needed)
-    console.log(action, item);
-
-    this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false });
-      this.modalService.openInfo('Info', 'Referral codes API is not implemented yet');
-    }, 500);
   }
 
   toggleBalanceEdit(balanceEdit) {
