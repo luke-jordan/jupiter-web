@@ -41,9 +41,8 @@ export default class FloatReferralCodeEdit extends React.Component {
               <div className="form-label">Type</div>
               <Select name="codeType" value={data.codeType} 
                 disabled={mode === 'edit'} onChange={this.inputChange}>
-                <option value="TYPE_1">Type 1</option>
-                <option value="TYPE_2">Type 2</option>
-                <option value="TYPE_3">Type 3</option>
+                <option value="CHANNEL">Marketing channel</option>
+                <option value="BETA">Early access</option>
               </Select>
             </div>
           </div>
@@ -52,8 +51,8 @@ export default class FloatReferralCodeEdit extends React.Component {
           <div className="grid-col">
             <div className="form-group">
               <div className="form-label">Bonus Amount</div>
-              <Input name="bonus" placeholder="Enter bonus amount"
-                value={data.bonus} onChange={this.inputChange}/>
+              <Input type="number" name="amount" placeholder="Enter bonus amount"
+                value={data.amount} onChange={this.inputChange}/>
             </div>
           </div>
           <div className="grid-col">
@@ -107,8 +106,8 @@ export default class FloatReferralCodeEdit extends React.Component {
 
     return {
       referralCode: '',
-      codeType: '',
-      bonus: '',
+      codeType: 'CHANNEL',
+      amount: '',
       bonusSource: '',
       tags: []
     };

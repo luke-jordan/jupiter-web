@@ -48,7 +48,7 @@ class FloatReferralCodesTable extends React.Component {
     const referralCodes = this.props.float.referralCodes || [{
       referralCode: 'code',
       codeType: 'type',
-      bonus: 0,
+      amount: 0,
       bonusSource: 'source',
       tags: ['tag1', 'tag2']
     }];
@@ -57,7 +57,7 @@ class FloatReferralCodesTable extends React.Component {
       return <tr key={index}>
         <td>{item.referralCode}</td>
         <td>{item.codeType}</td>
-        <td>{item.bonus}</td>
+        <td>{item.amount}</td>
         <td>{item.bonusSource}</td>
         <td><TagList tags={item.tags}/></td>
         <td>
@@ -75,7 +75,7 @@ class FloatReferralCodesTable extends React.Component {
         <tr>
           <th>Name</th>
           <th style={{width: 150}}>Type</th>
-          <th style={{width: 100}}>Bonus</th>
+          <th style={{width: 100}}>Amount</th>
           <th style={{width: 130}}>Bonus source</th>
           <th style={{width: 400}}>Tags</th>
           <th style={{width: 40}}></th>
