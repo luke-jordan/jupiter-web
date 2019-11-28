@@ -24,7 +24,7 @@ export default class FloatReferralCodeEdit extends React.Component {
 
     this.state = {
       data: this.getFormData(props.data),
-      codeAvailable: true
+      codeAvailable: props.mode !== 'duplicate'
     };
 
     unmountDecorator(this);
@@ -145,7 +145,7 @@ export default class FloatReferralCodeEdit extends React.Component {
       codeType: 'CHANNEL',
       amount: '',
       bonusSource: '',
-      tags: []
+      tags: ''
     };
   }
 

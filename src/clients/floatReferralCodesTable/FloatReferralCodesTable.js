@@ -64,7 +64,7 @@ class FloatReferralCodesTable extends React.Component {
           <DropdownMenu items={[
             { text: 'Edit', click: () => this.openEdit('edit', item) },
             { text: 'Duplicate', click: () => this.openEdit('duplicate', item) },
-            { text: 'Deactivate', click: this.deactivateClick }
+            { text: 'Deactivate', click: () => this.deactivateClick(item) }
           ]}/>
         </td>
       </tr>
@@ -104,15 +104,12 @@ class FloatReferralCodesTable extends React.Component {
     const body = {
       clientId: float.clientId,
       floatId: float.floatId,
+      referralCode: data.referralCode,
+      codeType: data.codeType,
       amount: data.amount,
       bonusSource: data.bonusSource,
       tags: data.tags.split(',').map(t => t.replace(/\s/g, '')).filter(t => t)
     };
-
-    if (mode !== 'edit') {
-      body.referralCode = data.referralCode;
-      body.codeType = data.codeType;
-    }
 
     const obs = mode === 'edit' ? this.clientsService.updateRefCode(body) :
       this.clientsService.createRefCode(body);
@@ -130,7 +127,7 @@ class FloatReferralCodesTable extends React.Component {
     });
   }
 
-  deactivateClick = item => {
+  deactivateClick(item) {
     this.setState({ loading: true });
 
     const float = this.props.float;
