@@ -53,6 +53,24 @@ export class ClientsService {
     return this.apiService.post(`${this.url}/client/comparators`, data);
   }
 
+  crateRefCode(data) {
+    return this.apiService.post(`${this.url}/referral/create`, data);
+  }
+
+  updateRefCode(data) {
+    return this.apiService.post(`${this.url}/referral/modify`, data);
+  }
+
+  checkRefCodeAvailable(referralCode) {
+    return this.apiService.get(`${this.url}/referral/available`, {
+      params: { referralCode }
+    });
+  }
+
+  deactivateRefCode(data) {
+    return this.apiService.post(`${this.url}/referral/deactivate`, data);
+  }
+
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';
