@@ -1,5 +1,8 @@
 import React from 'react';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
+import { inject, unmountDecorator } from 'src/core/utils';
 import Modal from 'src/components/modal/Modal';
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
@@ -12,16 +15,31 @@ export default class FloatReferralCodeEdit extends React.Component {
     duplicate: 'Duplicate referral code'
   };
 
+  codeChanged = new Subject();
+
   constructor(props) {
     super();
+
+    this.clientsService = inject('ClientsService');
+
     this.state = {
-      data: this.getFormData(props.data)
+      data: this.getFormData(props.data),
+      codeAvailable: true
     };
+
+    unmountDecorator(this);
+  }
+
+  componentDidMount() {
+    this.codeChanged.pipe(
+      takeUntil(this.unmount),
+      debounceTime(200)
+    ).subscribe(this.checkIfCodeAvailable);
   }
 
   render() {
     const mode = this.props.mode;
-    const data = this.state.data;
+    const { data, codeAvailable } = this.state;
 
     return <Modal className="float-referral-code-modal" open
       header={this.headerText[mode]}
@@ -33,6 +51,7 @@ export default class FloatReferralCodeEdit extends React.Component {
               <div className="form-label">Name</div>
               <Input name="referralCode" placeholder="Enter name"
                 maxlength="50" disabled={mode === 'edit'}
+                error={codeAvailable ? '' : 'This name already used'}
                 value={data.referralCode} onChange={this.inputChange}/>
             </div>
           </div>
@@ -69,8 +88,8 @@ export default class FloatReferralCodeEdit extends React.Component {
         <div className="grid-row">
           <div className="grid-col">
             <div className="form-group">
-              <div className="form-label">Add tags (optional)</div>
-              <TextArea name="tags" placeholder="Enter tags separated by commas" rows="3" charsCounter={false}
+              <div className="form-label">Add tags separated by commas (optional)</div>
+              <TextArea name="tags" placeholder="Enter tags" rows="3" charsCounter={false}
                 value={data.tags} onChange={this.inputChange} />
             </div>
           </div>
@@ -80,7 +99,9 @@ export default class FloatReferralCodeEdit extends React.Component {
             <span className="link text-underline" onClick={this.props.onCancel}>Cancel</span>
           </div>
           <div className="grid-col text-right">
-            <button className="button">Add code</button>
+            <button className="button" disabled={!this.valid()}>
+              {mode === 'edit' ? 'Edit': 'Add'} code
+            </button>
           </div>
         </div>
       </form>
@@ -91,17 +112,32 @@ export default class FloatReferralCodeEdit extends React.Component {
     const { name, value } = event.target;
     this.setState({
       data: { ...this.state.data, [name]: value }
+    }, () => {
+      if (name === 'referralCode') {
+        this.codeChanged.next();
+      }
     });
+  }
+
+  valid() {
+    const state = this.state;
+    return (
+      state.data.referralCode.trim() &&
+      state.data.amount &&
+      state.codeAvailable
+    );
   }
 
   submit = event => {
     event.preventDefault();
-    console.log(this.props.mode, this.state.data);
+    this.props.onSubmit(this.props.mode, this.state.data);
   }
 
   getFormData(data) {
     if (data) {
-      return { ...data };
+      return {
+        ...data, tags: data.tags.join(',')
+      };
     }
 
     return {
@@ -111,5 +147,20 @@ export default class FloatReferralCodeEdit extends React.Component {
       bonusSource: '',
       tags: []
     };
+  }
+
+  checkIfCodeAvailable = () => {
+    const code = this.state.data.referralCode;
+    if (!code) {
+      return;
+    }
+
+    // this.clientsService.checkRefCodeAvailable(code).pipe(
+    //   takeUntil(this.unmount)
+    // ).subscribe(() => {
+    //   this.setState({ codeAvailable: true });
+    // }, () => {
+    //   this.setState({ codeAvailable: false });
+    // });
   }
 }

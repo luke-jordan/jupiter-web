@@ -29,7 +29,7 @@ class FloatReferralCodesTable extends React.Component {
     return <div className="float-referral-codes-table">
       {this.renderHeader()}
       {this.renderTable()}
-      {state.edit && <FloatReferralCodeEdit {...state.edit} onCancel={this.closeEdit}/>}
+      {state.edit && <FloatReferralCodeEdit {...state.edit} onCancel={this.closeEdit} onSubmit={this.submit}/>}
       {state.loading && <Spinner overlay/>}
     </div>;
   }
@@ -96,6 +96,38 @@ class FloatReferralCodesTable extends React.Component {
 
   closeEdit = () => {
     this.setState({ edit: null });
+  }
+
+  submit = (mode, data) => {
+    const float = this.props.float;
+
+    const body = {
+      clientId: float.clientId,
+      floatId: float.floatId,
+      amount: data.amount,
+      bonusSource: data.bonusSource,
+      tags: data.tags.split(',').map(t => t.replace(/\s/g, '')).filter(t => t)
+    };
+
+    if (mode !== 'edit') {
+      body.referralCode = data.referralCode;
+      body.codeType = data.codeType;
+    }
+
+    const obs = mode === 'edit' ? this.clientsService.updateRefCode(body) :
+      this.clientsService.createRefCode(body);
+
+    this.setState({ loading: true, edit: null });
+
+    obs.pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.props.onSaved();
+      this.setState({ loading: false });
+    }, () => {
+      this.modalService.openCommonError();
+      this.setState({ loading: false });
+    });
   }
 
   deactivateClick = item => {

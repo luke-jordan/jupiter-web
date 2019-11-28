@@ -53,7 +53,7 @@ export class ClientsService {
     return this.apiService.post(`${this.url}/client/comparators`, data);
   }
 
-  crateRefCode(data) {
+  createRefCode(data) {
     return this.apiService.post(`${this.url}/referral/create`, data);
   }
 

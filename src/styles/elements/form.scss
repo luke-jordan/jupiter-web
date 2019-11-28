@@ -63,6 +63,9 @@
     border-color: $color-purple;
     border-radius: 0;
   }
+  &.error .input-control {
+    border-color: $color-red;
+  }
   .input-control {
     border: 1px solid $color-silver;
     border-radius: 10px;
