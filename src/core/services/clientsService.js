@@ -13,7 +13,7 @@ export class ClientsService {
 
   getClients() {
     return forkJoin(
-      this.apiService.get(`${this.url}/client/list`, { sendToken: true }),
+      this.apiService.get(`${this.url}/client/list`),
       this.dataService.getCountries()
     ).pipe(
       map(res => {
@@ -36,7 +36,7 @@ export class ClientsService {
 
   getFloat(clientId, floatId) {
     return this.apiService.get(`${this.url}/client/fetch`, {
-      params: { clientId, floatId }, sendToken: true
+      params: { clientId, floatId }
     }).pipe(
       tap(float => {
         this._modifyFloat(float);
@@ -46,15 +46,11 @@ export class ClientsService {
   }
 
   updateClient(data) {
-    return this.apiService.post(`${this.url}/client/edit`, data, {
-      sendToken: true
-    });
+    return this.apiService.post(`${this.url}/client/edit`, data);
   }
 
   updateComparatorRates(data) {
-    return this.apiService.post(`${this.url}/client/comparators`, data, {
-      sendToken: true
-    });
+    return this.apiService.post(`${this.url}/client/comparators`, data);
   }
 
   _modifyClient(client, countries) {

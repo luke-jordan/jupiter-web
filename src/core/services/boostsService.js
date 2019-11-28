@@ -13,9 +13,7 @@ export class BoostsService {
   }
 
   getBoosts(params) {
-    return this.apiService.get(`${this.url}/boost/list`, {
-      sendToken: true, params
-    }).pipe(
+    return this.apiService.get(`${this.url}/boost/list`, { params }).pipe(
       tap(boosts => boosts.forEach(this._modifyBoost))
     );
   }
@@ -39,7 +37,7 @@ export class BoostsService {
       ) : of(null);
 
     return audienceObs.pipe(
-      mergeMap(() => this.apiService.post(`${this.url}/boost/create`, boostData, { sendToken: true }))
+      mergeMap(() => this.apiService.post(`${this.url}/boost/create`, boostData))
     );
   }
 
