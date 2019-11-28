@@ -19,7 +19,6 @@ class ClientFloatPage extends React.Component {
     super();
 
     this.clientsService = inject('ClientsService');
-    this.modalService = inject('ModalService');
 
     this.state = {
       loading: false,
@@ -48,7 +47,7 @@ class ClientFloatPage extends React.Component {
       {state.loading && <Spinner overlay/>}
       {state.float && <>
         {this.renderHeader()}
-        <FloatAllocationTable float={state.float} onSave={this.saveFloatAllocation}/>
+        <FloatAllocationTable float={state.float} onSaved={this.loadFloat}/>
         <FloatReferralCodesTable float={state.float} onSaved={this.loadFloat}/>
         <ComparatorRates float={state.float} onSaved={this.loadFloat}/>
       </>}
@@ -93,29 +92,6 @@ class ClientFloatPage extends React.Component {
       takeUntil(this.unmount)
     ).subscribe(float => {
       this.setState({ loading: false, float });
-    });
-  }
-
-  saveFloatAllocation = data => {
-    this.setState({ loading: true });
-
-    const float = this.state.float;
-    this.clientsService.updateClient({
-      clientId: float.clientId,
-      floatId: float.floatId,
-      operation: 'ADJUST_ACCRUAL_VARS',
-      newAccrualVars: data.changes,
-      reasonToLog: data.reason
-    }).pipe(
-      takeUntil(this.unmount)
-    ).subscribe(() => {
-      this.setState({
-        loading: false,
-        float: Object.assign({}, this.state.float, data.changes)
-      });
-    }, () => {
-      this.setState({ loading: false });
-      this.modalService.openCommonError();
     });
   }
 
