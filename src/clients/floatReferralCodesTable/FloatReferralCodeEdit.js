@@ -78,9 +78,8 @@ export default class FloatReferralCodeEdit extends React.Component {
             <div className="form-group">
               <div className="form-label">Bonus Source</div>
               <Select name="bonusSource" value={data.bonusSource} onChange={this.inputChange}>
-                <option value="SOURCE_1">Source 1</option>
-                <option value="SOURCE_2">Source 2</option>
-                <option value="SOURCE_3">Source 3</option>
+                <option value="src1">Source 1</option>
+                <option value="src2">Source 2</option>
               </Select>
             </div>
           </div>
@@ -144,7 +143,7 @@ export default class FloatReferralCodeEdit extends React.Component {
       referralCode: '',
       codeType: 'CHANNEL',
       amount: '',
-      bonusSource: '',
+      bonusSource: 'src1',
       tags: ''
     };
   }
@@ -154,6 +153,8 @@ export default class FloatReferralCodeEdit extends React.Component {
     if (!code) {
       return;
     }
+
+    this.setState({ codeAvailable: true });
 
     // this.clientsService.checkRefCodeAvailable(code).pipe(
     //   takeUntil(this.unmount)
