@@ -34,7 +34,7 @@ export default class FloatReferralCodeEdit extends React.Component {
   }
 
   render() {
-    const mode = this.props.mode;
+    const { mode, float } = this.props;
     const { data, codeAvailable } = this.state;
 
     return <Modal className="float-referral-code-modal" open
@@ -74,8 +74,7 @@ export default class FloatReferralCodeEdit extends React.Component {
             <div className="form-group">
               <div className="form-label">Bonus Source</div>
               <Select name="bonusSource" value={data.bonusSource} onChange={this.inputChange}>
-                <option value="src1">Source 1</option>
-                <option value="src2">Source 2</option>
+                {Object.keys(float.floatBonusPools).map(key => <option key={key} value={key}>{key}</option>)}
               </Select>
             </div>
           </div>
@@ -131,11 +130,13 @@ export default class FloatReferralCodeEdit extends React.Component {
       };
     }
 
+    const float = this.props.float;
+
     return {
       referralCode: '',
       codeType: 'CHANNEL',
       amount: '',
-      bonusSource: 'src1',
+      bonusSource: Object.keys(float.floatBonusPools)[0],
       tags: ''
     };
   }
