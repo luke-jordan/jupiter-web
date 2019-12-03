@@ -51,8 +51,8 @@ class FloatReferralCodesTable extends React.Component {
     const rows = referralCodes.map((item, index) => {
       return <tr key={index}>
         <td>{item.referralCode}</td>
-        <td>{item.codeType}</td>
-        <td>{item.amount}</td>
+        <td>{item.codeTypeText}</td>
+        <td>{item.bonusAmount.amountMoney}</td>
         <td>{item.bonusSource}</td>
         <td><TagList tags={item.tags}/></td>
         <td>
@@ -69,9 +69,9 @@ class FloatReferralCodesTable extends React.Component {
       <thead>
         <tr>
           <th>Name</th>
-          <th style={{width: 150}}>Type</th>
+          <th style={{width: 175}}>Type</th>
           <th style={{width: 100}}>Amount</th>
-          <th style={{width: 130}}>Bonus source</th>
+          <th style={{width: 200}}>Bonus source</th>
           <th style={{width: 400}}>Tags</th>
           <th style={{width: 40}}></th>
         </tr>
@@ -101,7 +101,11 @@ class FloatReferralCodesTable extends React.Component {
       floatId: float.floatId,
       referralCode: data.referralCode,
       codeType: data.codeType,
-      amount: data.amount,
+      bonusAmount: {
+        amount: data.bonusAmount,
+        unit: 'WHOLE_CURRENCY',
+        currency: float.currency
+      },
       bonusSource: data.bonusSource,
       tags: data.tags.split(',').map(t => t.replace(/\s/g, '')).filter(t => t)
     };
@@ -113,8 +117,8 @@ class FloatReferralCodesTable extends React.Component {
 
     obs.pipe(
       takeUntil(this.unmount)
-    ).subscribe(() => {
-      this.props.onSaved();
+    ).subscribe(res => {
+      this.props.onChanged(res.updatedCodes);
       this.setState({ loading: false });
     }, () => {
       this.modalService.openCommonError();
@@ -132,8 +136,8 @@ class FloatReferralCodesTable extends React.Component {
       referralCode: item.referralCode
     }).pipe(
       takeUntil(this.unmount)
-    ).subscribe(() => {
-      this.props.onSaved();
+    ).subscribe(res => {
+      this.props.onChanged(res.updatedCodes);
       this.setState({ loading: false });
     }, () => {
       this.modalService.openCommonError();

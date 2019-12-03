@@ -3,7 +3,8 @@ import { fromEvent, of } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged,
   switchMap, map, mapTo, catchError } from 'rxjs/operators';
 
-import { inject, unmountDecorator } from 'src/core/utils';
+import { inject, unmountDecorator, mapToOptions } from 'src/core/utils';
+import { referralCodeTypeMap } from 'src/core/constants';
 import Modal from 'src/components/modal/Modal';
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
@@ -19,10 +20,12 @@ export default class FloatReferralCodeEdit extends React.Component {
   constructor(props) {
     super();
 
+    this.codeTypes = mapToOptions(referralCodeTypeMap);
+
     this.clientsService = inject('ClientsService');
 
     this.state = {
-      data: this.getFormData(props.data),
+      data: this.getFormData(props),
       codeAvailable: props.mode !== 'duplicate'
     };
 
@@ -56,8 +59,7 @@ export default class FloatReferralCodeEdit extends React.Component {
               <div className="form-label">Type</div>
               <Select name="codeType" value={data.codeType} 
                 disabled={mode === 'edit'} onChange={this.inputChange}>
-                <option value="CHANNEL">Marketing channel</option>
-                <option value="BETA">Early access</option>
+                {this.codeTypes.map(type => <option key={type.value} value={type.value}>{type.text}</option>)}
               </Select>
             </div>
           </div>
@@ -66,8 +68,8 @@ export default class FloatReferralCodeEdit extends React.Component {
           <div className="grid-col">
             <div className="form-group">
               <div className="form-label">Bonus Amount</div>
-              <Input type="number" name="amount" placeholder="Enter bonus amount"
-                value={data.amount} onChange={this.inputChange}/>
+              <Input type="number" name="bonusAmount" placeholder="Enter bonus amount"
+                value={data.bonusAmount} onChange={this.inputChange}/>
             </div>
           </div>
           <div className="grid-col">
@@ -113,7 +115,7 @@ export default class FloatReferralCodeEdit extends React.Component {
     const state = this.state;
     return (
       state.data.referralCode.trim() &&
-      state.data.amount &&
+      state.data.bonusAmount &&
       state.codeAvailable
     );
   }
@@ -123,19 +125,23 @@ export default class FloatReferralCodeEdit extends React.Component {
     this.props.onSubmit(this.props.mode, this.state.data);
   }
 
-  getFormData(data) {
+  getFormData(props) {
+    const { float, data } = props;
+
     if (data) {
       return {
-        ...data, tags: data.tags.join(',')
+        referralCode: data.referralCode,
+        codeType: data.codeType,
+        bonusAmount: data.bonusAmount.amountValue,
+        bonusSource: data.bonusSource,
+        tags: (data.tags || []).join(',')
       };
     }
 
-    const float = this.props.float;
-
     return {
       referralCode: '',
-      codeType: 'CHANNEL',
-      amount: '',
+      codeType: this.codeTypes[0].value,
+      bonusAmount: '',
       bonusSource: Object.keys(float.floatBonusPools)[0],
       tags: ''
     };
@@ -145,7 +151,6 @@ export default class FloatReferralCodeEdit extends React.Component {
     const el = document.querySelector('.float-referral-code-modal input[name="referralCode"]');
 
     fromEvent(el, 'keyup').pipe(
-      takeUntil(this.unmount),
       map(e => e.target.value.trim()),
       debounceTime(300),
       distinctUntilChanged(),
@@ -161,7 +166,8 @@ export default class FloatReferralCodeEdit extends React.Component {
           mapTo(true),
           catchError(() => of(false))
         );
-      })
+      }),
+      takeUntil(this.unmount)
     ).subscribe(codeAvailable => {
       this.setState({ codeAvailable });
     });
