@@ -61,10 +61,8 @@ export class ClientsService {
     return this.apiService.post(`${this.url}/referral/modify`, data);
   }
 
-  checkRefCodeAvailable(referralCode) {
-    return this.apiService.get(`${this.url}/referral/available`, {
-      params: { referralCode }
-    });
+  checkRefCodeAvailable(params) {
+    return this.apiService.get(`${this.url}/referral/available`, { params });
   }
 
   deactivateRefCode(data) {

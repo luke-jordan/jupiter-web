@@ -1,6 +1,7 @@
 import React from 'react';
-import { Subject } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { fromEvent, of } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged,
+  switchMap, map, mapTo, catchError } from 'rxjs/operators';
 
 import { inject, unmountDecorator } from 'src/core/utils';
 import Modal from 'src/components/modal/Modal';
@@ -14,8 +15,6 @@ export default class FloatReferralCodeEdit extends React.Component {
     edit: 'Edit referral code',
     duplicate: 'Duplicate referral code'
   };
-
-  codeChanged = new Subject();
 
   constructor(props) {
     super();
@@ -31,10 +30,7 @@ export default class FloatReferralCodeEdit extends React.Component {
   }
 
   componentDidMount() {
-    this.codeChanged.pipe(
-      takeUntil(this.unmount),
-      debounceTime(200)
-    ).subscribe(this.checkIfCodeAvailable);
+    this.checkIfCodeAvailable();
   }
 
   render() {
@@ -111,10 +107,6 @@ export default class FloatReferralCodeEdit extends React.Component {
     const { name, value } = event.target;
     this.setState({
       data: { ...this.state.data, [name]: value }
-    }, () => {
-      if (name === 'referralCode') {
-        this.codeChanged.next();
-      }
     });
   }
 
@@ -148,20 +140,29 @@ export default class FloatReferralCodeEdit extends React.Component {
     };
   }
 
-  checkIfCodeAvailable = () => {
-    const code = this.state.data.referralCode;
-    if (!code) {
-      return;
-    }
+  checkIfCodeAvailable() {
+    const el = document.querySelector('.float-referral-code-modal input[name="referralCode"]');
 
-    this.setState({ codeAvailable: true });
+    fromEvent(el, 'keyup').pipe(
+      takeUntil(this.unmount),
+      map(e => e.target.value.trim()),
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(referralCode => {
+        if (!referralCode) {
+          return of(true);
+        }
 
-    // this.clientsService.checkRefCodeAvailable(code).pipe(
-    //   takeUntil(this.unmount)
-    // ).subscribe(() => {
-    //   this.setState({ codeAvailable: true });
-    // }, () => {
-    //   this.setState({ codeAvailable: false });
-    // });
+        const float = this.props.float;
+        return this.clientsService.checkRefCodeAvailable({
+          referralCode, clientId: float.clientId, floatId: float.floatId
+        }).pipe(
+          mapTo(true),
+          catchError(() => of(false))
+        );
+      })
+    ).subscribe(codeAvailable => {
+      this.setState({ codeAvailable });
+    });
   }
 }

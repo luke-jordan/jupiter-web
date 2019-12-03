@@ -25,11 +25,12 @@ class FloatReferralCodesTable extends React.Component {
   }
 
   render() {
-    const state = this.state;
+    const { props, state } = this;
     return <div className="float-referral-codes-table">
       {this.renderHeader()}
       {this.renderTable()}
-      {state.edit && <FloatReferralCodeEdit {...state.edit} onCancel={this.closeEdit} onSubmit={this.submit}/>}
+      {state.edit && <FloatReferralCodeEdit {...state.edit} float={props.float}
+        onCancel={this.closeEdit} onSubmit={this.submit}/>}
       {state.loading && <Spinner overlay/>}
     </div>;
   }
@@ -45,13 +46,7 @@ class FloatReferralCodesTable extends React.Component {
   }
 
   renderTable() {
-    const referralCodes = this.props.float.referralCodes || [{
-      referralCode: 'code',
-      codeType: 'type',
-      amount: 0,
-      bonusSource: 'source',
-      tags: ['tag1', 'tag2']
-    }];
+    const referralCodes = this.props.float.referralCodes;
 
     const rows = referralCodes.map((item, index) => {
       return <tr key={index}>
