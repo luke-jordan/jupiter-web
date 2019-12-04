@@ -1,28 +1,37 @@
 import React from 'react';
+import { takeUntil } from 'rxjs/operators';
 
+import { inject, unmountDecorator } from 'src/core/utils';
 import TagList from 'src/components/tagList/TagList';
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
-import Input from 'src/components/input/Input';
-import Select from 'src/components/select/Select';
-import TextArea from 'src/components/textArea/TextArea';
-import Modal from 'src/components/modal/Modal';
+import Spinner from 'src/components/spinner/Spinner';
+import FloatReferralCodeEdit from './FloatReferralCodeEdit';
 
 import './FloatReferralCodesTable.scss';
 
 class FloatReferralCodesTable extends React.Component {
   constructor() {
     super();
+
+    this.clientsService = inject('ClientsService');
+    this.modalService = inject('ModalService');
+
     this.state = {
-      editOpen: false,
-      code: this.getDefaultValues()
+      loading: false,
+      edit: null
     };
+
+    unmountDecorator(this);
   }
 
   render() {
+    const { props, state } = this;
     return <div className="float-referral-codes-table">
       {this.renderHeader()}
       {this.renderTable()}
-      {this.renderEditModal()}
+      {state.edit && <FloatReferralCodeEdit {...state.edit} float={props.float}
+        onCancel={this.closeEdit} onSubmit={this.submit}/>}
+      {state.loading && <Spinner overlay/>}
     </div>;
   }
 
@@ -31,25 +40,26 @@ class FloatReferralCodesTable extends React.Component {
       <div className="header-text">Active Referral Codes</div>
       <div className="header-actions">
         <div className="button button-small button-outline"
-          onClick={this.addCodeClick}>Add new code</div>
+          onClick={() => this.openEdit('new')}>Add new code</div>
       </div>
     </div>
   }
 
   renderTable() {
-    const props = this.props;
+    const referralCodes = this.props.float.referralCodes;
 
-    const rows = [{}].map((item, index) => {
+    const rows = referralCodes.map((item, index) => {
       return <tr key={index}>
-        <td>#test</td>
-        <td>test</td>
-        <td>10</td>
-        <td>R12.99</td>
-        <td><TagList tags="tag1,tag2,tag3"/></td>
+        <td>{item.referralCode}</td>
+        <td>{item.codeTypeText}</td>
+        <td>{item.bonusAmount.amountMoney}</td>
+        <td>{item.bonusSource}</td>
+        <td><TagList tags={item.tags}/></td>
         <td>
           <DropdownMenu items={[
-            { text: 'Duplicate', click: () => props.onAction('duplicate', item) },
-            { text: 'Deactivate', click: () => props.onAction('deactivate', item) }
+            { text: 'Edit', click: () => this.openEdit('edit', item) },
+            { text: 'Duplicate', click: () => this.openEdit('duplicate', item) },
+            { text: 'Deactivate', click: () => this.deactivateClick(item) }
           ]}/>
         </td>
       </tr>
@@ -59,115 +69,80 @@ class FloatReferralCodesTable extends React.Component {
       <thead>
         <tr>
           <th>Name</th>
-          <th style={{width: 150}}>Type</th>
-          <th style={{width: 100}}># Used</th>
-          <th style={{width: 100}}>Bonus</th>
-          <th style={{width: 300}}>Tags</th>
+          <th style={{width: 175}}>Type</th>
+          <th style={{width: 100}}>Amount</th>
+          <th style={{width: 200}}>Bonus source</th>
+          <th style={{width: 400}}>Tags</th>
           <th style={{width: 40}}></th>
         </tr>
       </thead>
       <tbody>
         {rows.length ? rows :
-          <tr><td colSpan="6" className="no-data">No codes</td></tr>}
+          <tr><td colSpan="6" className="no-data">There are currently no active referral codes</td></tr>}
       </tbody>
     </table>;
   }
 
-  renderEditModal() {
-    const state = this.state;
-    return <Modal className="float-referral-code-modal"
-      open={state.editOpen} 
-      header="Add referral code"
-      onClose={this.closeModal}>
-      <form onSubmit={this.submitCode}>
-        <div className="grid-row">
-          <div className="grid-col">
-            <div className="form-group">
-              <div className="form-label">Name</div>
-              <Input name="name" placeholder="Enter name"
-                value={state.code.name} onChange={this.inputChange}/>
-            </div>
-          </div>
-          <div className="grid-col">
-            <div className="form-group">
-              <div className="form-label">Type</div>
-              <Select name="type" value={state.code.type} onChange={this.inputChange}>
-                <option value="TYPE_1">Type 1</option>
-                <option value="TYPE_2">Type 2</option>
-                <option value="TYPE_3">Type 3</option>
-              </Select>
-            </div>
-          </div>
-        </div>
-        <div className="grid-row">
-          <div className="grid-col">
-            <div className="form-group">
-              <div className="form-label">Bonus Amount</div>
-              <Input name="bonusAmount" placeholder="Enter bonus amount"
-                value={state.code.bonusAmount} onChange={this.inputChange}/>
-            </div>
-          </div>
-          <div className="grid-col">
-            <div className="form-group">
-              <div className="form-label">Bonus Source</div>
-              <Select name="bonusSource" value={state.code.bonusSource} onChange={this.inputChange}>
-                <option value="SOURCE_1">Source 1</option>
-                <option value="SOURCE_2">Source 2</option>
-                <option value="SOURCE_3">Source 3</option>
-              </Select>
-            </div>
-          </div>
-        </div>
-        <div className="grid-row">
-          <div className="grid-col">
-            <div className="form-group">
-              <div className="form-label">Add tags (optional)</div>
-              <TextArea name="tags" placeholder="Enter tags separated by commas" rows="3" charsCounter={false}
-                value={state.code.tags} onChange={this.inputChange} />
-            </div>
-          </div>
-        </div>
-        <div className="grid-row code-actions">
-          <div className="grid-col">
-            <span className="link text-underline" onClick={this.closeModal}>Cancel</span>
-          </div>
-          <div className="grid-col text-right">
-            <button className="button">Add code</button>
-          </div>
-        </div>
-      </form>
-    </Modal>;
-  }
-
-  addCodeClick = () => {
-    this.setState({ editOpen: true });
-  }
-
-  closeModal = () => {
-    this.setState({ editOpen: false, code: this.getDefaultValues() });
-  }
-
-  inputChange = event => {
-    const { name, value } = event.target;
+  openEdit = (mode, data) => {
     this.setState({
-      code: { ...this.state.code, [name]: value }
+      edit: { mode, data }
     });
   }
 
-  submitCode = event => {
-    event.preventDefault();
-    this.setState({ editOpen: false, code: this.getDefaultValues() });
-    this.props.onAction(this.state.code, 'submit');
+  closeEdit = () => {
+    this.setState({ edit: null });
   }
 
-  getDefaultValues() {
-    return {
-      name: '',
-      type: 'TYPE_1',
-      bonusAmount: 0,
-      bonusSource: 'SOURCE_1',
-      tags: ''
+  submit = (mode, data) => {
+    const float = this.props.float;
+
+    const body = {
+      clientId: float.clientId,
+      floatId: float.floatId,
+      referralCode: data.referralCode,
+      codeType: data.codeType,
+      bonusAmount: {
+        amount: data.bonusAmount,
+        unit: 'WHOLE_CURRENCY',
+        currency: float.currency
+      },
+      bonusSource: data.bonusSource,
+      tags: data.tags.split(',').map(t => t.replace(/\s/g, '')).filter(t => t)
     };
+
+    const obs = mode === 'edit' ? this.clientsService.updateRefCode(body) :
+      this.clientsService.createRefCode(body);
+
+    this.setState({ loading: true, edit: null });
+
+    obs.pipe(
+      takeUntil(this.unmount)
+    ).subscribe(res => {
+      this.props.onChanged(res.updatedCodes);
+      this.setState({ loading: false });
+    }, () => {
+      this.modalService.openCommonError();
+      this.setState({ loading: false });
+    });
+  }
+
+  deactivateClick(item) {
+    this.setState({ loading: true });
+
+    const float = this.props.float;
+    this.clientsService.deactivateRefCode({
+      floatId: float.floatId,
+      clientId: float.clientId,
+      referralCode: item.referralCode
+    }).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(res => {
+      this.props.onChanged(res.updatedCodes);
+      this.setState({ loading: false });
+    }, () => {
+      this.modalService.openCommonError();
+      this.setState({ loading: false });
+    });
   }
 }
 

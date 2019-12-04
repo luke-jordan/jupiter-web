@@ -51,3 +51,8 @@ export const messageDisplayTypeMap = {
   PUSH: 'Push notification',
   EMAIL: 'Email'
 };
+
+export const referralCodeTypeMap = {
+  CHANNEL: 'Marketing channel',
+  BETA: 'Early access'
+};

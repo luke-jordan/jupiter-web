@@ -13,7 +13,7 @@ export class AuthService {
   }
 
   login(data) {
-    return this.apiService.post(`${this.url}/login`, data).pipe(
+    return this.apiService.post(`${this.url}/login`, data, { sendToken: false }).pipe(
       tap(res => {
         if (res.result !== 'OTP_NEEDED') {
           // login success

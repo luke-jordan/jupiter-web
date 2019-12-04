@@ -3,6 +3,7 @@ import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { convertAmount, getCountryByCode, formatMoney } from 'src/core/utils';
+import { referralCodeTypeMap } from 'src/core/constants';
 
 export class ClientsService {
   constructor(apiService, dataService) {
@@ -13,7 +14,7 @@ export class ClientsService {
 
   getClients() {
     return forkJoin(
-      this.apiService.get(`${this.url}/client/list`, { sendToken: true }),
+      this.apiService.get(`${this.url}/client/list`),
       this.dataService.getCountries()
     ).pipe(
       map(res => {
@@ -36,25 +37,42 @@ export class ClientsService {
 
   getFloat(clientId, floatId) {
     return this.apiService.get(`${this.url}/client/fetch`, {
-      params: { clientId, floatId }, sendToken: true
+      params: { clientId, floatId }
     }).pipe(
       tap(float => {
         this._modifyFloat(float);
         float.floatAlerts.forEach(floatAlert => this._modifyAlert(floatAlert));
+        float.referralCodes.forEach(referralCode => this._modifyReferralCode(referralCode));
       })
     );
   }
 
   updateClient(data) {
-    return this.apiService.post(`${this.url}/client/edit`, data, {
-      sendToken: true
-    });
+    return this.apiService.post(`${this.url}/client/edit`, data);
   }
 
   updateComparatorRates(data) {
-    return this.apiService.post(`${this.url}/client/comparators`, data, {
-      sendToken: true
-    });
+    return this.apiService.post(`${this.url}/client/comparators`, data);
+  }
+
+  createRefCode(data) {
+    return this.apiService.post(`${this.url}/referral/create`, data).pipe(
+      tap(res => {
+        res.updatedCodes.forEach(referralCode => this._modifyReferralCode(referralCode))
+      })
+    );
+  }
+
+  updateRefCode(data) {
+    return this.apiService.post(`${this.url}/referral/modify`, data);
+  }
+
+  checkRefCodeAvailable(params) {
+    return this.apiService.get(`${this.url}/referral/available`, { params });
+  }
+
+  deactivateRefCode(data) {
+    return this.apiService.post(`${this.url}/referral/deactivate`, data);
   }
 
   _modifyClient(client, countries) {
@@ -107,5 +125,13 @@ export class ClientsService {
       context.mismatchValue = convertAmount(context.mismatch, context.unit);
       context.mismatchMoney = formatMoney(context.mismatchValue, context.currency);
     }
+  }
+
+  _modifyReferralCode(referralCode) {
+    referralCode.codeTypeText = referralCodeTypeMap[referralCode.codeType] || referralCode.codeType;
+
+    const bonusAmount = referralCode.bonusAmount;
+    bonusAmount.amountValue = convertAmount(bonusAmount.amount, bonusAmount.unit);
+    bonusAmount.amountMoney = formatMoney(bonusAmount.amountValue, bonusAmount.currency);
   }
 }

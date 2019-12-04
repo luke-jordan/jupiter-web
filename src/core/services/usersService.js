@@ -12,9 +12,7 @@ export class UsersService {
   }
 
   getUsersCount(params) {
-    return this.apiService.get(`${this.url}/user/count`, {
-      sendToken: true, params
-    }).pipe(
+    return this.apiService.get(`${this.url}/user/count`, { params }).pipe(
       map(res => +res.userCount)
     );
   }
@@ -45,17 +43,13 @@ export class UsersService {
       params = Object.assign({}, params, { countryCode: 'ZAF' });
     }
 
-    return this.apiService.get(`${this.url}/user/find`, {
-      sendToken: true, params
-    }).pipe(
+    return this.apiService.get(`${this.url}/user/find`, { params }).pipe(
       tap(user => this._modifyUser(user))
     );
   }
 
   updateUser(data) {
-    return this.apiService.post(`${this.url}/user/update`, data, {
-      sendToken: true
-    });
+    return this.apiService.post(`${this.url}/user/update`, data);
   }
 
   _modifyUser(user) {

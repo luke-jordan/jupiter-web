@@ -19,7 +19,6 @@ class ClientFloatPage extends React.Component {
     super();
 
     this.clientsService = inject('ClientsService');
-    this.modalService = inject('ModalService');
 
     this.state = {
       loading: false,
@@ -48,10 +47,9 @@ class ClientFloatPage extends React.Component {
       {state.loading && <Spinner overlay/>}
       {state.float && <>
         {this.renderHeader()}
-        <FloatAllocationTable float={state.float} onSave={this.saveFloatAllocation}/>
-        <FloatReferralCodesTable float={state.float} onAction={this.referralCodeAction}/>
-        <ComparatorRates float={state.float} data={state.float.comparatorRates}
-          onSaved={this.loadFloat}/>
+        <FloatAllocationTable float={state.float} onSaved={this.loadFloat}/>
+        <FloatReferralCodesTable float={state.float} onChanged={this.referralCodesChanged}/>
+        <ComparatorRates float={state.float} onSaved={this.loadFloat}/>
       </>}
     </>;
   }
@@ -97,40 +95,6 @@ class ClientFloatPage extends React.Component {
     });
   }
 
-  saveFloatAllocation = data => {
-    this.setState({ loading: true });
-
-    const float = this.state.float;
-    this.clientsService.updateClient({
-      clientId: float.clientId,
-      floatId: float.floatId,
-      operation: 'ADJUST_ACCRUAL_VARS',
-      newAccrualVars: data.changes,
-      reasonToLog: data.reason
-    }).pipe(
-      takeUntil(this.unmount)
-    ).subscribe(() => {
-      this.setState({
-        loading: false,
-        float: Object.assign({}, this.state.float, data.changes)
-      });
-    }, () => {
-      this.setState({ loading: false });
-      this.modalService.openCommonError();
-    });
-  }
-
-  referralCodeAction = (action, item) => {
-    // TODO: Refferal codes management (api needed)
-    console.log(action, item);
-
-    this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false });
-      this.modalService.openInfo('Info', 'Referral codes API is not implemented yet');
-    }, 500);
-  }
-
   toggleBalanceEdit(balanceEdit) {
     this.setState({ balanceEdit });
   }
@@ -138,6 +102,12 @@ class ClientFloatPage extends React.Component {
   balanceChanged = () => {
     this.toggleBalanceEdit(false);
     this.loadFloat();
+  }
+
+  referralCodesChanged = referralCodes => {
+    this.setState({
+      float: { ...this.state.float, referralCodes }
+    });
   }
 }
 

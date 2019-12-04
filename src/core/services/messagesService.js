@@ -12,9 +12,7 @@ export class MessagesService {
   }
 
   getMessages(params) {
-    return this.apiService.get(`${this.url}/message/instruct/list`, {
-      sendToken: true, params
-    }).pipe(
+    return this.apiService.get(`${this.url}/message/instruct/list`, { params }).pipe(
       tap(messages => {
         messages.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
         messages.forEach(this._modifyMessage);
@@ -37,8 +35,6 @@ export class MessagesService {
   updateMessage(instructionId, updateValues) {
     return this.apiService.post(`${this.url}/message/instruct/update`, {
       instructionId, updateValues
-    }, {
-      sendToken: true
     });
   }
 
@@ -49,7 +45,7 @@ export class MessagesService {
       ) : of(null);
 
     return audienceObs.pipe(
-      mergeMap(() => this.apiService.post(`${this.url}/message/instruct/create`, messageData, { sendToken: true }))
+      mergeMap(() => this.apiService.post(`${this.url}/message/instruct/create`, messageData))
     );
   }
 

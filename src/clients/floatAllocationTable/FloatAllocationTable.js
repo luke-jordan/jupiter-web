@@ -1,8 +1,11 @@
 import React from 'react';
 import classNames from 'classnames';
+import { takeUntil } from 'rxjs/operators';
 
+import { inject, unmountDecorator } from 'src/core/utils';
 import Input from 'src/components/input/Input';
 import Modal from 'src/components/modal/Modal';
+import Spinner from 'src/components/spinner/Spinner';
 
 import './FloatAllocationTable.scss';
 
@@ -28,13 +31,19 @@ class FloatAllocationTable extends React.Component {
   constructor(props) {
     super();
 
+    this.clientsService = inject('ClientsService');
+    this.modalService = inject('ModalService');
+
     this.state = {
       edit: false,
       confirmOpen: false,
+      confirmLoading: false,
       reason: '',
       changes: null,
       ...this.getFloatData(props.float)
     };
+
+    unmountDecorator(this);
   }
 
   getFloatData(float) {
@@ -152,6 +161,7 @@ class FloatAllocationTable extends React.Component {
             onClick={this.continueClick}>Continue</button>
         </div>
       </div>
+      {state.confirmLoading && <Spinner overlay/>}
     </Modal>;
   }
 
@@ -176,22 +186,25 @@ class FloatAllocationTable extends React.Component {
   }
 
   continueClick = () => {
-    const changes = this.state.changes;
-    const dataToSave = { changes: {}, reason: this.state.reason };
-    this.itemsConfig.forEach(item => {
-      if (item.name in changes) {
-        const value = changes[item.name].newValue;
-        dataToSave.changes[item.name] = item.unit === '%' ? value / 100 : +value;
-      }
-    });
+    this.setState({ confirmLoading: true });
 
-    this.props.onSave(dataToSave);
-
-    this.setState({
-      edit: false,
-      confirmOpen: false,
-      reason: '',
-      changes: null
+    this.clientsService.updateClient(this.getReqBody()).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      this.setState({
+        edit: false,
+        confirmOpen: false,
+        confirmLoading: false,
+        reason: '',
+        changes: null
+      });
+      this.props.onSaved();
+    }, () => {
+      this.setState({
+        confirmOpen: false,
+        confirmLoading: false
+      });
+      this.modalService.openCommonError();
     });
   }
 
@@ -215,6 +228,28 @@ class FloatAllocationTable extends React.Component {
     });
 
     return changes;
+  }
+
+  getReqBody() {
+    const state = this.state;
+    const float = this.props.float;
+
+    const newAccrualVars = {};
+
+    this.itemsConfig.forEach(item => {
+      if (item.name in state.changes) {
+        const value = state.changes[item.name].newValue;
+        newAccrualVars[item.name] = item.unit === '%' ? value / 100 : +value;
+      }
+    });
+
+    return {
+      clientId: float.clientId,
+      floatId: float.floatId,
+      operation: 'ADJUST_ACCRUAL_VARS',
+      newAccrualVars,
+      reasonToLog: state.reason
+    };
   }
 
   canSave() {

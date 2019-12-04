@@ -268,7 +268,7 @@ class BoostForm extends React.Component {
     const requiredSave = (requiredSaveMatch && requiredSaveMatch[1]) ? requiredSaveMatch[1] : 100;
 
     return {
-      label: '',
+      label: boost.label,
       type: boost.boostType,
       category: boost.boostCategory,
       clientId: boost.forClientId,

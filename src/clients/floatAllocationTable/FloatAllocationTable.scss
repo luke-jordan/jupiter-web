@@ -34,6 +34,9 @@
   .modal-content {
     max-width: 700px;
   }
+  .modal-body {
+    position: relative;
+  }
   .table {
     margin: 20px 0 30px;
     th:nth-child(3),

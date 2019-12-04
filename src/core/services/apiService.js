@@ -1,5 +1,5 @@
-import { ajax } from 'rxjs/ajax';
-import { map } from 'rxjs/operators';
+import { ajax, AjaxError } from 'rxjs/ajax';
+import { map, tap } from 'rxjs/operators';
 
 import { inject } from 'src/core/utils';
 
@@ -8,9 +8,10 @@ export class ApiService {
     headers: {
       'Content-Type': 'text/plain;charset=UTF-8'
     },
-    sendToken: false,
+    sendToken: true,
     convertBodyToJson: true,
-    fullResponse: false
+    fullResponse: false,
+    forceRelogin: true
   };
 
   get authService() {
@@ -58,9 +59,22 @@ export class ApiService {
     }
 
     return ajax(options).pipe(
+      tap({
+        error: err => this.errorHandler(err, options)
+      }),
       map(res => {
         return options.fullResponse ? res : res.response;
       })
     );
+  }
+
+  errorHandler(err, options) {
+    // Logout and redirect user to login page if request fails with status 401 or 403
+    if (
+      options.forceRelogin && err instanceof AjaxError && [401, 403].includes(err.status)
+    ) {
+      console.log('Force relogin');
+      this.authService.logout().subscribe();
+    }
   }
 }
