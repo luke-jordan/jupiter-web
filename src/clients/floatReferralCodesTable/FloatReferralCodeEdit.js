@@ -132,7 +132,7 @@ export default class FloatReferralCodeEdit extends React.Component {
       return {
         referralCode: data.referralCode,
         codeType: data.codeType,
-        bonusAmount: data.bonusAmount.amountValue,
+        bonusAmount: data.bonusAmount.amountValue.toString(),
         bonusSource: data.bonusSource,
         tags: (data.tags || []).join(',')
       };
