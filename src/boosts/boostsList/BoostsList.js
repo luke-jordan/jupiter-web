@@ -112,7 +112,7 @@ class BoostsList extends React.Component {
           { text: 'View', link: `/boosts/view/${boost.boostId}` },
           // { text: 'Edit', link: `/boosts/edit/${boost.boostId}` },
           { text: 'Duplicate', link: `/boosts/duplicate/${boost.boostId}` },
-          { text: 'Deactivate', click: () => this.deactivateBoosts([boost.boostId]) }
+          // { text: 'Deactivate', click: () => this.deactivateBoosts([boost.boostId]) }
         ]}/>
       </td>
     </tr>;
