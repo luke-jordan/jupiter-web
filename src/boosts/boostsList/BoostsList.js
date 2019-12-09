@@ -110,7 +110,7 @@ class BoostsList extends React.Component {
       <td>
         <DropdownMenu items={[
           { text: 'View', link: `/boosts/view/${boost.boostId}` },
-          { text: 'Edit', link: `/boosts/edit/${boost.boostId}` },
+          // { text: 'Edit', link: `/boosts/edit/${boost.boostId}` },
           { text: 'Duplicate', link: `/boosts/duplicate/${boost.boostId}` },
           { text: 'Deactivate', click: () => this.deactivateBoosts([boost.boostId]) }
         ]}/>
