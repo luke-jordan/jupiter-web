@@ -6,6 +6,7 @@ import { capitalize, inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import BoostForm from '../boostForm/BoostForm';
+import BoostUserCount from '../boostUserCount/BoostUserCount';
 
 import './BoostEdit.scss';
 
@@ -31,12 +32,13 @@ class BoostEdit extends React.Component {
 
   render() {
     const state = this.state;
-    const title = capitalize(`${this.state.mode} boost`);
+    const title = capitalize(`${state.mode} boost`);
     
     return <div className="boost-edit">
       <PageBreadcrumb title={title} link={{ to: '/boosts', text: 'Boosts' }}/>
       <div className="page-content">
         {state.loading && <Spinner overlay/>}
+        {this.renderUserCount()}
         <BoostForm mode={state.mode}
           boost={state.boost}
           clients={state.clients}
@@ -44,6 +46,11 @@ class BoostEdit extends React.Component {
           onSubmit={this.formSubmit}/>
       </div>
     </div>;
+  }
+
+  renderUserCount() {
+    const state = this.state;
+    return state.boost && state.mode === 'view' && <BoostUserCount boost={state.boost}/>;
   }
 
   componentDidMount() {
