@@ -1,10 +1,14 @@
 @import 'src/styles/common';
 
 .dropdown-menu {
+  display: inline-block;
   .menu-trigger {
     display: flex;
-    height: 16px;
     cursor: pointer;
+    .menu-trigger-dots {
+      width: 20px;
+      margin: 6px 0;
+    }
   }
   .menu-list-wrap {
     position: relative;
@@ -14,6 +18,7 @@
     position: absolute;
     top: 0;
     right: -15px;
+    z-index: 1;
     width: 110px;
     list-style-type: none;
     margin: 0;
@@ -26,6 +31,7 @@
       color: $color-grey2;
       padding: 10px 14px;
       font-size: 12px;
+      font-weight: normal;
       cursor: pointer;
       &:hover {
         background-color: $color-silver2;

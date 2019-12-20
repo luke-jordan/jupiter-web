@@ -1,6 +1,7 @@
 import React from 'react';
 import { fromEvent } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import classNames from 'classnames';
 
 import { unmountDecorator, inject } from 'src/core/utils';
 
@@ -24,10 +25,11 @@ class DropdownMenu extends React.Component {
 
   render() {
     const props = this.props;
-    return <div className="dropdown-menu" ref={this.dopdownRef}>
-      <div className="menu-trigger" onClick={this.triggerClick}>
-        <img src={moreIcon} alt="more"/>
-      </div>
+    const rootClass = classNames('dropdown-menu', props.className);
+    const trigger = props.trigger || <img className="menu-trigger-dots" src={moreIcon} alt="more"/>;
+
+    return <div className={rootClass} ref={this.dopdownRef}>
+      <div className="menu-trigger" onClick={this.triggerClick}>{trigger}</div>
       <div className="menu-list-wrap">
         <ul className="menu-list">
           {props.items.map((item, index) => {
