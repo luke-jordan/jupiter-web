@@ -1,0 +1,10 @@
+@import 'src/styles/common';
+
+.boosts-list {
+  .boosts-filter {
+    width: 120px;
+  }
+  .table tr.expired td {
+    color: lighten($color-grey2, 20%);
+  }
+}

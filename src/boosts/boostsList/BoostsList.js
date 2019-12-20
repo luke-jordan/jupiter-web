@@ -1,12 +1,12 @@
 import React from 'react';
-import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
 import { takeUntil } from 'rxjs/operators';
+import classNames from 'classnames';
 
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
-import Checkbox from 'src/components/checkbox/Checkbox';
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
+import Select from 'src/components/select/Select';
 import { unmountDecorator, inject } from 'src/core/utils';
 
 import './BoostsList.scss';
@@ -15,11 +15,12 @@ import addIcon from 'src/assets/images/add.svg';
 class BoostsList extends React.Component {
   constructor() {
     super();
+
     this.state = {
       loading: true,
+      filter: 'active',
       boosts: [],
-      checkedBoosts: [],
-      checkAll: false
+      displayBoosts: []
     };
 
     this.boostsService = inject('BoostsService');
@@ -32,7 +33,11 @@ class BoostsList extends React.Component {
     this.boostsService.getBoosts().pipe(
       takeUntil(this.unmount)
     ).subscribe(boosts => {
-      this.setState({ boosts, loading: false });
+      this.setState({
+        loading: false,
+        boosts,
+        displayBoosts: this.getFilteredBoosts(boosts, this.state.filter)
+      });
     });
   }
 
@@ -49,31 +54,26 @@ class BoostsList extends React.Component {
   }
 
   renderActions() {
-    const { checkedBoosts } = this.state;
+    const state = this.state;
     return <div className="page-actions">
       <div className="action-buttons">
-        <div></div>
+        <Select className="boosts-filter" value={state.filter} onChange={this.filterChange}>
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </Select>
         <NavLink to="/boosts/new" className="button">
           New boost <img className="button-icon" src={addIcon} alt="add"/>
         </NavLink>
-      </div>
-      <div className="quick-actions">
-        Quick Actions:&nbsp;
-        <span className={classNames('link', { inactive: !checkedBoosts.length })}
-          onClick={this.deactivateCheckedBoosts}>Deactivate</span>
       </div>
     </div>;
   }
 
   renderTable() {
-    const state = this.state;
+    const displayBoosts = this.state.displayBoosts;
     return <table className="table">
       <thead>
         <tr>
-          <th className="text-center" style={{ width: 40 }}>
-            <Checkbox checked={state.checkAll} onChange={this.checkAllBoosts}
-              disabled={!state.boosts.length}/>
-          </th>
           <th style={{ width: 100 }}>Type</th>
           <th style={{ width: 150 }}>Category</th>
           <th>Label</th>
@@ -86,66 +86,49 @@ class BoostsList extends React.Component {
         </tr>
       </thead>
       <tbody>
-        {state.boosts.length ?
-          state.boosts.map(boost => this.renderTableRow(boost)) :
+        {displayBoosts.length ? displayBoosts.map(boost => this.renderTableRow(boost)) :
           <tr><td className="no-data" colSpan="10">No boosts</td></tr>}
       </tbody>
     </table>;
   }
 
   renderTableRow(boost) {
-    const checked = this.state.checkedBoosts.includes(boost.boostId);
-    return <tr key={boost.boostId}>
-      <td style={{ textAlign: 'center' }}>
-        <Checkbox checked={checked} onChange={event => this.checkBoost(event, boost)}/>
-      </td>
+    const rowClass = classNames({ expired: boost.expired });
+    return <tr key={boost.boostId} className={rowClass}>
       <td>{boost.boostTypeText}</td>
       <td>{boost.boostCategoryText}</td>
       <td>{boost.label}</td>
       <td className="text-center">{boost.formattedStartDate}</td>
       <td className="text-center">{boost.formattedEndDate}</td>
-      <td className="text-center">?</td>
+      <td className="text-center">{boost.totalCount}</td>
       <td className="text-center">{boost.boostBudgetMoney}</td>
       <td className="text-center">{boost.boostRemainingMoney}</td>
       <td>
         <DropdownMenu items={[
           { text: 'View', link: `/boosts/view/${boost.boostId}` },
           // { text: 'Edit', link: `/boosts/edit/${boost.boostId}` },
-          { text: 'Duplicate', link: `/boosts/duplicate/${boost.boostId}` },
-          // { text: 'Deactivate', click: () => this.deactivateBoosts([boost.boostId]) }
+          { text: 'Duplicate', link: `/boosts/duplicate/${boost.boostId}` }
         ]}/>
       </td>
     </tr>;
   }
 
-  checkBoost(event, boost) {
-    const { checkedBoosts } = this.state;
-    this.setState({
-      checkedBoosts: event.target.checked ?
-        [...checkedBoosts, boost.boostId] :
-        checkedBoosts.filter(id => id !== boost.boostId)
+  filterChange = event => {
+    const filter = event.target.value;
+    this.setState({ 
+      filter,
+      displayBoosts: this.getFilteredBoosts(this.state.boosts, filter)
     });
   }
 
-  checkAllBoosts = event => {
-    const checked = event.target.checked;
-    this.setState({
-      checkAll: checked,
-      checkedBoosts: checked ? this.state.boosts.map(m => m.boostId): []
-    });
-  }
-
-  deactivateCheckedBoosts = () => {
-    const ids = this.state.checkedBoosts;
-    if (ids.length) {
-      this.deactivateBoosts(ids);
+  getFilteredBoosts(boosts, filter) {
+    if (filter === 'active') {
+      return boosts.filter(b => !b.expired);
+    } else if (filter === 'inactive') {
+      return boosts.filter(b => b.expired);
+    } else {
+      return boosts;
     }
-  }
-
-  deactivateBoosts(ids) {
-    // TODO: boost deactive (api needed)
-    console.log(`Deactivate`, ids);
-    this.modalService.openInfo('Info', 'Boost update API is not implemented yet');
   }
 }
 
