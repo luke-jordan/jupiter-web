@@ -55,7 +55,7 @@
 
 .base-input {
   &.disabled .input-control {
-    border: 0;
+    border-color: $color-silver2;
     background-color: $color-silver2;
     cursor: not-allowed;
   }
