@@ -77,9 +77,9 @@ class MessageForm extends React.Component {
       <div className="form-group">
         <div className="form-label">
           Body
-          <DropdownMenu className="insert-parameter"
+          {!this.isView() && <DropdownMenu className="insert-parameter"
             items={this.bodyParameters.map(param => ({ text: param, click: () => this.insertParameter(param) }))}
-            trigger={<span className="link text-underline">Insert parameter</span>}/>
+            trigger={<span className="link text-underline">Insert parameter</span>}/>}
         </div>
         <TextArea rows="8" placeholder="Enter body" name="body"
           value={state.data.body} onChange={this.inputChange} disabled={this.isView()}/>
