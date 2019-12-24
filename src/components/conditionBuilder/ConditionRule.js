@@ -16,7 +16,7 @@ class ConditionRule extends React.Component {
 
     return <div className="condition-rule">
       <div className="grid-row">
-        <div className="grid-col-5">
+        <div className="grid-col-3">
           <Select value={item.prop} onChange={this.propChange}>
             {props.ruleFields.map(field => {
               return <option key={field.name} value={field.name}>{field.description}</option>;
@@ -31,7 +31,7 @@ class ConditionRule extends React.Component {
             <option value="less_than">is less than</option>
           </Select>
         </div>
-        <div className="grid-col-5">
+        <div className="grid-col-2">
           {this.renderInput(inputType)}
         </div>
       </div>
