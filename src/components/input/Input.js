@@ -19,7 +19,9 @@ const Input = props => {
       maxLength={props.maxLength}
       value={props.value}
       autoComplete={props.autoComplete}
-      onChange={props.onChange}/>
+      onChange={props.onChange}
+      min={props.min}
+      max={props.max}/>
     {props.error && <div className="input-error">{props.error}</div>}
   </div>;
 };

@@ -58,5 +58,11 @@ export class BoostsService {
 
     boost.boostRemainingValue = convertAmount(boost.boostBudget - boost.boostRedeemed, boost.boostUnit);
     boost.boostRemainingMoney = formatMoney(boost.boostRemainingValue, boost.boostCurrency);
+
+    boost.expired = (!boost.active || endDate.isBefore(moment()));
+
+    if (boost.count) {
+      boost.totalCount = Object.values(boost.count).map(v => +v).reduce((acc, cur) => acc + cur, 0);
+    }
   }
 }

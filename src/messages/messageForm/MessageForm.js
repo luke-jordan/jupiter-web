@@ -7,13 +7,23 @@ import Select from 'src/components/select/Select';
 import TextArea from 'src/components/textArea/TextArea';
 import DatePicker from 'src/components/datePicker/DatePicker';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
+import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 
 import './MessageForm.scss';
 
 class MessageForm extends React.Component {
   constructor(props) {
     super();
+
     this.typeOptions = mapToOptions(messageDisplayTypeMap);
+
+    this.bodyParameters = [
+      'user_first_name',
+      'user_full_name',
+      'current_balance',
+      'opened_date',
+      'total_interest'
+    ];
 
     this.state = {
       data: this.messageToFormData(props.message)
@@ -65,7 +75,12 @@ class MessageForm extends React.Component {
       </div>
       {/* Body */}
       <div className="form-group">
-        <div className="form-label">Body</div>
+        <div className="form-label">
+          Body
+          {!this.isView() && <DropdownMenu className="insert-parameter"
+            items={this.bodyParameters.map(param => ({ text: param, click: () => this.insertParameter(param) }))}
+            trigger={<span className="link text-underline">Insert parameter</span>}/>}
+        </div>
         <TextArea rows="8" placeholder="Enter body" name="body"
           value={state.data.body} onChange={this.inputChange} disabled={this.isView()}/>
       </div>
@@ -208,7 +223,7 @@ class MessageForm extends React.Component {
         type: 'CARD',
         priority: 0,
         sendDate: new Date(),
-        recurrence: 'EVENT_DRIVEN',
+        recurrence: 'ONCE_OFF',
         recurringMinIntervalDays: 0,
         recurringMaxInQueue: 0,
         eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER',
@@ -277,6 +292,20 @@ class MessageForm extends React.Component {
   reset() {
     this.setState({ data: this.messageToFormData(null) });
     this.audienceRef && this.audienceRef.reset();
+  }
+
+  insertParameter = param => {
+    const textarea = document.querySelector('.message-form [name="body"]');
+    const value = textarea.value;
+    const index = textarea.selectionStart;
+    const body = `${value.slice(0, index)}#{${param}}${value.slice(index)}`;
+
+    this.setState({
+      data: {  ...this.state.data, body }
+    }, () => {
+      textarea.selectionStart = textarea.selectionEnd = index + param.length + 3;
+      textarea.focus();
+    });
   }
 }
 

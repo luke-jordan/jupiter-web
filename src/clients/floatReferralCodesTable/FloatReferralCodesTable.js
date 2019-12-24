@@ -118,7 +118,20 @@ class FloatReferralCodesTable extends React.Component {
     obs.pipe(
       takeUntil(this.unmount)
     ).subscribe(res => {
-      this.props.onChanged(res.updatedCodes);
+      let referralCodes;
+
+      if (res.updatedCodes) {
+        referralCodes = res.updatedCodes;
+      } else if (res.updatedCode) {
+        referralCodes = this.props.float.referralCodes.slice();
+        const index = referralCodes.findIndex(code => code.referralCode === res.updatedCode.referralCode);
+        if (index !== -1) {
+          referralCodes[index] = res.updatedCode;
+        }
+      }
+
+      this.props.onChanged(referralCodes);
+      
       this.setState({ loading: false });
     }, () => {
       this.modalService.openCommonError();

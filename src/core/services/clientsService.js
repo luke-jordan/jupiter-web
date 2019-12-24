@@ -64,7 +64,14 @@ export class ClientsService {
   }
 
   updateRefCode(data) {
-    return this.apiService.post(`${this.url}/referral/modify`, data);
+    return this.apiService.post(`${this.url}/referral/update`, data).pipe(
+      tap(res => {
+        // temporary add updated code to the result
+        // TODO: remove when api will return updated code
+        res.updatedCode = { ...data };
+        this._modifyReferralCode(res.updatedCode);
+      })
+    );
   }
 
   checkRefCodeAvailable(params) {
