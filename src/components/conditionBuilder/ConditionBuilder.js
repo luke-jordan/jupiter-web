@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ConditionGroup from './ConditionGroup';
+import RulePeriodEdit from './RulePeriodEdit';
 
 import './ConditionBuilder.scss';
 
@@ -9,7 +10,8 @@ class ConditionBuilder extends React.Component {
     super();
 
     this.state = {
-      root: props.root
+      root: props.root,
+      periodEditItem: null
     };
   }
 
@@ -24,11 +26,19 @@ class ConditionBuilder extends React.Component {
       <ConditionGroup item={this.state.root}
         ruleFields={this.props.ruleFields}
         onEvent={this.eventHandler}/>
+      {this.renderPeriodEdit()}
     </div>;
   }
 
+  renderPeriodEdit() {
+    const state = this.state;
+    return state.periodEditItem && <RulePeriodEdit item={state.periodEditItem}
+      onEvent={this.eventHandler}
+      onClose={() => this.setState({ periodEditItem: null })}/>;
+  }
+
   eventHandler = event => {
-    // Note that state modified directly because root object is complex and can contain arbitrary level of nested groups (children).
+    // Note that state of 'root' object is modified directly because 'root' object is complex and can contain arbitrary level of nested groups (children).
     // Force update is used to rerender changes.
 
     switch (event.action) {
@@ -63,6 +73,16 @@ class ConditionBuilder extends React.Component {
         
       case 'rule:delete':
         event.parent.children.splice(event.parent.children.indexOf(event.item), 1);
+        break;
+
+      case 'rule:period-edit':
+        this.setState({ periodEditItem: event.item });
+        break;
+
+      case 'rule:period-change':
+        event.item.startTime = event.startTime;
+        event.item.endTime = event.endTime;
+        this.setState({ periodEditItem: null });
         break;
 
       default:
@@ -101,6 +121,7 @@ class ConditionBuilder extends React.Component {
     const field = this.props.ruleFields.find(_field => _field.name === item.prop);
     item.value = this.getDefaultValue(field.expects);
     item.type = field.type;
+    item.startTime = item.endTime = undefined;
 
     if (field.expects === 'boolean') {
       item.op = 'is';
@@ -133,7 +154,8 @@ ConditionBuilder.defaultProps = {
     name: 'numberProp',
     type: 'aggregate',
     description: 'Number property',
-    expects: 'number'
+    expects: 'number',
+    period: true
   }, {
     name: 'booleanProperty',
     type: 'match',

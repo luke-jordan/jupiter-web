@@ -86,6 +86,13 @@
       border-color: $color-silver;
     }
   }
+  .rule-period {
+    @include flex-center;
+    .link {
+      font-weight: normal;
+      text-decoration: underline;
+    }
+  }
   .delete-rule {
     position: absolute;
     top: calc(50% - 18px);
@@ -97,5 +104,20 @@
     background-color: $color-white;
     cursor: pointer;
     @include flex-center;
+  }
+}
+
+// select period edit
+.modal.condition-builder-period-edit {
+  .modal-content {
+    max-width: 500px;
+  }
+  .actions {
+    margin-top: 15px;
+    align-items: flex-end;
+    .button {
+      display: inline-block;
+      width: 100px;
+    }
   }
 }
