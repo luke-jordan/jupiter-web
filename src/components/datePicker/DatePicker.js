@@ -3,7 +3,6 @@ import ReactDatePicker from "react-datepicker";
 import classNames from 'classnames';
 
 import './DatePicker.scss';
-import calendarIcon from 'src/assets/images/calendar.svg';
 
 class DatePicker extends React.Component {
   render() {
@@ -12,19 +11,11 @@ class DatePicker extends React.Component {
 
     return <div className={rootClass}>
       <ReactDatePicker {...props} className="input-control" ref={picker => this.pickerRef = picker}>
-        {(props.selected && props.allowClear) && <div className="date-clear">
+        {(props.selected && props.showClear) && <div className="date-clear">
           <span className="link" onClick={this.clearDateClick}>Clear</span>
         </div>}
       </ReactDatePicker>
-      <img className="calendar-icon" src={calendarIcon} alt="calendar"
-        onClick={this.calendarIconClick}/>
     </div>;
-  }
-
-  calendarIconClick = () => {
-    if (this.pickerRef) {
-      this.pickerRef.setOpen(true);
-    }
   }
 
   clearDateClick = () => {
@@ -39,7 +30,7 @@ class DatePicker extends React.Component {
 }
 
 DatePicker.defaultProps = {
-  allowClear: true,
+  showClear: true,
   dateFormat: 'dd/MM/yyyy'
 };
 

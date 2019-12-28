@@ -2,8 +2,6 @@
 @import 'src/styles/common';
 
 .base-input.date-picker {
-  position: relative;
-
   .react-datepicker-wrapper {
     width: 100%;
   }
@@ -32,14 +30,10 @@
     border-color: $color-silver;
   }
 
-  .base-input {
-    padding-right: 30px;
-  }
-  .calendar-icon {
-    position: absolute;
-    top: calc(50% - 10px);
-    right: 12px;
-    cursor: pointer;
+  .input-control {
+    background-image: url(../../assets/images/calendar.svg);
+    background-repeat: no-repeat;
+    background-position: calc(100% - 13px) 50%;
   }
   .date-clear {
     clear: both;

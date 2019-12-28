@@ -64,7 +64,7 @@ class ConditionRule extends React.Component {
     }
 
     if (inputType === 'epochMillis') {
-      return <DatePicker selected={item.value} allowClear={false}
+      return <DatePicker selected={item.value} showClear={false}
         onChange={e => this.inputChange(e, inputType)}/>;
     }
 
