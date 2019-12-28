@@ -5,6 +5,7 @@ import { errorBoundary } from 'src/components/errorBoundary/ErrorBoundary';
 import ClientsListPage from '../clientsListPage/ClientsListPage';
 import ClientFloatPage from '../clientFloatPage/ClientFloatPage';
 import FloatAlertsPage from '../floatAlertsPage/FloatAlertsPage';
+import CapitalizeInterestPage from '../capitalizeInterestPage/CapitalizeInterestPage';
 
 import './ClientsPage.scss';
 
@@ -14,6 +15,7 @@ const ClientsPage = () => {
       <Route path="/clients" exact component={ClientsListPage}/>
       <Route path="/clients/:clientId/float/:floatId" exact component={ClientFloatPage}/>
       <Route path="/clients/:clientId/float/:floatId/alerts" exact component={FloatAlertsPage}/>
+      <Route path="/clients/:clientId/float/:floatId/capitalize-interest" exact component={CapitalizeInterestPage}/>
       <Route render={() => <Redirect to="/clients"/>}/>
     </Switch>
   </div>;

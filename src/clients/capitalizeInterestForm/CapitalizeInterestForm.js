@@ -36,18 +36,18 @@ class CapitalizeInterestForm extends React.Component {
         <div className="grid-row">
           <div className="grid-col">
             <div className="form-label">Interest paid</div>
-            <Input type="number" name="amount" placeholder="Enter amount"
-              value={state.data.amount} onChange={this.inputChange}/>
+            <Input type="number" name="paidAmount" placeholder="Enter amount"
+              value={state.data.paidAmount} onChange={this.inputChange}/>
           </div>
           <div className="grid-col">
             <div className="form-label">Date and time paid</div>
-            <DatePicker selected={state.data.date}
+            <DatePicker selected={state.data.paidDate}
               showClear={false}
               showTimeSelect={true}
               timeFormat="HH:mm"
               timeIntervals={15}
               dateFormat="dd/MM/yyyy HH:mm"
-              onChange={value => this.inputChange({ target: { name: 'date', value } })} />
+              onChange={value => this.inputChange({ target: { name: 'paidDate', value } })} />
           </div>
         </div>
         <div className="grid-row actions">
@@ -70,15 +70,16 @@ class CapitalizeInterestForm extends React.Component {
     this.setState({ open: false, data: this.getDefaultData() });
   }
 
-  submit = () => {
-    const pathname = this.historyService.location.pathname;
+  submit = event => {
+    event.preventDefault();
     const data = this.state.data;
-    const params = new URLSearchParams({ amount: data.amount, date: data.date.getTime() });
-    this.historyService.push(`${pathname}/capitalize-interest?${params}`);
+    const params = { paidAmount: data.paidAmount, paidDate: data.paidDate.getTime() };
+    const pathname = this.historyService.location.pathname;
+    this.historyService.push(`${pathname}/capitalize-interest?${new URLSearchParams(params)}`);
   }
 
   getDefaultData() {
-    return { amount: '0', date: new Date() };
+    return { paidAmount: '0', paidDate: new Date() };
   }
 
   inputChange = event => {
@@ -90,7 +91,7 @@ class CapitalizeInterestForm extends React.Component {
 
   canPreview() {
     const data = this.state.data;
-    return data.amount && data.date;
+    return data.paidAmount && data.paidDate;
   }
 }
 
