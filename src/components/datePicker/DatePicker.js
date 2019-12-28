@@ -31,7 +31,8 @@ class DatePicker extends React.Component {
 
 DatePicker.defaultProps = {
   showClear: true,
-  dateFormat: 'dd/MM/yyyy'
+  dateFormat: 'dd/MM/yyyy',
+  placeholderText: 'Select date'
 };
 
 export default DatePicker;

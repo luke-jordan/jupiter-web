@@ -42,7 +42,6 @@ class CapitalizeInterestForm extends React.Component {
           <div className="grid-col">
             <div className="form-label">Date and time paid</div>
             <DatePicker selected={state.data.date}
-              placeholderText="Select date"
               showClear={false}
               showTimeSelect={true}
               timeFormat="HH:mm"
