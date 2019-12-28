@@ -9,19 +9,11 @@ import AudienceSelection from 'src/components/audienceSelection/AudienceSelectio
 import './BoostForm.scss';
 
 class BoostForm extends React.Component {
-  submitButtonText = {
-    new: 'Submit',
-    view: 'Edit',
-    edit: 'Update',
-    duplicate: 'Submit'
-  };
-
   constructor(props) {
     super();
 
     this.state = {
-      data: this.boostToFormData(props),
-      audienceCondition: { op: 'and', children: [] }
+      data: this.boostToFormData(props)
     };
   }
 
@@ -46,9 +38,9 @@ class BoostForm extends React.Component {
       {this.renderConditions()}
       {this.renderPushAndCardDetails()}
       {this.renderAudienceSelection()}
-      <div className="text-right">
-        <button className="button">{this.submitButtonText[this.props.mode]}</button>
-      </div>
+      {!this.isView() && <div className="text-right">
+        <button className="button">Submit</button>
+      </div>}
     </form>;
   }
 
