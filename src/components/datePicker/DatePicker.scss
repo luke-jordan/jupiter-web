@@ -28,6 +28,9 @@
     color: inherit;
     background-color: transparent;
   }
+  .react-datepicker__time-container {
+    border-color: $color-silver;
+  }
 
   .base-input {
     padding-right: 30px;
@@ -39,9 +42,10 @@
     cursor: pointer;
   }
   .date-clear {
+    clear: both;
     text-align: center;
-    margin-top: -6px;
-    padding-bottom: 6px;
+    padding: 5px;
+    border-top: 1px solid $color-silver;
   }
 
   &.disabled .calendar-icon {

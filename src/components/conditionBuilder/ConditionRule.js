@@ -80,7 +80,7 @@ class ConditionRule extends React.Component {
     let linkText = 'Select period';
 
     if (item.startTime || item.endTime) {
-      const format = 'MM/DD/YYYY';
+      const format = 'DD/MM/YYYY';
       const periodStart = item.startTime ? `Start time: ${moment(item.startTime).format(format)}` : '';
       const periodEnd = item.endTime ? `End time: ${moment(item.endTime).format(format)}` : '';
       

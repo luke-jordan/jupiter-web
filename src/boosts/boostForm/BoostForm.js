@@ -4,6 +4,7 @@ import moment from 'moment';
 import Select from 'src/components/select/Select';
 import Input from 'src/components/input/Input';
 import TextArea from 'src/components/textArea/TextArea';
+import DatePicker from 'src/components/datePicker/DatePicker';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 
 import './BoostForm.scss';
@@ -110,12 +111,12 @@ class BoostForm extends React.Component {
         <div className="grid-col">
           <div className="form-group">
             <div className="form-label">When does it expire?</div>
-            <Select name="expiryTime" value={state.data.expiryTime}
-              onChange={this.inputChange} disabled={this.isView()}>
-              <option value="END_OF_DAY">End of today</option>
-              <option value="END_OF_TOMORROW">End tomorrow</option>
-              <option value="END_OF_WEEK">End week</option>
-            </Select>
+            <DatePicker selected={state.data.endTime} disabled={this.isView()}
+              showTimeSelect={true}
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              dateFormat="dd/MM/yyyy HH:mm"
+              onChange={value => this.inputChange({ target: { name: 'endTime', value } })} />
           </div>
         </div>
         {/* Total budget */}
@@ -243,7 +244,7 @@ class BoostForm extends React.Component {
         type: 'SIMPLE',
         category: 'TIME_LIMITED',
         clientId: clients[0] ? clients[0].clientId : '',
-        expiryTime: 'END_OF_DAY',
+        endTime: moment().endOf('day').toDate(),
         totalBudget: 1000,
         source: 'primary_bonus_pool',
         requiredSave: 100,
@@ -264,7 +265,7 @@ class BoostForm extends React.Component {
       type: boost.boostType,
       category: boost.boostCategory,
       clientId: boost.forClientId,
-      expiryTime: '',
+      endTime: new Date(boost.endTime),
       totalBudget: boost.boostBudget,
       source: boost.fromBonusPoolId,
       requiredSave,
@@ -305,15 +306,7 @@ class BoostForm extends React.Component {
     body.boostBudget = `${data.totalBudget}::WHOLE_CURRENCY::${data.currency}`;
 
     // expiry time
-    if (data.expiryTime === 'END_OF_DAY') {
-      body.endTimeMillis = +moment().endOf('day');
-    } else if (data.expiryTime === 'END_OF_TOMORROW') {
-      body.endTimeMillis = +moment().add(1, 'day').endOf('day');
-    } else if (data.expiryTime === 'END_OF_WEEK') {
-      body.endTimeMillis = +moment().endOf('week');
-    } else {
-      console.error('Unkown end time selection');
-    }
+    body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
 
     // push notification
     const pushNotification = {
