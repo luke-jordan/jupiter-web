@@ -1,0 +1,25 @@
+.capitalize-interest-page {
+  .page-content {
+    min-height: 90px;
+  }
+  .capitalize-params {
+    margin: 10px 0 30px;
+    font-size: 15px;
+    span:first-child {
+      margin-right: 50px;
+    }
+  }
+  .capitalize-preview {
+    max-width: 700px;
+    tr td:last-child {
+      width: 200px;
+    }
+  }
+  .capitalize-confirm {
+    margin: 30px 0 10px;
+    text-align: center;
+    .button {
+      width: 150px;
+    }
+  }
+}

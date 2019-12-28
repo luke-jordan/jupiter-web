@@ -1,8 +1,8 @@
-import { forkJoin } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { map, tap, delay } from 'rxjs/operators';
 import moment from 'moment';
 
-import { convertAmount, getCountryByCode, formatMoney } from 'src/core/utils';
+import { convertAmount, getCountryByCode, formatMoney, setAmountValueAndMoney } from 'src/core/utils';
 import { referralCodeTypeMap } from 'src/core/constants';
 
 export class ClientsService {
@@ -82,6 +82,36 @@ export class ClientsService {
     return this.apiService.post(`${this.url}/referral/deactivate`, data);
   }
 
+  previewCapitalizeInterest() {
+    const transactions = [];
+    for (let i = 0; i < 10; ++i) {
+      transactions.push({
+        id: i,
+        accountName: `Account ${i+1}`,
+        priorBalance: i+100,
+        priorAccrued: i+200,
+        amountToCredit: i+300
+      });
+    }
+
+    return of({
+      numberAccountsToBeCredited: 10,
+      amountToCreditClient: 500,
+      amountToCreditBonusPool: 8774,
+      excessOverPastAccrual: 3889,
+      unit: 'WHOLE_CENT',
+      currency: 'ZAR',
+      sampleOfTransactions: transactions
+    }).pipe(
+      delay(500),
+      tap(res => this._modifyInterestPreview(res))
+    );
+  }
+
+  confirmCapitalizeInterest() {
+    return of(null).pipe(delay(500));
+  }
+
   _modifyClient(client, countries) {
     const country = getCountryByCode(countries, client.countryCode);
     client.countryName = country ? country.name : '';
@@ -140,5 +170,17 @@ export class ClientsService {
     const bonusAmount = referralCode.bonusAmount;
     bonusAmount.amountValue = convertAmount(bonusAmount.amount, bonusAmount.unit);
     bonusAmount.amountMoney = formatMoney(bonusAmount.amountValue, bonusAmount.currency);
+  }
+
+  _modifyInterestPreview(preview) {
+    setAmountValueAndMoney(preview, [
+      'amountToCreditClient', 'amountToCreditBonusPool', 'excessOverPastAccrual'
+    ], preview.unit, preview.currency);
+
+    preview.sampleOfTransactions.forEach(transaction => {
+      setAmountValueAndMoney(transaction, [
+        'priorBalance', 'priorAccrued', 'amountToCredit'
+      ], preview.unit, preview.currency);
+    });
   }
 }
