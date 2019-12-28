@@ -2,7 +2,7 @@ import { forkJoin, of } from 'rxjs';
 import { map, tap, delay } from 'rxjs/operators';
 import moment from 'moment';
 
-import { convertAmount, getCountryByCode, formatMoney, setAmountValueAndMoney } from 'src/core/utils';
+import { getCountryByCode, setAmountValueAndMoney } from 'src/core/utils';
 import { referralCodeTypeMap } from 'src/core/constants';
 
 export class ClientsService {
@@ -123,27 +123,22 @@ export class ClientsService {
       bonusPoolBalance, bonusInflowSum, bonusOutflow
     } = float;
 
-    floatBalance.amountValue = convertAmount(floatBalance.amount, floatBalance.unit);
-    floatBalance.amountMoney = formatMoney(floatBalance.amountValue, floatBalance.currency);
+    setAmountValueAndMoney(floatBalance, 'amount', floatBalance.unit, floatBalance.currency);
 
-    if (float.floatMonthGrowth) {
-      floatMonthGrowth.amountValue = convertAmount(floatMonthGrowth.amount, floatMonthGrowth.unit);
-      floatMonthGrowth.amountMoney = formatMoney(floatMonthGrowth.amountValue, floatMonthGrowth.currency);
+    if (floatMonthGrowth) {
+      setAmountValueAndMoney(floatMonthGrowth, 'amount', floatMonthGrowth.unit, floatMonthGrowth.currency);
     }
 
     if (bonusPoolBalance) {
-      bonusPoolBalance.amountValue = convertAmount(bonusPoolBalance.amount, bonusPoolBalance.unit);
-      bonusPoolBalance.amountMoney = formatMoney(bonusPoolBalance.amountValue, bonusPoolBalance.currency);
+      setAmountValueAndMoney(bonusPoolBalance, 'amount', bonusPoolBalance.unit, bonusPoolBalance.currency);
     }
 
     if (bonusInflowSum) {
-      bonusInflowSum.amountValue = convertAmount(bonusInflowSum.amount, bonusInflowSum.unit);
-      bonusInflowSum.amountMoney = formatMoney(bonusInflowSum.amountValue, bonusInflowSum.currency);
+      setAmountValueAndMoney(bonusInflowSum, 'amount', bonusInflowSum.unit, bonusInflowSum.currency);
     }
 
     if (bonusOutflow) {
-      bonusOutflow.amountValue = convertAmount(bonusOutflow.amount, bonusOutflow.unit);
-      bonusOutflow.amountMoney = formatMoney(bonusOutflow.amountValue, bonusOutflow.currency);
+      setAmountValueAndMoney(bonusOutflow, 'amount', bonusOutflow.unit, bonusOutflow.currency);
     }
   }
 
@@ -152,15 +147,9 @@ export class ClientsService {
 
     if (floatAlert.logType === 'BALANCE_MISMATCH') {
       const context = floatAlert.logContext;
-
-      context.floatAllocationsValue = convertAmount(context.floatAllocations, context.unit);
-      context.floatAllocationsMoney = formatMoney(context.floatAllocationsValue, context.currency);
-
-      context.floatBalanceValue = convertAmount(context.floatBalance, context.unit);
-      context.floatBalanceMoney = formatMoney(context.floatBalanceValue, context.currency);
-
-      context.mismatchValue = convertAmount(context.mismatch, context.unit);
-      context.mismatchMoney = formatMoney(context.mismatchValue, context.currency);
+      setAmountValueAndMoney(context, [
+        'floatAllocations', 'floatBalance', 'mismatch'
+      ], context.unit, context.currency);
     }
   }
 
@@ -168,8 +157,7 @@ export class ClientsService {
     referralCode.codeTypeText = referralCodeTypeMap[referralCode.codeType] || referralCode.codeType;
 
     const bonusAmount = referralCode.bonusAmount;
-    bonusAmount.amountValue = convertAmount(bonusAmount.amount, bonusAmount.unit);
-    bonusAmount.amountMoney = formatMoney(bonusAmount.amountValue, bonusAmount.currency);
+    setAmountValueAndMoney(bonusAmount, 'amount', bonusAmount.unit, bonusAmount.currency);
   }
 
   _modifyInterestPreview(preview) {
