@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
+import { inject } from 'src/core/utils';
 import Select from 'src/components/select/Select';
 import Input from 'src/components/input/Input';
 import TextArea from 'src/components/textArea/TextArea';
@@ -12,6 +13,8 @@ import './BoostForm.scss';
 class BoostForm extends React.Component {
   constructor(props) {
     super();
+
+    this.modalService = inject('ModalService');
 
     this.state = {
       data: this.boostToFormData(props)
@@ -176,7 +179,7 @@ class BoostForm extends React.Component {
           </div>
           <div className="form-group">
             <div className="form-label">Notification body</div>
-            <TextArea name="pushBody" rows="3" disabled={this.isView()}
+            <TextArea name="pushBody" rows="3" placeholder="Enter body" disabled={this.isView()}
               value={state.data.pushBody} onChange={this.inputChange}/>
           </div>
         </div>
@@ -189,7 +192,7 @@ class BoostForm extends React.Component {
           </div>
           <div className="form-group">
             <div className="form-label">Card body</div>
-            <TextArea name="cardBody" rows="3" disabled={this.isView()}
+            <TextArea name="cardBody" rows="3" placeholder="Enter body" disabled={this.isView()}
               value={state.data.cardBody} onChange={this.inputChange}/>
           </div>
         </div>
@@ -226,9 +229,8 @@ class BoostForm extends React.Component {
 
   submit = event => {
     event.preventDefault();
-    
-    if (this.audienceRef && !this.audienceRef.isValid()) {
-      this.audienceRef.showInvalidMessage();
+
+    if (!this.validate()) {
       return;
     }
 
@@ -339,6 +341,25 @@ class BoostForm extends React.Component {
 
   getAudienceReqBody() {
     return this.audienceRef ? this.audienceRef.getReqBody() : null;
+  }
+
+  validate() {
+    const data = this.state.data;
+    const pushFilled = data.pushTitle.trim() && data.pushBody.trim();
+    const cardFilled = data.cardTitle.trim() && data.cardBody.trim();
+
+    if (!pushFilled && !cardFilled) {
+      this.modalService.openInfo('Boost create', 'Please fill in <b>Push notification</b> or <b>Card details</b>');
+      return false;
+    }
+
+    
+    if (this.audienceRef && !this.audienceRef.isValid()) {
+      this.audienceRef.showInvalidMessage();
+      return false;
+    }
+
+    return true;
   }
 }
 

@@ -14,7 +14,7 @@ export class ModalService {
 
     this.openModal(
       <Modal className="info-modal" open header={header} onClose={closeFn}>
-        <div className="info-text">{text}</div>
+        <div className="info-text" dangerouslySetInnerHTML={{__html: text}}></div>
         <button className="button" onClick={closeFn}>Ok</button>
       </Modal>
     );
