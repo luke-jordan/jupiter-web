@@ -2,7 +2,7 @@ import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 import moment from 'moment';
 
-import { inject, unmountDecorator } from 'src/core/utils';
+import { inject, unmountDecorator, formatMoney } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 
@@ -29,11 +29,7 @@ class CapitalizeInterestPage extends React.Component {
   }
 
   componentDidMount() {
-    this.clientsService.previewCapitalizeInterest().pipe(
-      takeUntil(this.unmount)
-    ).subscribe(preview => {
-      this.setState({ preview, loading: false });
-    });
+    this.loadPreview();
   }
 
   render() {
@@ -55,9 +51,13 @@ class CapitalizeInterestPage extends React.Component {
   }
 
   renderParams() {
+    const params = this.params;
+    const amount = formatMoney(params.paidAmount, params.currency);
+    const date = moment(params.paidDate).format('DD/MM/YY hh:mmA');
+
     return <div className="capitalize-params">
-      <span>Interest paid: <b>{this.paidAmount}</b></span>
-      <span>Date and time paid: <b>{this.paidDate}</b></span>
+      <span>Interest paid: <b>{amount}</b></span>
+      <span>Date and time paid: <b>{date}</b></span>
     </div>;
   }
 
@@ -80,7 +80,7 @@ class CapitalizeInterestPage extends React.Component {
           </tr>
           <tr>
             <td>Excess over past accrual</td>
-            <td>{preview.excessOverPastAccrual}</td>
+            <td>{preview.excessOverPastAccrualMoney}</td>
           </tr>
         </tbody>
       </table>
@@ -104,7 +104,7 @@ class CapitalizeInterestPage extends React.Component {
         </thead>
         <tbody>
           {preview.sampleOfTransactions.map(transaction =>
-            <tr key={transaction.id}>
+            <tr key={transaction.accountId}>
               <td>{transaction.accountName}</td>
               <td>{transaction.priorBalanceMoney}</td>
               <td>{transaction.priorAccruedMoney}</td>
@@ -121,17 +121,41 @@ class CapitalizeInterestPage extends React.Component {
 
   readParams(props) {
     const routeParams = props.match.params;
-    this.clientId = routeParams.clientId;
-    this.floatId = routeParams.floatId;
-
     const searchParams = new URLSearchParams(props.location.search);
-    this.paidAmount = searchParams.get('paidAmount');
-    this.paidDate = moment(+searchParams.get('paidDate')).format('DD/MM/YY hh:mmA');
+
+    this.params = {
+      clientId: routeParams.clientId,
+      floatId: routeParams.floatId,
+      paidAmount: +searchParams.get('paidAmount'),
+      paidDate: +searchParams.get('paidDate'),
+      currency: searchParams.get('currency')
+    };
+  }
+
+  getReqBody() {
+    const params = this.params;
+    return {
+      clientId: params.clientId,
+      floatId: params.floatId,
+      yieldPaid: params.paidAmount * 100,
+      unit: 'WHOLE_CENT',
+      currency: params.currency,
+      dateTimePaid: params.paidDate
+    };
+  }
+
+  loadPreview() {
+    this.clientsService.previewCapitalizeInterest(this.getReqBody()).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(preview => {
+      this.setState({ preview, loading: false });
+    });
   }
 
   confirmClick = () => {
     this.setState({ loading: true });
-    this.clientsService.confirmCapitalizeInterest().pipe(
+
+    this.clientsService.confirmCapitalizeInterest(this.getReqBody()).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
       this.setState({ loading: false });

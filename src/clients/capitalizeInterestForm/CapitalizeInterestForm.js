@@ -73,7 +73,11 @@ class CapitalizeInterestForm extends React.Component {
   submit = event => {
     event.preventDefault();
     const data = this.state.data;
-    const params = { paidAmount: data.paidAmount, paidDate: data.paidDate.getTime() };
+    const params = {
+      paidAmount: data.paidAmount,
+      paidDate: data.paidDate.getTime(),
+      currency: this.props.float.currency
+    };
     const pathname = this.historyService.location.pathname;
     this.historyService.push(`${pathname}/capitalize-interest?${new URLSearchParams(params)}`);
   }

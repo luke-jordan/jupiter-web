@@ -1,5 +1,5 @@
-import { forkJoin, of } from 'rxjs';
-import { map, tap, delay } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { getCountryByCode, setAmountValueAndMoney } from 'src/core/utils';
@@ -82,34 +82,14 @@ export class ClientsService {
     return this.apiService.post(`${this.url}/referral/deactivate`, data);
   }
 
-  previewCapitalizeInterest() {
-    const transactions = [];
-    for (let i = 0; i < 10; ++i) {
-      transactions.push({
-        id: i,
-        accountName: `Account ${i+1}`,
-        priorBalance: i+100,
-        priorAccrued: i+200,
-        amountToCredit: i+300
-      });
-    }
-
-    return of({
-      numberAccountsToBeCredited: 10,
-      amountToCreditClient: 500,
-      amountToCreditBonusPool: 8774,
-      excessOverPastAccrual: 3889,
-      unit: 'WHOLE_CENT',
-      currency: 'ZAR',
-      sampleOfTransactions: transactions
-    }).pipe(
-      delay(500),
-      tap(res => this._modifyInterestPreview(res))
+  previewCapitalizeInterest(data) {
+    return this.apiService.post(`${this.url}/client/capitalize/preview`, data).pipe(
+      tap(res => this._modifyCapitalizeInterest(res))
     );
   }
 
-  confirmCapitalizeInterest() {
-    return of(null).pipe(delay(500));
+  confirmCapitalizeInterest(data) {
+    return this.apiService.post(`${this.url}/client/capitalize/confirm`, data);
   }
 
   _modifyClient(client, countries) {
@@ -160,7 +140,7 @@ export class ClientsService {
     setAmountValueAndMoney(bonusAmount, 'amount', bonusAmount.unit, bonusAmount.currency);
   }
 
-  _modifyInterestPreview(preview) {
+  _modifyCapitalizeInterest(preview) {
     setAmountValueAndMoney(preview, [
       'amountToCreditClient', 'amountToCreditBonusPool', 'excessOverPastAccrual'
     ], preview.unit, preview.currency);
