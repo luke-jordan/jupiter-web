@@ -70,24 +70,8 @@ class BoostEdit extends React.Component {
   }
 
   formSubmit = (boostBody, audienceBody) => {
-    const mode = this.state.mode;
-
-    if (mode === 'view') {
-      this.setState({ mode: 'edit' });
-      return;
-    }
-
-    if (mode === 'edit') {
-      // TODO: boost update (api needed)
-      const boostId = this.props.match.params.id;
-      console.log(boostId);
-      this.modalService.openInfo('Info', 'Boost update API is not implemented yet');
-      return;
-    }
-
     this.setState({ loading: true });
 
-    // new or duplicate
     this.boostsService.createBoost(boostBody, audienceBody).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {

@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import { tap, map, mergeMap } from 'rxjs/operators';
 import moment from 'moment';
 
-import { convertAmount, formatMoney } from 'src/core/utils';
+import { setAmountValueAndMoney } from 'src/core/utils';
 import { boostTypeMap, boostCategoryMap } from 'src/core/constants';
 
 export class BoostsService {
@@ -50,14 +50,11 @@ export class BoostsService {
     const endDate = moment(boost.endTime);
     boost.formattedEndDate = endDate.isAfter(moment().add(10, 'years')) ? '--' : endDate.format('DD/MM/YY hh:mmA');
 
-    boost.boostBudgetValue = convertAmount(boost.boostBudget, boost.boostUnit);
-    boost.boostBudgetMoney = formatMoney(boost.boostBudgetValue, boost.boostCurrency);
+    boost.boostRemaining = boost.boostBudget - boost.boostRedeemed;
 
-    boost.boostRedeemedValue = convertAmount(boost.boostRedeemed, boost.boostUnit);
-    boost.boostRedeemedMoney = formatMoney(boost.boostRedeemedValue, boost.boostCurrency);
-
-    boost.boostRemainingValue = convertAmount(boost.boostBudget - boost.boostRedeemed, boost.boostUnit);
-    boost.boostRemainingMoney = formatMoney(boost.boostRemainingValue, boost.boostCurrency);
+    setAmountValueAndMoney(boost, [
+      'boostBudget', 'boostRedeemed', 'boostRemaining'
+    ], boost.boostUnit, boost.boostCurrency);
 
     boost.expired = (!boost.active || endDate.isBefore(moment()));
 

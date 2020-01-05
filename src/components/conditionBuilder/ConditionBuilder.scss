@@ -4,11 +4,12 @@
   font-size: 12px;
 }
 
+// condition group
 .condition-builder .condition-group {
   position: relative;
   padding: 18px 0 0 10px;
   &:not(:last-child) {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
   .group-operator {
     position: absolute;
@@ -43,41 +44,80 @@
     position: relative;
     border: 1px solid $color-silver;
     border-radius: 10px;
-    padding: 15px;
-    padding-top: 31px;
+    padding: 27px 15px 10px 15px;
     box-shadow: -1px 0 0px $color-blue;
   }
   .no-rules {
-    margin-top: -14px;
+    margin: -14px 0 4px;
     text-align: center;
     color: $color-grey2;
   }
 }
 
+// condition rule
 .condition-builder .condition-rule {
   position: relative;
-  padding-right: 46px;
+  background-color: $color-silver2;
+  padding: 8px;
+  padding-right: 50px;
+  border-radius: 10px;
   &:not(:last-child) {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+  }
+  > .grid-row {
+    margin: 0 -4px;
+    > [class^="grid-col"] {
+      padding: 0 4px;
+    }
   }
   .base-input {
     .input-control {
-      padding: 8px 15px;
-      height: 44px;
+      padding: 6px 16px;
+      height: 40px;
     }
     &.radio {
-      margin-top: 12px;
+      margin: 12px 0 0 4px;
+      .radio-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+    &.disabled .input-control {
+      border-color: $color-silver;
+    }
+  }
+  .rule-period {
+    @include flex-center;
+    .link {
+      font-weight: normal;
+      text-decoration: underline;
     }
   }
   .delete-rule {
     position: absolute;
-    top: 3px;
-    right: 0;
+    top: calc(50% - 18px);
+    right: 8px;
     width: 36px;
     height: 36px;
     border: 1px solid $color-silver;
     border-radius: 100%;
+    background-color: $color-white;
     cursor: pointer;
     @include flex-center;
+  }
+}
+
+// select period edit
+.modal.condition-builder-period-edit {
+  .modal-content {
+    max-width: 500px;
+  }
+  .actions {
+    margin-top: 15px;
+    align-items: flex-end;
+    .button {
+      display: inline-block;
+      width: 100px;
+    }
   }
 }

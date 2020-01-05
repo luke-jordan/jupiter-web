@@ -4,12 +4,18 @@ import ReactDOM from 'react-dom';
 import Modal from 'src/components/modal/Modal';
 
 export class ModalService {
-  openInfo(header, text) {
+  openInfo(header, text, onClose) {
+    const closeFn = () => {
+      this.closeModal();
+      if (onClose) {
+        onClose();
+      }
+    };
+
     this.openModal(
-      <Modal className="info-modal" open header={header}
-        onClose={() => this.closeModal()}>
-        <div className="info-text">{text}</div>
-        <button className="button" onClick={() => this.closeModal()}>Ok</button>
+      <Modal className="info-modal" open header={header} onClose={closeFn}>
+        <div className="info-text" dangerouslySetInnerHTML={{__html: text}}></div>
+        <button className="button" onClick={closeFn}>Ok</button>
       </Modal>
     );
   }

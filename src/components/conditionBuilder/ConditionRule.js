@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
@@ -11,12 +12,11 @@ class ConditionRule extends React.Component {
   render() {
     const props = this.props;
     const item = props.item;
-
-    const inputType = this.getInputType();
+    const itemField = this.getItemField();
 
     return <div className="condition-rule">
       <div className="grid-row">
-        <div className="grid-col-5">
+        <div className="grid-col-3">
           <Select value={item.prop} onChange={this.propChange}>
             {props.ruleFields.map(field => {
               return <option key={field.name} value={field.name}>{field.description}</option>;
@@ -25,15 +25,16 @@ class ConditionRule extends React.Component {
         </div>
         <div className="grid-col-2">
           <Select value={item.op} onChange={this.operatorChange}
-            disabled={inputType === 'boolean'}>
+            disabled={itemField.expects === 'boolean'}>
             <option value="is">is</option>
             <option value="greater_than">is more than</option>
             <option value="less_than">is less than</option>
           </Select>
         </div>
-        <div className="grid-col-5">
-          {this.renderInput(inputType)}
+        <div className="grid-col-2">
+          {this.renderInput(itemField)}
         </div>
+        {this.renderPeriod(itemField)}
       </div>
       <div className="delete-rule" onClick={this.deleteClick}>
         <img src={closeImg} alt="delete"/>
@@ -41,8 +42,9 @@ class ConditionRule extends React.Component {
     </div>;
   }
 
-  renderInput(inputType) {
+  renderInput(itemField) {
     const item = this.props.item;
+    const inputType = itemField.expects;
 
     if (inputType === 'string') {
       return <Input value={item.value} onChange={e => this.inputChange(e, inputType)}/>;
@@ -62,16 +64,42 @@ class ConditionRule extends React.Component {
     }
 
     if (inputType === 'epochMillis') {
-      return <DatePicker selected={item.value} allowClear={false}
+      return <DatePicker selected={item.value} showClear={false}
         onChange={e => this.inputChange(e, inputType)}/>;
     }
 
     return null;
   }
 
-  getInputType() {
-    const field = this.props.ruleFields.find(field => field.name === this.props.item.prop);
-    return field ? field.expects : null;
+  renderPeriod(itemField) {
+    if (!itemField.period) {
+      return null;
+    }
+
+    const item = this.props.item;
+    let linkText = 'Select period';
+
+    if (item.startTime || item.endTime) {
+      const format = 'DD/MM/YYYY';
+      const periodStart = item.startTime ? `Start time: ${moment(item.startTime).format(format)}` : '';
+      const periodEnd = item.endTime ? `End time: ${moment(item.endTime).format(format)}` : '';
+      
+      if (periodStart && periodEnd) {
+        linkText = `${periodStart} - ${periodEnd}`;
+      } else if (periodStart) {
+        linkText = periodStart;
+      } else if (periodEnd) {
+        linkText = periodEnd;
+      }
+    }
+
+    return <div className="grid-col-5 rule-period" onClick={this.editPeriodClick}>
+      <span className="link">{linkText}</span>
+    </div>;
+  }
+
+  getItemField() {
+    return this.props.ruleFields.find(field => field.name === this.props.item.prop);
   }
 
   propChange = event => {
@@ -98,6 +126,10 @@ class ConditionRule extends React.Component {
 
   deleteClick = () => {
     this.triggerAction('rule:delete');
+  }
+
+  editPeriodClick = () => {
+    this.triggerAction('rule:period-edit');
   }
 
   triggerAction = (action, params) => {

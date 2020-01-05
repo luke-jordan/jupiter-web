@@ -20,7 +20,7 @@ class AudienceSelection extends React.Component {
       loading: false,
       settings: {
         dynamic: true,
-        proportion: true,
+        proportion: false,
         proportionValue: '100'
       },
       properties: [],

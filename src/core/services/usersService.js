@@ -2,7 +2,7 @@ import { forkJoin } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
-import { convertAmount, formatMoney } from 'src/core/utils';
+import { setAmountValueAndMoney } from 'src/core/utils';
 import { userHistoryEventTypeMap } from 'src/core/constants';
 
 export class UsersService {
@@ -57,16 +57,14 @@ export class UsersService {
     user.formattedStartDate = moment(user.creationTimeEpochMillis).format('MMM YYYY');
 
     const currentBalance = user.userBalance.currentBalance;
-    currentBalance.amountValue = convertAmount(currentBalance.amount, currentBalance.unit);
-    currentBalance.amountMoney = formatMoney(currentBalance.amountValue, currentBalance.currency);
+    setAmountValueAndMoney(currentBalance, 'amount', currentBalance.unit, currentBalance.currency);
 
     user.pendingTransactions.forEach(transaction => this._modifyUserTransaction(transaction));
     user.userHistory.userEvents.forEach(history => this._modifyUserHistory(history));
   }
 
   _modifyUserTransaction(transaction) {
-    transaction.amountValue = convertAmount(transaction.amount, transaction.unit);
-    transaction.amountMoney = formatMoney(transaction.amountValue, transaction.currency);
+    setAmountValueAndMoney(transaction, 'amount', transaction.unit, transaction.currency);
     transaction.formattedCreationDate = moment(transaction.creationTime).format('DD/MM/YYYY');
   }
 

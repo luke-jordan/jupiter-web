@@ -25,12 +25,6 @@ export const convertAmount = (amount, unit) => {
   }
 }
 
-export const getCountryByCode = (countries, code) => {
-  return countries.find(country => {
-    return (country['alpha-2'] === code || country['alpha-3'] === code);
-  });
-}
-
 export const formatMoney = (amount, currencyCode) => {
   const defaults = { formatWithSymbol: true, symbol: '' };
   const options = {
@@ -41,6 +35,30 @@ export const formatMoney = (amount, currencyCode) => {
   return currency(
     amount, Object.assign({}, defaults, options[currencyCode])
   ).format();
+}
+
+export const setAmountValueAndMoney = (obj, keys, unit, currency) => {
+  if (!Array.isArray(keys)) {
+    keys = [keys];
+  }
+
+  keys.forEach(key => {
+    if (!(key in obj)) {
+      return;
+    }
+
+    const valueKey = `${key}Value`;
+    const moneyKey = `${key}Money`;
+
+    obj[valueKey] = convertAmount(obj[key], unit);
+    obj[moneyKey] = formatMoney(obj[valueKey], currency);
+  });
+}
+
+export const getCountryByCode = (countries, code) => {
+  return countries.find(country => {
+    return (country['alpha-2'] === code || country['alpha-3'] === code);
+  });
 }
 
 export const unmountDecorator = (instance) => {
