@@ -101,7 +101,7 @@ class ClientInfo extends React.Component {
 
       <div className="balance-actions">
         <NavLink className="button" to={`/clients/${client.clientId}/float/${float.floatId}`}>
-          Mange float <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
+          Manage float <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
         </NavLink>
       </div>
     </div>;
