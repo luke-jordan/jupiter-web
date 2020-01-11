@@ -47,6 +47,7 @@ class UserTransactions extends React.Component {
       return <tr key={transaction.transactionId}>
         <td>{transaction.formattedCreationDate}</td>
         <td>{transaction.amountMoney}</td>
+        <td>{transaction.humanReference}</td>
         <td className="transaction-buttons">
           <button className="button button-outline button-small"
             onClick={() => this.openReason(transaction, 'SETTLED')}>Mark as received</button>
@@ -59,8 +60,9 @@ class UserTransactions extends React.Component {
     return <table className="table">
       <thead>
         <tr>
-          <th style={{width: 150}}>Date</th>
-          <th style={{width: 150}}>EFT amount</th>
+          <th style={{width: 120}}>Date</th>
+          <th style={{width: 120}}>EFT amount</th>
+          <th style={{width: 150}}>Bank ref</th>
           <th>Actions</th>
         </tr>
       </thead>
