@@ -67,7 +67,7 @@ class UserTransactions extends React.Component {
         </tr>
       </thead>
       <tbody>
-        {rows.length ? rows : <tr><td colSpan="3" className="no-data">No transactions</td></tr>}
+        {rows.length ? rows : <tr><td colSpan="4" className="no-data">No transactions</td></tr>}
       </tbody>
     </table>;
   }

@@ -7,14 +7,14 @@ import { inject } from 'src/core/utils';
 import './UserSearch.scss';
 
 const searchTypes = [{
-  text: 'Email address', value: 'emailAddress',
-  placeholder: 'Enter email address'
-}, {
-  text: 'Phone number', value: 'phoneNumber',
-  placeholder: 'Enter phone number'
+  text: 'Phone or email', value: 'phoneOrEmail',
+  placeholder: 'Enter either phone or email address'
 }, {
   text: 'National ID', value: 'nationalId',
   placeholder: 'Enter national ID', 
+}, {
+  text: 'Bank reference', value: 'bankReference',
+  placeholder: 'Enter account name or bank reference of a transaction'
 }];
 
 class UserSearch extends React.Component {
