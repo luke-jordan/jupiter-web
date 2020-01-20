@@ -1,12 +1,40 @@
-.table.boost-user-count {
-  width: auto;
-  margin: 0 auto 20px;
-  text-align: center;
-  th {
-    text-transform: none;
+@import 'src/styles/variables';
+@import 'src/styles/common';
+
+.boost-user-count {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 30px;
+  border-radius: 10px;
+  .count-inner {
+    border: 1px solid $color-silver;
+    border-radius: inherit;
+    text-align: center;
+    padding: 17px 15px 15px;
   }
-  td, th {
-    padding: 4px 12px;
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    display: block;
+    @include theme-gradient;
+  }
+  .count-value {
+    color: $color-grey;
+    font-size: 22px;
+  }
+  .count-title {
+    color: $color-grey2;
     font-size: 14px;
+  }
+  .grid-row {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .grid-col:not(:last-child) {
+    border-right: 1px solid $color-silver;
   }
 }
