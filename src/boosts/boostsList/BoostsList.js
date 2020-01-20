@@ -87,7 +87,7 @@ class BoostsList extends React.Component {
       </thead>
       <tbody>
         {displayBoosts.length ? displayBoosts.map(boost => this.renderTableRow(boost)) :
-          <tr><td className="no-data" colSpan="10">No boosts</td></tr>}
+          <tr><td className="no-data" colSpan="9">No boosts</td></tr>}
       </tbody>
     </table>;
   }
