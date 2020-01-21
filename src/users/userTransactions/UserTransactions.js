@@ -1,20 +1,17 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { takeUntil } from 'rxjs/operators';
 
-import { inject, tempStorage, unmountDecorator } from 'src/core/utils';
+import { inject, unmountDecorator } from 'src/core/utils';
 import Modal from 'src/components/modal/Modal';
 import Input from 'src/components/input/Input';
 import Spinner from 'src/components/spinner/Spinner';
 
 import './UserTransactions.scss';
-import arrowRightWhite from 'src/assets/images/arrow-right-white.svg';
 
 class UserTransactions extends React.Component {
   constructor() {
     super();
 
-    this.historyService = inject('HistoryService');
     this.usersService = inject('UsersService');
     this.modalService = inject('ModalService');
     this.authService = inject('AuthService');
@@ -35,10 +32,6 @@ class UserTransactions extends React.Component {
       <header className="transactions-header">Pending EFT Transactions</header>
       {this.renderTable()}
       {this.renderReason()}
-      <NavLink className="button view-history" onClick={this.saveHistoryToTempStorage}
-        to={{ pathname: '/users/history', search: this.historyService.location.search }}>
-        View user history <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
-      </NavLink>
     </div>;
   }
 
@@ -100,10 +93,6 @@ class UserTransactions extends React.Component {
       </form>
       {state.loading && <Spinner overlay/>}
     </Modal>;
-  }
-
-  saveHistoryToTempStorage = () => {
-    tempStorage.set('user-history', this.props.user);
   }
 
   openReason(transaction, newStatus) {

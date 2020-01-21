@@ -16,6 +16,17 @@
     border: 1px solid $color-silver;
     border-radius: 0;
     box-shadow: none;
+    .card-header {
+      display: flex;
+    }
+    .view-user-history {
+      border-left: 1px solid $color-silver;
+      margin-left: 20px;
+      padding-left: 20px;
+      .button {
+        white-space: nowrap;
+      }
+    }
   }
   .user-not-found {
     font-size: 14px;

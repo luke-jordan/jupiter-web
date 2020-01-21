@@ -1,7 +1,7 @@
 import React from 'react';
 import { takeUntil } from 'rxjs/operators';
 
-import { tempStorage, inject, unmountDecorator } from 'src/core/utils';
+import { inject, unmountDecorator } from 'src/core/utils';
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
 import Spinner from 'src/components/spinner/Spinner';
 import UserWithBalance from '../userWithBalance/UserWithBalance';
@@ -35,12 +35,7 @@ class UserHistoryPage extends React.Component {
   }
 
   componentDidMount() {
-    const user = tempStorage.get('user-history');
-    if (user) {
-      this.userLoaded(user);
-    } else {
-      this.loadUserDetails();
-    }
+    this.loadUserDetails();
   }
 
   componentDidUpdate(prevProps) {
@@ -119,14 +114,12 @@ class UserHistoryPage extends React.Component {
 
     this.usersService.searchUser({ [searchType]: searchValue }).pipe(
       takeUntil(this.unmount)
-    ).subscribe(user => this.userLoaded(user));
-  }
-
-  userLoaded(user) {
-    this.setState({
-      user,
-      userEvents: user.userHistory.userEvents,
-      loading: false
+    ).subscribe(user => {
+      this.setState({
+        user,
+        userEvents: user.userHistory.userEvents,
+        loading: false
+      });
     });
   }
 
