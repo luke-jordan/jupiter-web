@@ -74,7 +74,7 @@ class UserSearch extends React.Component {
     const params = new URLSearchParams(this.historyService.location.search);
     return {
       searchValue: params.get('searchValue') || '',
-      searchType: params.get('searchType') || 'emailAddress'
+      searchType: params.get('searchType') || searchTypes[0].value
     };
   }
 }
