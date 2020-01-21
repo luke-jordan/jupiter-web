@@ -112,16 +112,9 @@ class UserSearchPage extends React.Component {
     });
   }
 
-  statusFormChange = statusData => {
-    this.setState({ statusData });
-  }
-
   userStatusChange = data => {
     this.setState({ loading: true });
-
-    this.usersService.updateUser({
-      systemWideUserId: this.state.user.systemWideUserId, ...data
-    }).pipe(
+    this.usersService.updateUser(data).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
       this.searchUser(); // reload user
