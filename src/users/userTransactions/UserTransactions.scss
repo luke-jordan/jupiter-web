@@ -8,14 +8,14 @@
     font-size: 14px;
     margin-bottom: 12px;
   }
-  .transaction-buttons {
+  .transaction-actions {
     text-align: left;
-    .button {
+    .button:not(:last-child) {
       margin-right: 10px;
     }
   }
   .table {
-    max-width: 700px;
+    width: auto;
     td, th {
       padding: 8px 12px;
     }

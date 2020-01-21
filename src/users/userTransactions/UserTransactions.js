@@ -39,9 +39,10 @@ class UserTransactions extends React.Component {
     const rows = this.props.user.pendingTransactions.map(transaction => {
       return <tr key={transaction.transactionId}>
         <td>{transaction.formattedCreationDate}</td>
+        <td>{transaction.transactionTypeText}</td>
         <td>{transaction.amountMoney}</td>
         <td>{transaction.humanReference}</td>
-        <td className="transaction-buttons">
+        <td className="transaction-actions">
           <button className="button button-outline button-small"
             onClick={() => this.openReason(transaction, 'SETTLED')}>Mark as received</button>
           <button className="button button-outline button-small"
@@ -54,13 +55,14 @@ class UserTransactions extends React.Component {
       <thead>
         <tr>
           <th style={{width: 120}}>Date</th>
+          <th style={{width: 120}}>Type</th>
           <th style={{width: 120}}>EFT amount</th>
           <th style={{width: 150}}>Bank ref</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        {rows.length ? rows : <tr><td colSpan="4" className="no-data">No transactions</td></tr>}
+        {rows.length ? rows : <tr><td colSpan="5" className="no-data">No transactions</td></tr>}
       </tbody>
     </table>;
   }

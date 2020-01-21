@@ -30,6 +30,11 @@ export const userHistoryEventTypeMap = {
   STATUS_CHANGED: 'User status changed'
 };
 
+export const userTransactionTypeMap = {
+  USER_SAVING_EVENT: 'Saving',
+  WITHDRAWAL: 'Withdrawal'
+};
+
 export const boostTypeMap = {
   GAME: 'Game',
   SIMPLE: 'Simple'
