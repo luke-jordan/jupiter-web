@@ -31,7 +31,7 @@ export const userHistoryEventTypeMap = {
 };
 
 export const userTransactionTypeMap = {
-  USER_SAVING_EVENT: 'Saving',
+  USER_SAVING_EVENT: 'Deposit',
   WITHDRAWAL: 'Withdrawal'
 };
 

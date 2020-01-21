@@ -14,14 +14,10 @@ class UserTransactions extends React.Component {
 
     this.usersService = inject('UsersService');
     this.modalService = inject('ModalService');
-    this.authService = inject('AuthService');
 
     this.state = {
       loading: false,
-      openReason: false,
-      reason: '',
-      transactionId: null,
-      newStatus: null
+      reasonData: null
     };
 
     unmountDecorator(this);
@@ -42,12 +38,7 @@ class UserTransactions extends React.Component {
         <td>{transaction.transactionTypeText}</td>
         <td>{transaction.amountMoney}</td>
         <td>{transaction.humanReference}</td>
-        <td className="transaction-actions">
-          <button className="button button-outline button-small"
-            onClick={() => this.openReason(transaction, 'SETTLED')}>Mark as received</button>
-          <button className="button button-outline button-small"
-            onClick={() => this.openReason(transaction, 'EXPIRED')}>Cancel</button>
-        </td>
+        {this.renderTransactionActions(transaction)}
       </tr>;
     });
 
@@ -67,51 +58,54 @@ class UserTransactions extends React.Component {
     </table>;
   }
 
+  renderTransactionActions(transaction) {
+    const type = transaction.transactionType;
+    return <td className="transaction-actions">
+      {type === 'USER_SAVING_EVENT' && <button className="button button-outline button-small"
+        onClick={() => this.openReason(transaction, 'Mark transaction as received', 'SETTLED')}>Mark as received</button>}
+      {type === 'WITHDRAWAL' && <button className="button button-outline button-small"
+        onClick={() => this.openReason(transaction, 'Complete transaction withdrawal', 'SETTLED')}>Complete withdrawal</button>}
+      <button className="button button-outline button-small"
+        onClick={() => this.openReason(transaction, 'Cancel transaction', 'EXPIRED')}>Cancel</button>
+    </td>
+  }
+
   renderReason() {
-    const state = this.state;
-
-    if (!state.openReason) {
-      return;
-    }
-
-    const header = {
-      SETTLED: 'Mark transaction as received',
-      EXPIRED: 'Cancel transaction'
-    }[state.newStatus];
-
-    return <Modal open className="transaction-change-reason" header={header}
+    const reasonData = this.state.reasonData;
+    return reasonData && <Modal open className="transaction-change-reason" header={reasonData.modalHeader}
       onClose={this.closeReason}>
       <form onSubmit={this.submit}>
         <div className="reason-msg">Please enter reason below</div>
         <div className="grid-row">
           <div className="grid-col-9">
             <Input name="reason" placeholder="Enter reason"
-              value={state.reason} onChange={this.reasonInputChange}/>
+              value={reasonData.reasonText} onChange={this.reasonInputChange}/>
           </div>
           <div className="grid-col-3">
-            <button className="button" disabled={!state.reason.trim()}>Submit</button>
+            <button className="button" disabled={!reasonData.reasonText.trim()}>Submit</button>
           </div>
         </div>
       </form>
-      {state.loading && <Spinner overlay/>}
+      {this.state.loading && <Spinner overlay/>}
     </Modal>;
   }
 
-  openReason(transaction, newStatus) {
+  openReason(transaction, modalHeader, newStatus) {
     this.setState({
-      openReason: true,
-      reason: '',
-      transactionId: transaction.transactionId,
-      newStatus
+      reasonData: {
+        transactionId: transaction.transactionId, modalHeader, newStatus, reasonText: ''
+      }
     });
   }
 
   closeReason = () => {
-    this.setState({ openReason: false, loading: false });
+    this.setState({ reasonData: null, loading: false });
   }
 
   reasonInputChange = e => {
-    this.setState({ reason: e.target.value });
+    this.setState({ 
+      reasonData: { ...this.state.reasonData, reasonText: e.target.value }
+    });
   }
 
   submit = e => {
@@ -119,14 +113,14 @@ class UserTransactions extends React.Component {
 
     this.setState({ loading: true });
 
-    const state = this.state;
+    const reasonData = this.state.reasonData;
 
     this.usersService.updateUser({
-      systemWideUserId: this.authService.user.value.systemWideUserId,
+      systemWideUserId: this.props.user.systemWideUserId,
       fieldToUpdate: 'TRANSACTION',
-      reasonToLog: state.reason,
-      newTxStatus: state.newStatus,
-      transactionId: state.transactionId
+      reasonToLog: reasonData.reasonText,
+      newTxStatus: reasonData.newStatus,
+      transactionId: reasonData.transactionId
     }).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {

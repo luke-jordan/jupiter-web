@@ -10,7 +10,8 @@
   }
   .transaction-actions {
     text-align: left;
-    .button:not(:last-child) {
+    .button:first-child {
+      min-width: 182px;
       margin-right: 10px;
     }
   }
