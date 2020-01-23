@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import { messageDisplayTypeMap } from 'src/core/constants';
 import { mapToOptions } from 'src/core/utils';
@@ -16,6 +17,8 @@ class MessageForm extends React.Component {
 
     this.typeOptions = mapToOptions(messageDisplayTypeMap);
 
+    this.htmlTypes = ['EMAIL', 'MODAL'];
+
     this.bodyParameters = [
       'user_first_name',
       'user_full_name',
@@ -25,6 +28,8 @@ class MessageForm extends React.Component {
       'last_capitalization',
       'total_earnings'
     ];
+
+    this.bodyEditor = null;
 
     this.state = {
       data: this.messageToFormData(props.message)
@@ -51,7 +56,11 @@ class MessageForm extends React.Component {
   }
 
   render() {
-    return <form className="message-form" onSubmit={this.submit}>
+    const rootClass = classNames('message-form', {
+      'hide-editor-btns': !this.htmlTypes.includes(this.state.data.type)
+    });
+
+    return <form className={rootClass} onSubmit={this.submit}>
       {this.renderDetails()}
       {this.renderConditions()}
       {this.renderAudienceSelection()}
@@ -194,9 +203,20 @@ class MessageForm extends React.Component {
 
   inputChange = event => {
     const { name, value } = event.target;
-    this.setState({
-      data: { ...this.state.data, [name]: value }
-    });
+    const state = this.state;
+
+    const newState = {
+      data: { ...state.data, [name]: value }
+    };
+
+    // Convert body to text if "html" type changed to "text" type
+    if (
+      name === 'type' && this.htmlTypes.includes(state.data.type) && !this.htmlTypes.includes(value)
+    ) {
+      newState.data.body = this.bodyEditor.getContent({ format: 'text' });
+    }
+
+    this.setState(newState);
   }
 
   submit = event => {
@@ -248,13 +268,17 @@ class MessageForm extends React.Component {
   getMessageReqBody() {
     const data = this.state.data;
 
+    const msgBody = this.bodyEditor.getContent({
+      format: this.htmlTypes.includes(data.type) ? 'html' : 'text'
+    });
+
     const body = {
       audienceType: 'GROUP',
       templates: {
         template: {
           DEFAULT: {
             title: data.title,
-            body: data.body,
+            body: msgBody,
             display: { type: data.type },
             actionToTake: data.quickAction,
             urlToVisit: data.urlToVisit
@@ -292,9 +316,6 @@ class MessageForm extends React.Component {
 
   setupBodyEditor = editor => {
     editor.settings.toolbar += ' | params';
-    if (this.isView()) {
-      editor.setMode('readonly');
-    }
     editor.ui.registry.addMenuButton('params', {
       text: 'Insert parameter',
       fetch: cb => {
@@ -307,6 +328,7 @@ class MessageForm extends React.Component {
         cb(items);
       }
     });
+    this.bodyEditor = editor;
   }
 }
 
