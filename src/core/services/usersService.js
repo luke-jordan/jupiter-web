@@ -3,7 +3,7 @@ import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
 import { setAmountValueAndMoney } from 'src/core/utils';
-import { userHistoryEventTypeMap } from 'src/core/constants';
+import { userHistoryEventTypeMap, userTransactionTypeMap } from 'src/core/constants';
 
 export class UsersService {
   constructor(apiService) {
@@ -64,6 +64,7 @@ export class UsersService {
   _modifyUserTransaction(transaction) {
     setAmountValueAndMoney(transaction, 'amount', transaction.unit, transaction.currency);
     transaction.formattedCreationDate = moment(transaction.creationTime).format('DD/MM/YYYY');
+    transaction.transactionTypeText = userTransactionTypeMap[transaction.transactionType] || transaction.transactionType;
   }
 
   _modifyUserHistory(history) {

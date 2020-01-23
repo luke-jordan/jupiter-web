@@ -10,8 +10,11 @@
   }
   .form-group {
     margin-bottom: 15px;
+    .form-label {
+      white-space: nowrap;
+    }
   }
-  .grid-row .grid-col-4:nth-child(3) {
+  .grid-row .grid-col-4.change-actions {
     display: flex;
     flex-direction: row;
     align-items: flex-end;

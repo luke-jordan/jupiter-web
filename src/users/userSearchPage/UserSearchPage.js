@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { takeUntil } from 'rxjs/operators';
 
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
@@ -10,6 +11,7 @@ import UserStatusForm from '../userStatusForm/UserStatusForm';
 import UserTransactions from '../userTransactions/UserTransactions';
 
 import './UserSearchPage.scss';
+import arrowRightWhite from 'src/assets/images/arrow-right-white.svg';
 
 class UserSearchPage extends React.Component {
   constructor() {
@@ -59,6 +61,11 @@ class UserSearchPage extends React.Component {
       <div className="card user-details">
         <div className="card-header">
           <UserWithBalance user={state.user}/>
+          <div className="view-user-history">
+            <NavLink className="button" to={{ pathname: '/users/history', search: this.historyService.location.search }}>
+              View user history <img className="button-icon" src={arrowRightWhite} alt="arrow"/>
+            </NavLink>
+          </div>
         </div>
         <div className="card-body">
           <UserStatusForm user={state.user} onSubmit={this.userStatusChange}/>
@@ -105,16 +112,9 @@ class UserSearchPage extends React.Component {
     });
   }
 
-  statusFormChange = statusData => {
-    this.setState({ statusData });
-  }
-
   userStatusChange = data => {
     this.setState({ loading: true });
-
-    this.usersService.updateUser({
-      systemWideUserId: this.state.user.systemWideUserId, ...data
-    }).pipe(
+    this.usersService.updateUser(data).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
       this.searchUser(); // reload user

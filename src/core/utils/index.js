@@ -77,18 +77,6 @@ export const unmountDecorator = (instance) => {
   }
 }
 
-export const tempStorage = {
-  _map: new Map(),
-  set: function(key, value) {
-    this._map.set(key, value)
-  },
-  get: function(key) {
-    const value = this._map.get(key);
-    this._map.delete(key);
-    return value;
-  }
-};
-
 export const mapToOptions = mapObj => {
   return Object.entries(mapObj)
     .map(([value, text]) => ({ value, text }))

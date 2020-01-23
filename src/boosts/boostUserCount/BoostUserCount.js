@@ -7,18 +7,16 @@ import './BoostUserCount.scss';
 const BoostUserCount = props => {
   const count = props.boost.count;
   const keys = Object.keys(count);
-  return <table className="table boost-user-count">
-    <thead>
-      <tr>
-        {keys.map(key => <th key={key}>{capitalize(key)}</th>)}
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        {keys.map(key => <td key={key}>{count[key]}</td>)}
-      </tr>
-    </tbody>
-  </table>;
+  return <div className="boost-user-count">
+    <div className="count-inner">
+      <div className="grid-row">
+        {keys.map(key => <div className="grid-col"  key={key}>
+          <div className="count-value">{count[key]}</div>
+          <div className="count-title">{capitalize(key)}</div>
+        </div>)}
+      </div>
+    </div>
+  </div>
 }
 
 export default BoostUserCount;

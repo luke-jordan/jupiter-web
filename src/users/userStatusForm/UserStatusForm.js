@@ -14,134 +14,181 @@ class UserStatusForm extends React.Component {
     this.userStatusOptions = mapToOptions(userStatusMap);
     this.kysStatusOptions = mapToOptions(userKycStatusMap);
 
-    this.state = {
-      data: this.getFormData(props.user)
+    this.state = this.getState(props.user);
+  }
+
+  getState(user) {
+    return {
+      userStatus: user.userStatus,
+      userStatusEdit: false,
+      userStatusReason: '',
+      kycStatus: user.kycStatus,
+      kycStatusEdit: false,
+      kycStatusReason: '',
+      bSheetId: user.userBalance.bsheetIdentifier || '',
+      bSheetIdEdit: false
     };
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.user !== prevProps.user) {
-      this.setState({
-        data: this.getFormData(this.props.user)
-      });
+      this.setState( this.getState(this.props.user) );
     }
   }
 
   render() {
-    const { state, props } = this;
-
-    const userStatusChanged = state.data.userStatus !== props.user.userStatus;
-    const kycStatusChanged = state.data.kycStatus !== props.user.kycStatus;
-
     return <form className="user-status-form">
       <div className="status-header">Status</div>
-      <div className="form-group">
-        <div className="grid-row">
-          <div className="grid-col-4">
-            <div className="form-label">User Status</div>
-            <Select name="userStatus" value={state.data.userStatus} onChange={this.inputChange}
-              disabled={kycStatusChanged}>
-              {this.userStatusOptions.map((item) =>
-                <option key={item.value} value={item.value}>{item.text}</option>)}
-            </Select>
-          </div>
-          {userStatusChanged && <>
-            <div className="grid-col-4">
-              <div className="form-label attention">Please provide a reason for the user status change:</div>
-              <Input name="userStatusChangeReason" placeholder="Type reason here..." attention
-                value={state.data.userStatusChangeReason} onChange={this.inputChange}/>
-            </div>
-            <div className="grid-col-4">
-              <button type="button" className="button" onClick={this.userStatusChangeClick}
-                disabled={!state.data.userStatusChangeReason}>Change</button>
-              <span className="link" onClick={this.cancelUserStatusChange}>Cancel</span>
-            </div>
-          </>}
-        </div>
-      </div>
-      <div className="form-group">
-        <div className="grid-row">
-          <div className="grid-col-4">
-            <div className="form-label">KYC Status</div>
-            <Select name="kycStatus" value={state.data.kycStatus} onChange={this.inputChange}
-              disabled={userStatusChanged}>
-              {this.kysStatusOptions.map((item) =>
-                <option key={item.value} value={item.value}>{item.text}</option>)}
-            </Select>
-          </div>
-          {kycStatusChanged && <>
-            <div className="grid-col-4">
-              <div className="form-label attention">Please provide a reason for the user KYC change:</div>
-              <Input name="kycStatusChangeReason" placeholder="Type reason here..." attention
-                value={state.data.kycStatusChangeReason} onChange={this.inputChange}/>
-            </div>
-            <div className="grid-col-4">
-              <button type="button" className="button" onClick={this.kysStatusChangeClick}
-                disabled={!state.data.kycStatusChangeReason}>Change</button>
-              <span className="link" onClick={this.cancelKycStatusChange}>Cancel</span>
-            </div>
-          </>}
-        </div>
-      </div>
+      {this.renderUserStatus()}
+      {this.renderKycStatus()}
+      {this.renderBSheetId()}
     </form>;
+  }
+
+  renderUserStatus() {
+    const state = this.state;
+    return <div className="form-group">
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-label">User Status</div>
+          <Select name="userStatus" value={state.userStatus} onChange={this.inputChange}
+            disabled={state.kycStatusEdit || state.bSheetIdEdit}>
+            {this.userStatusOptions.map((item) => <option key={item.value} value={item.value}>{item.text}</option>)}
+          </Select>
+        </div>
+        {state.userStatusEdit && <>
+          <div className="grid-col-4">
+            <div className="form-label attention">Please provide a reason for the user status change:</div>
+            <Input name="userStatusReason" placeholder="Type reason here..." attention
+              value={state.userStatusReason} onChange={this.inputChange}/>
+          </div>
+          <div className="grid-col-4 change-actions">
+            <button type="button" className="button" onClick={this.userStatusChangeClick}
+              disabled={!state.userStatusReason}>Change</button>
+            <span className="link" onClick={this.userStatusCancelClick}>Cancel</span>
+          </div>
+        </>}
+      </div>
+    </div>;
+  }
+
+  renderKycStatus() {
+    const state = this.state;
+    return <div className="form-group">
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-label">KYC Status</div>
+          <Select name="kycStatus" value={state.kycStatus} onChange={this.inputChange}
+            disabled={state.userStatusEdit || state.bSheetIdEdit}>
+            {this.kysStatusOptions.map((item) => <option key={item.value} value={item.value}>{item.text}</option>)}
+          </Select>
+        </div>
+        {state.kycStatusEdit && <>
+          <div className="grid-col-4">
+            <div className="form-label attention">Please provide a reason for the user KYC change:</div>
+            <Input name="kycStatusReason" placeholder="Type reason here..." attention
+              value={state.kycStatusReason} onChange={this.inputChange}/>
+          </div>
+          <div className="grid-col-4 change-actions">
+            <button type="button" className="button" onClick={this.kycStatusChangeClick}
+              disabled={!state.kycStatusReason}>Change</button>
+            <span className="link" onClick={this.kycStatusCancelClick}>Cancel</span>
+          </div>
+        </>}
+      </div>
+    </div>;
+  }
+
+  renderBSheetId() {
+    const state = this.state;
+    return <div className="form-group">
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-label">FinWorks Account Number</div>
+          <Input name="bSheetId" placeholder="Enter number" value={state.bSheetId}
+            onChange={this.inputChange} disabled={state.userStatusEdit || state.kycStatusEdit}/>
+        </div>
+        {state.bSheetIdEdit && <div className="grid-col-4 change-actions">
+          <button type="button" className="button" onClick={this.bSheetIdChangeClick}
+            disabled={!state.bSheetId || !state.bSheetId.trim()}>Change</button>
+          <span className="link" onClick={this.bSheetIdCancelClick}>Cancel</span>
+        </div>}
+      </div>
+    </div>;
   }
 
   inputChange = event => {
     const { name, value } = event.target;
-    this.setState({
-      data: { ...this.state.data, [name]: value }
-    });
+    const newState = { ...this.state, [name]: value };
+
+    if (name === 'userStatus') {
+      newState.userStatusEdit = true;
+    } else if (name === 'kycStatus') {
+      newState.kycStatusEdit = true;
+    } else if (name === 'bSheetId') {
+      newState.bSheetIdEdit = true;
+    }
+
+    this.setState(newState);
   }
 
   userStatusChangeClick = () => {
-    const data = this.state.data;
-    this.submit({ 
+    const state = this.state;
+    this.submit({
       fieldToUpdate: 'STATUS',
-      newStatus: data.userStatus,
-      reasonToLog: data.userStatusChangeReason
+      newStatus: state.userStatus,
+      reasonToLog: state.userStatusReason
     });
   }
 
-  kysStatusChangeClick = () => {
-    const data = this.state.data;
-    this.submit({ 
+  userStatusCancelClick = () => {
+    this.setState({
+      ...this.state,
+      userStatus: this.props.user.userStatus,
+      userStatusEdit: false,
+      userStatusReason: ''
+    });
+  }
+
+  kycStatusChangeClick = () => {
+    const state = this.state;
+    this.submit({
       fieldToUpdate: 'KYC',
-      newStatus: data.kycStatus,
-      reasonToLog: data.kycStatusChangeReason
+      newStatus: state.kycStatus,
+      reasonToLog: state.kycStatusReason
+    });
+  }
+
+  kycStatusCancelClick = () => {
+    this.setState({
+      ...this.state,
+      kycStatus: this.props.user.kycStatus,
+      kycStatusEdit: false,
+      kycStatusReason: ''
+    });
+  }
+
+  bSheetIdChangeClick = () => {
+    const state = this.state;
+    this.submit({
+      fieldToUpdate: 'BSHEET',
+      newIdentifier: state.bSheetId,
+      reasonToLog: 'Change BSHEET',
+      accountId: this.props.user.userBalance.accountId[0]
+    });
+  }
+
+  bSheetIdCancelClick = () => {
+    this.setState({
+      ...this.state,
+      bSheetId: this.props.user.userBalance.bsheetIdentifier || '',
+      bSheetIdEdit: false
     });
   }
 
   submit(data) {
+    data.systemWideUserId = this.props.user.systemWideUserId;
     this.props.onSubmit(data);
-  }
-
-  getFormData(user) {
-    return {
-      userStatus: user.userStatus,
-      userStatusChangeReason: '',
-      kycStatus: user.kycStatus,
-      kycStatusChangeReason: ''
-    };
-  }
-
-  cancelUserStatusChange = () => {
-    this.setState({
-      data: {
-        ...this.state.data,
-        userStatus: this.props.user.userStatus,
-        userStatusChangeReason: ''
-      }
-    });
-  }
-
-  cancelKycStatusChange = () => {
-    this.setState({
-      data: {
-        ...this.state.data,
-        kycStatus: this.props.user.kycStatus,
-        kycStatusChangeReason: ''
-      }
-    });
   }
 }
 
