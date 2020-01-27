@@ -1,9 +1,5 @@
 .message-form {
-  .insert-parameter {
-    margin-left: 20px;
-    .menu-list {
-      width: auto;
-      top: 5px;
-    }
+  &.hide-editor-btns .tox-toolbar__primary .tox-toolbar__group:not(:last-child) {
+    display: none;
   }
 }
