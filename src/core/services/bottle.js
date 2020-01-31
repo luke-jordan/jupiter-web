@@ -1,5 +1,5 @@
 import Bottle from 'bottlejs';
-import { createBrowserHistory } from 'history';
+import { createHashHistory } from 'history';
 
 import { ApiService } from './apiService';
 import { AuthService } from './authService';
@@ -15,7 +15,7 @@ import { AudienceService } from './audienceService';
 const bottle = new Bottle();
 bottle.service('ApiService', ApiService);
 bottle.service('AuthService', AuthService, 'ApiService', 'HistoryService');
-bottle.service('HistoryService', createBrowserHistory);
+bottle.service('HistoryService', createHashHistory);
 bottle.service('UsersService', UsersService, 'ApiService');
 bottle.service('BoostsService', BoostsService, 'ApiService', 'AudienceService');
 bottle.service('MessagesService', MessagesService, 'ApiService', 'AudienceService');
