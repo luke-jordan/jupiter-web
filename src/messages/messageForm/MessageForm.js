@@ -1,13 +1,13 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import { messageDisplayTypeMap } from 'src/core/constants';
 import { mapToOptions } from 'src/core/utils';
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
-import TextArea from 'src/components/textArea/TextArea';
 import DatePicker from 'src/components/datePicker/DatePicker';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
-import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
+import TextEditor from 'src/components/textEditor/TextEditor';
 
 import './MessageForm.scss';
 
@@ -16,6 +16,8 @@ class MessageForm extends React.Component {
     super();
 
     this.typeOptions = mapToOptions(messageDisplayTypeMap);
+
+    this.htmlTypes = ['EMAIL', 'MODAL'];
 
     this.bodyParameters = [
       'user_first_name',
@@ -26,6 +28,8 @@ class MessageForm extends React.Component {
       'last_capitalization',
       'total_earnings'
     ];
+
+    this.bodyEditor = null;
 
     this.state = {
       data: this.messageToFormData(props.message)
@@ -52,7 +56,11 @@ class MessageForm extends React.Component {
   }
 
   render() {
-    return <form className="message-form" onSubmit={this.submit}>
+    const rootClass = classNames('message-form', {
+      'hide-editor-btns': !this.htmlTypes.includes(this.state.data.type)
+    });
+
+    return <form className={rootClass} onSubmit={this.submit}>
       {this.renderDetails()}
       {this.renderConditions()}
       {this.renderAudienceSelection()}
@@ -77,14 +85,9 @@ class MessageForm extends React.Component {
       </div>
       {/* Body */}
       <div className="form-group">
-        <div className="form-label">
-          Body
-          {!this.isView() && <DropdownMenu className="insert-parameter"
-            items={this.bodyParameters.map(param => ({ text: param, click: () => this.insertParameter(param) }))}
-            trigger={<span className="link text-underline">Insert parameter</span>}/>}
-        </div>
-        <TextArea rows="8" placeholder="Enter body" name="body"
-          value={state.data.body} onChange={this.inputChange} disabled={this.isView()}/>
+        <div className="form-label">Body</div>
+        <TextEditor init={{ setup: this.setupBodyEditor }} value={state.data.body} disabled={this.isView()}
+          onEditorChange={value => this.inputChange({ target: { name: 'body', value }})}/>
       </div>
       <div className="grid-row">
         {/* Quick action */}
@@ -200,9 +203,20 @@ class MessageForm extends React.Component {
 
   inputChange = event => {
     const { name, value } = event.target;
-    this.setState({
-      data: { ...this.state.data, [name]: value }
-    });
+    const state = this.state;
+
+    const newState = {
+      data: { ...state.data, [name]: value }
+    };
+
+    // Convert body to text if "html" type changed to "text" type
+    if (
+      name === 'type' && this.htmlTypes.includes(state.data.type) && !this.htmlTypes.includes(value)
+    ) {
+      newState.data.body = this.bodyEditor.getContent({ format: 'text' });
+    }
+
+    this.setState(newState);
   }
 
   submit = event => {
@@ -254,13 +268,17 @@ class MessageForm extends React.Component {
   getMessageReqBody() {
     const data = this.state.data;
 
+    const msgBody = this.bodyEditor.getContent({
+      format: this.htmlTypes.includes(data.type) ? 'html' : 'text'
+    });
+
     const body = {
       audienceType: 'GROUP',
       templates: {
         template: {
           DEFAULT: {
             title: data.title,
-            body: data.body,
+            body: msgBody,
             display: { type: data.type },
             actionToTake: data.quickAction,
             urlToVisit: data.urlToVisit
@@ -296,18 +314,21 @@ class MessageForm extends React.Component {
     this.audienceRef && this.audienceRef.reset();
   }
 
-  insertParameter = param => {
-    const textarea = document.querySelector('.message-form [name="body"]');
-    const value = textarea.value;
-    const index = textarea.selectionStart;
-    const body = `${value.slice(0, index)}#{${param}}${value.slice(index)}`;
-
-    this.setState({
-      data: {  ...this.state.data, body }
-    }, () => {
-      textarea.selectionStart = textarea.selectionEnd = index + param.length + 3;
-      textarea.focus();
+  setupBodyEditor = editor => {
+    editor.settings.toolbar += ' | params';
+    editor.ui.registry.addMenuButton('params', {
+      text: 'Insert parameter',
+      fetch: cb => {
+        const items = this.bodyParameters.map(param => {
+          return {
+            type: 'menuitem', text: param,
+            onAction: () => editor.selection.setContent(`#{${param}}`)
+          }
+        });
+        cb(items);
+      }
     });
+    this.bodyEditor = editor;
   }
 }
 

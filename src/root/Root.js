@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Switch } from 'react-router-dom';
+import { HashRouter as Router, Switch } from 'react-router-dom';
 
 import { inject } from 'src/core/utils';
 import PageLayout from 'src/components/pageLayout/PageLayout';
