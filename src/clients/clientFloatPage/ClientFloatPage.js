@@ -49,7 +49,7 @@ class ClientFloatPage extends React.Component {
       {state.float && <>
         {this.renderHeader()}
         <FloatAllocationTable float={state.float} onSaved={this.loadFloat}/>
-        <CapitalizeInterestForm float={state.float}/>
+        <CapitalizeInterestForm float={state.float} floatId={state.float.floatId} clientId={state.float.clientId}/>
         <FloatReferralCodesTable float={state.float} onChanged={this.referralCodesChanged}/>
         <ComparatorRates float={state.float} onSaved={this.loadFloat}/>
       </>}

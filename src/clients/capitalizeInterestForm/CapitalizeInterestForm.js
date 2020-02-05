@@ -8,15 +8,19 @@ import Modal from 'src/components/modal/Modal';
 import './CapitalizeInterestForm.scss';
 
 class CapitalizeInterestForm extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.historyService = inject('HistoryService');
 
     this.state = {
       open: false,
-      data: this.getDefaultData()
+      data: this.getDefaultData(),
+      clientId: this.props.clientId,
+      floatId: this.props.floatId
     };
+
+    console.log('Passed client float params: ', this.props);
   }
 
   render() {
@@ -78,8 +82,8 @@ class CapitalizeInterestForm extends React.Component {
       paidDate: data.paidDate.getTime(),
       currency: this.props.float.currency
     };
-    const pathname = this.historyService.location.pathname;
-    this.historyService.push(`${pathname}/capitalize-interest?${new URLSearchParams(params)}`);
+    const pathRoot = `/clients/${this.state.clientId}/float/${this.state.floatId}/capitalize-interest`;
+    this.historyService.push(`${pathRoot}?${new URLSearchParams(params)}`);
   }
 
   getDefaultData() {

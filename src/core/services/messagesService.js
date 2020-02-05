@@ -28,7 +28,7 @@ export class MessagesService {
 
   getActiveMessagesCount() {
     return this.getMessages().pipe(
-      map(res => res.length)
+      map(res => res.filter((msg) => msg.active)), map(res => res.length)
     );
   }
 
