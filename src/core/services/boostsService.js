@@ -26,7 +26,7 @@ export class BoostsService {
 
   getActiveBoostsCount() {
     return this.getBoosts().pipe(
-      map(res => res.length)
+      map(res => res.filter((boost) => !boost.expired)), map(res => res.length)
     );
   }
 
