@@ -98,16 +98,16 @@ class MessageForm extends React.Component {
               value={state.data.quickAction} onChange={this.inputChange}>
               <option value="VIEW_HISTORY">View history</option>
               <option value="ADD_CASH">Add cash</option>
-              <option value="VISIT_WEB">Visit website</option>
+              <option value="ENTER_ACTION_PARAM">Enter action parameter</option>
             </Select>
           </div>
         </div>
-        {/* Url to visit */}
-        {state.data.quickAction === 'VISIT_WEB' && <div className="grid-col-4">
+        {/* Parameter for action */}
+        {state.data.quickAction === 'ENTER_ACTION_PARAM' && <div className="grid-col-4">
           <div className="form-group">
-            <div className="form-label">Url to visit</div>
-            <Input placeholder="Enter website url" name="urlToVisit" disabled={this.isView()}
-              value={state.data.urlToVisit} onChange={this.inputChange}/>
+            <div className="form-label">Parameter for action</div>
+            <Input placeholder="Enter action parameter" name="actionParam" disabled={this.isView()}
+              value={state.data.actionParam} onChange={this.inputChange}/>
           </div>
         </div>}
       </div>
