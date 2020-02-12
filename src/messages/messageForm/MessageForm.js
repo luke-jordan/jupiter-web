@@ -72,7 +72,7 @@ class MessageForm extends React.Component {
 
   renderDetails() {
     const { state } = this;
-    const action = this.getActionProperties(state.data.quickAction);
+    const action = this.getParameters(state.data.quickAction);
     return <>
       <div className="form-section">
         <div className="section-num">1</div>
@@ -104,11 +104,11 @@ class MessageForm extends React.Component {
           </div>
         </div>
         {/* Parameter for action */}
-        {this.hasActionParameters(state.data.quickAction) && <div className="grid-col-4">
+        {this.hasParameters(state.data.quickAction) && <div className="grid-col-4">
           <div className="form-group">
-            <div className="form-label">{action.label}</div>
-            <Input placeholder={action.placeholder} name={action.name} disabled={this.isView()}
-              value={state.data[action.name]} onChange={this.inputChange}/>
+            <div className="form-label">{action['0'].label}</div>
+            <Input placeholder={action['0'].placeholder} name={action.name} disabled={this.isView()}
+              value={state.data[action['0'].name]} onChange={this.inputChange}/>
           </div>
         </div>}
       </div>
@@ -117,6 +117,7 @@ class MessageForm extends React.Component {
 
   renderConditions() {
     const { state } = this;
+    const recurrence = this.getParameters(state.data.recurrence);
     return <>
       <div className="form-section">
         <div className="section-num">2</div>
@@ -168,26 +169,26 @@ class MessageForm extends React.Component {
           {/* Recurring min interval days */}
           <div className="grid-col-4">
             <div className="form-group">
-              <div className="form-label">Assign minimum days between sending messages</div>
-              <Input type="number" name="recurringMinIntervalDays" disabled={this.isView()}
-                value={state.data.recurringMinIntervalDays} onChange={this.inputChange}/>
+              <div className="form-label">{recurrence['0'].label}</div>
+              <Input type="number" name={recurrence['0'].name} disabled={this.isView()}
+                value={state.data[recurrence['0'].name]} onChange={this.inputChange}/>
             </div>
           </div>
           {/* Recurring max in queue */}
           <div className="grid-col-4">
             <div className="form-group">
-              <div className="form-label">Skip sending if more than X messages have been sent</div>
-              <Input type="number" name="recurringMaxInQueue" disabled={this.isView()}
-                value={state.data.recurringMaxInQueue} onChange={this.inputChange} />
+              <div className="form-label">{recurrence['1'].label}</div>
+              <Input type="number" name={recurrence['1'].name} disabled={this.isView()}
+                value={state.data[recurrence['1'].name]} onChange={this.inputChange} />
             </div>
           </div>
         </>}
         {state.data.recurrence === 'EVENT_DRIVEN' && <div className="grid-col-4">
           {/* Event type and category */}
           <div className="form-group">
-            <div className="form-label">Event type and category</div>
-            <Input name="eventTypeCategory" disabled={this.isView()}
-              value={state.data.eventTypeCategory} onChange={this.inputChange}/>
+            <div className="form-label">{recurrence['0'].label}</div>
+            <Input name={recurrence['0'].name} disabled={this.isView()}
+              value={state.data[recurrence['0'].name]} onChange={this.inputChange}/>
           </div>
         </div>}
       </div>
@@ -295,13 +296,12 @@ class MessageForm extends React.Component {
         maxInQueue: data.recurringMaxInQueue
       };
     } else if (data.recurrence === 'EVENT_DRIVEN') {
+      body.eventTypeCategory = data.eventTypeCategory;
       if (this.state.mode === 'edit') {
         body.flags = [data.eventTypeCategory];
-      } else {
-        body.eventTypeCategory = data.eventTypeCategory;
       }
-    } else if (this.hasActionParameters(data.quickAction)) {
-      const action = this.getActionProperties(data.quickAction);
+    } else if (this.hasParameters(data.quickAction)) {
+      const action = this.getParameters(data.quickAction);
       body.templates.template.DEFAULT.actionContext = { [action.name]: data[action.name] }
     }
 
@@ -312,24 +312,44 @@ class MessageForm extends React.Component {
     return this.audienceRef ? this.audienceRef.getReqBody() : null;
   }
 
-  getActionProperties(action) {
+  getParameters(action) {
     const propertyMap = {
       ADD_CASH: {
-        name: 'addCashPreFilled',
-        label: 'Default amount',
-        placeholder: 'Enter default amount'
+        '0': {
+          name: 'addCashPreFilled',
+          label: 'Default amount',
+          placeholder: 'Enter default amount'
+        }
       },
       VISIT_WEB: {
-        name: 'urlToVisit',
-        label: 'Url to visit',
-        placeholder: 'Enter website url'
+        '0': {
+          name: 'urlToVisit',
+          label: 'Url to visit',
+          placeholder: 'Enter website url'
+        }
+      },
+      RECURRING: {
+        '0': {
+          name: 'recurringMinIntervalDays',
+          label: 'Assign minimum days between sending messages',
+        },
+        '1': {
+          name: 'recurringMaxInQueue',
+          label: 'Skip sending if more than X messages have been sent',
+        }
+      },
+      EVENT_DRIVEN: {
+        '0': {
+          name: 'eventTypeCategory',
+          label: 'Event type and category',
+        }
       }
     }
     return propertyMap[action];
   }
 
-  hasActionParameters(action) {
-    return ['ADD_CASH', 'VISIT_WEB'].includes(action);
+  hasParameters(action) {
+    return ['ADD_CASH', 'VISIT_WEB', 'RECURRING', 'EVENT_DRIVEN'].includes(action);
   }; 
 
   reset() {
