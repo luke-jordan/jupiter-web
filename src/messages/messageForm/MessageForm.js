@@ -300,9 +300,7 @@ class MessageForm extends React.Component {
       } else {
         body.eventTypeCategory = data.eventTypeCategory;
       }
-    } else if (data.quickAction === 'VISIT_WEB') {
-      body.templates.template.DEFAULT.urlToVisit = data.urlToVisit
-    } else if (this.hasActionParameters(data.quickAction) && data.quickAction !== 'VISIT_WEB') {
+    } else if (this.hasActionParameters(data.quickAction)) {
       const action = this.getActionProperties(data.quickAction);
       body.templates.template.DEFAULT.actionContext = { [action.name]: data[action.name] }
     }
