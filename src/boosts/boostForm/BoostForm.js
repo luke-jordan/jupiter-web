@@ -310,31 +310,41 @@ class BoostForm extends React.Component {
     // expiry time
     body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
 
+    const messagesToCreate = [];
     // push notification
-    const pushNotification = {
-      boostStatus: 'CREATED',
-      presentationType: 'ONCE_OFF',
-      actionToTake: 'ADD_CASH',
-      isMessageSequence: false,
-      template: {
-        title: data.pushTitle, body: data.pushBody,
-        display: { type: 'PUSH' }
-      }
-    };
+    if (data.pushBody) {
+      messagesToCreate.push({
+        boostStatus: 'CREATED',
+        presentationType: 'ONCE_OFF',
+        actionToTake: 'ADD_CASH',
+        isMessageSequence: false,
+        template: {
+          title: data.pushTitle, body: data.pushBody,
+          display: { type: 'PUSH' }
+        }
+      });
+    }
 
     // card
-    const card = {
-      boostStatus: 'OFFERED',
-      presentationType: 'ONCE_OFF',
-      actionToTake: 'ADD_CASH',
-      isMessageSequence: false,
-      template: {
-        title: data.cardTitle, body: data.cardBody,
-        display: { type: 'CARD' }, actionToTake: 'ADD_CASH'
-      }
-    };
+    if (data.cardBody) {
+      messagesToCreate.push({
+        boostStatus: 'OFFERED',
+        presentationType: 'ONCE_OFF',
+        actionToTake: 'ADD_CASH',
+        isMessageSequence: false,
+        template: {
+          display: { type: 'CARD' }, 
+          title: data.cardTitle, 
+          body: data.cardBody,
+          actionToTake: 'ADD_CASH',
+          actionContext: {
+            addCashPreFilled: redemptionThreshold
+          }
+        }
+      });
+    }
 
-    body.messagesToCreate = [pushNotification, card];
+    body.messagesToCreate = messagesToCreate;
 
     return body;
   }
