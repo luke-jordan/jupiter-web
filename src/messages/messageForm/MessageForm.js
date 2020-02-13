@@ -72,6 +72,7 @@ class MessageForm extends React.Component {
 
   renderDetails() {
     const { state } = this;
+    const action = this.getActionProperties(state.data.quickAction);
     return <>
       <div className="form-section">
         <div className="section-num">1</div>
@@ -102,12 +103,12 @@ class MessageForm extends React.Component {
             </Select>
           </div>
         </div>
-        {/* Url to visit */}
-        {state.data.quickAction === 'VISIT_WEB' && <div className="grid-col-4">
+        {/* Parameter for action */}
+        {this.hasActionParameters(state.data.quickAction) && <div className="grid-col-4">
           <div className="form-group">
-            <div className="form-label">Url to visit</div>
-            <Input placeholder="Enter website url" name="urlToVisit" disabled={this.isView()}
-              value={state.data.urlToVisit} onChange={this.inputChange}/>
+            <div className="form-label">{action.label}</div>
+            <Input placeholder={action.placeholder} name={action.name} disabled={this.isView()}
+              value={state.data[action.name]} onChange={this.inputChange}/>
           </div>
         </div>}
       </div>
@@ -280,8 +281,7 @@ class MessageForm extends React.Component {
             title: data.title,
             body: msgBody,
             display: { type: data.type },
-            actionToTake: data.quickAction,
-            urlToVisit: data.urlToVisit
+            actionToTake: data.quickAction
           }
         }
       },
@@ -297,9 +297,13 @@ class MessageForm extends React.Component {
     } else if (data.recurrence === 'EVENT_DRIVEN') {
       if (this.state.mode === 'edit') {
         body.flags = [data.eventTypeCategory];
-      } else {
         body.eventTypeCategory = data.eventTypeCategory;
       }
+    }
+    
+    if (this.hasActionParameters(data.quickAction)) {
+      const action = this.getActionProperties(data.quickAction);
+      body.templates.template.DEFAULT.actionContext = { [action.name]: data[action.name] }
     }
 
     return body;
@@ -308,6 +312,26 @@ class MessageForm extends React.Component {
   getAudienceReqBody() {
     return this.audienceRef ? this.audienceRef.getReqBody() : null;
   }
+
+  getActionProperties(action) {
+    const propertyMap = {
+      ADD_CASH: {
+        name: 'addCashPreFilled',
+        label: 'Default amount',
+        placeholder: 'Enter default amount'
+      },
+      VISIT_WEB: {
+        name: 'urlToVisit',
+        label: 'Url to visit',
+        placeholder: 'Enter website url'
+      }
+    }
+    return propertyMap[action];
+  }
+
+  hasActionParameters(action) {
+    return ['ADD_CASH', 'VISIT_WEB'].includes(action);
+  };
 
   reset() {
     this.setState({ data: this.messageToFormData(null) });
