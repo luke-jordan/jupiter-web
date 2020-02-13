@@ -304,6 +304,11 @@ class MessageForm extends React.Component {
       const action = this.getActionProperties(data.quickAction);
       body.templates.template.DEFAULT.actionContext = { [action.name]: data[action.name] }
     }
+    
+    if (this.hasActionParameters(data.quickAction)) {
+      const action = this.getActionProperties(data.quickAction);
+      body.templates.template.DEFAULT.actionContext = { [action.name]: data[action.name] }
+    }
 
     return body;
   }
@@ -330,7 +335,7 @@ class MessageForm extends React.Component {
 
   hasActionParameters(action) {
     return ['ADD_CASH', 'VISIT_WEB'].includes(action);
-  }; 
+  };
 
   reset() {
     this.setState({ data: this.messageToFormData(null) });
