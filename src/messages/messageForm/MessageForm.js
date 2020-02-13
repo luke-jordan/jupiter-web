@@ -299,7 +299,9 @@ class MessageForm extends React.Component {
         body.flags = [data.eventTypeCategory];
         body.eventTypeCategory = data.eventTypeCategory;
       }
-    } else if (this.hasActionParameters(data.quickAction)) {
+    }
+    
+    if (this.hasActionParameters(data.quickAction)) {
       const action = this.getActionProperties(data.quickAction);
       body.templates.template.DEFAULT.actionContext = { [action.name]: data[action.name] }
     }
@@ -329,7 +331,7 @@ class MessageForm extends React.Component {
 
   hasActionParameters(action) {
     return ['ADD_CASH', 'VISIT_WEB'].includes(action);
-  }; 
+  };
 
   reset() {
     this.setState({ data: this.messageToFormData(null) });
