@@ -82,7 +82,7 @@ class MessageForm extends React.Component {
       {/* Title */}
       <div className="form-group">
         <div className="form-label">Title</div>
-        <Input placeholder="Enter title" name="title" disabled={this.isView()}
+        <Input placeholder="Enter title" name="title" maxLength="100" disabled={this.isView()}
           value={state.data.title} onChange={this.inputChange}/>
       </div>
       {/* Body */}
