@@ -45,7 +45,7 @@ class LoginForm extends React.Component {
             </div>
           </div>
           <div className="login-actions">
-            {state.loading ? <Spinner/> : <button className="button">Log In</button>}
+            {state.loading ? <Spinner/> : <button className="button">Login</button>}
           </div>
         </form>
       </div>

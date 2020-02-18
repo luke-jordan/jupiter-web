@@ -84,6 +84,9 @@ class MessageForm extends React.Component {
         <div className="form-label">Title</div>
         <Input placeholder="Enter title" name="title" disabled={this.isView()}
           value={state.data.title} onChange={this.inputChange}/>
+        {this.state.hasErrors && this.state.errors.title && 
+          (<p className="input-error">{this.state.errors.title}</p>)}
+
       </div>
       {/* Body */}
       <div className="form-group">
@@ -110,6 +113,8 @@ class MessageForm extends React.Component {
             <div className="form-label">{action.label}</div>
             <Input placeholder={action.placeholder} name={action.name} disabled={this.isView()}
               value={state.data[action.name]} onChange={this.inputChange}/>
+            {this.state.hasErrors && this.state.errors.actionContext && 
+              (<p className="input-error">{this.state.errors.actionContext}</p>)}
           </div>
         </div>}
       </div>
@@ -221,8 +226,34 @@ class MessageForm extends React.Component {
     this.setState(newState);
   }
 
+  isValid() {
+    const { data } = this.state;
+    
+    const errors = {};
+
+    if (!data.title) {
+      errors.title = 'Remember to set a title';
+    }
+
+    console.log('Checking validity of data quick action: ', data.quickAction, 'and url: ', data.urlToVisit);
+    if (data.quickAction === 'VISIT_WEB' && !data.urlToVisit.startsWith('https://')) {
+      errors.actionContext = 'URLs must start with https://';
+    }
+
+    console.log('Finished error checking: ', errors);
+    if (Object.keys(errors) === 0) {
+      this.setState({ hasErrors: false });
+      return true;
+    }
+
+    this.setState({ errors, hasErrors: true });
+  }
+
   submit = event => {
     event.preventDefault();
+    if (!this.isValid()) {
+      return;
+    }
 
     if (this.audienceRef && !this.audienceRef.isValid()) {
       this.audienceRef.showInvalidMessage();

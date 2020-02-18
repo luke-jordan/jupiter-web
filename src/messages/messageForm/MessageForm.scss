@@ -1,5 +1,12 @@
+@import 'src/styles/common';
+
 .message-form {
   &.hide-editor-btns .tox-toolbar__primary .tox-toolbar__group:not(:last-child) {
     display: none;
   }
+}
+
+.input-error {
+  font-size: 14px;
+  color: $color-red2;
 }

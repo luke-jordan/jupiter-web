@@ -19,7 +19,7 @@ class AudienceSelection extends React.Component {
     this.state = {
       loading: false,
       settings: {
-        dynamic: true,
+        dynamic: false,
         proportion: false,
         proportionValue: '100'
       },
