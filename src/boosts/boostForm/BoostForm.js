@@ -10,6 +10,11 @@ import AudienceSelection from 'src/components/audienceSelection/AudienceSelectio
 
 import './BoostForm.scss';
 
+const DEFAULT_CATEGORIES = {
+  'SIMPLE': 'TIME_LIMITED',
+  'GAME': 'TAP_SCREEN'
+};
+
 class BoostForm extends React.Component {
   constructor(props) {
     super();
@@ -17,7 +22,8 @@ class BoostForm extends React.Component {
     this.modalService = inject('ModalService');
 
     this.state = {
-      data: this.boostToFormData(props)
+      data: this.boostToFormData(props),
+      availableFloats: []
     };
   }
 
@@ -26,12 +32,14 @@ class BoostForm extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log('Passed client list: ', this.props.clients);
     if (
       this.props.boost !== prevProps.boost ||
       this.props.clients !== prevProps.clients
     ) {
       this.setState({
-        data: this.boostToFormData(this.props)
+        data: this.boostToFormData(this.props),
+        availableFloats: this.getFloatsForSelectedClient(this.props.clients[0].clientId)
       });
     }
   }
@@ -69,7 +77,7 @@ class BoostForm extends React.Component {
           <div className="form-group">
             <div className="form-label">Type</div>
             <Select name="type" value={state.data.type}
-              onChange={this.inputChange} disabled={this.isView()}>
+              onChange={this.onChangeBoostType} disabled={this.isView()}>
               <option value="SIMPLE">Simple (e.g., time limited)</option>
               <option value="GAME">Game</option>
             </Select>
@@ -81,7 +89,9 @@ class BoostForm extends React.Component {
             <div className="form-label">Category</div>
             <Select name="category" value={state.data.category}
               onChange={this.inputChange} disabled={this.isView()}>
-              <option value="TIME_LIMITED">Time limited</option>
+              {this.state.data.type === 'SIMPLE' && <option value="TIME_LIMITED">Time limited</option>}
+              {this.state.data.type === 'GAME' && <option value="TAP_SCREEN">Tap the screen</option>}
+              {this.state.data.type === 'GAME' && <option value="CHASE_ARROW">Chase the arrow</option>}
             </Select>
           </div>
         </div>
@@ -92,9 +102,30 @@ class BoostForm extends React.Component {
           <div className="form-group">
             <div className="form-label">Client ID</div>
             <Select name="clientId" value={state.data.clientId}
-              onChange={this.inputChange} disabled={this.isView()}>
+              onChange={this.onChangeClient} disabled={this.isView()}>
               {props.clients.map(client => 
                 <option key={client.clientId} value={client.clientId}>{client.clientName}</option>)}
+            </Select>
+          </div>
+        </div>
+        {/* Float ID */}
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">What float is it for?</div>
+            <Select name="floatId" value={state.data.floatId}
+            onChange={this.inputChange} disabled={this.isView()}>
+              {state.availableFloats.map(float => 
+                <option key={float.floatId} value={float.floatId}>{float.floatName}</option>)}
+            </Select>
+          </div>
+        </div>
+        {/* Bonus pool */}
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">What bonus pool is it from?</div>
+            <Select name="source" value={state.data.source}
+              onChange={this.inputChange} disabled={this.isView()}>
+              {this.renderBonusPoolOptions()}
             </Select>
           </div>
         </div>
@@ -111,7 +142,7 @@ class BoostForm extends React.Component {
       </div>
       <div className="grid-row">
         {/* Expiry time */}
-        <div className="grid-col">
+        <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">When does it expire?</div>
             <DatePicker selected={state.data.endTime} disabled={this.isView()}
@@ -123,21 +154,11 @@ class BoostForm extends React.Component {
           </div>
         </div>
         {/* Total budget */}
-        <div className="grid-col">
+        <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">What is the total budget?</div>
             <Input name="totalBudget" type="number" value={state.data.totalBudget}
               onChange={this.inputChange} disabled={this.isView()}/>
-          </div>
-        </div>
-        {/* Bonus pool */}
-        <div className="grid-col">
-          <div className="form-group">
-            <div className="form-label">What bonus pool is it from?</div>
-            <Select name="source" value={state.data.source}
-              onChange={this.inputChange} disabled={this.isView()}>
-              {this.renderBonusPoolOptions()}
-            </Select>
           </div>
         </div>
       </div>
@@ -159,6 +180,30 @@ class BoostForm extends React.Component {
           </div>
         </div>
       </div>
+      {this.state.data.type === 'GAME' && 
+        <div className="grid-row">
+          <div className="grid-col-4">
+            <div className="form-label">What is the game time limit? (seconds)</div>
+            <Input name="timeLimitSeconds" type="number" value={state.data.timeLimitSeconds}
+              onChange={this.inputChange} disabled={this.isView()}/>
+          </div>
+          <div className="grid-col-4">
+            <div className="form-label">How many successful taps win the game?</div>
+            <Input name="winningThreshold" type="number" value={state.data.winningThreshold}
+              onChange={this.inputChange} disabled={this.isView()}/>
+          </div>
+          <div className="grid-col-4">
+            <div className="form-label">How much should the arrow speed up?</div>
+            <Select name="source" value={state.data.arrowSpeedMultiplier}
+              onChange={this.inputChange} disabled={this.isView() || this.state.data.category !== 'CHASE_ARROW'}>
+              <option value="3">3x</option>
+              <option value="5">5x</option>
+              <option value="7">7x</option>
+              <option value="10">10x</option>
+            </Select>
+          </div>
+        </div>
+      }
     </>;
   }
 
@@ -200,6 +245,25 @@ class BoostForm extends React.Component {
     </>;
   }
 
+  onChangeClient = event => {
+    const { value } = event;
+    this.inputChange(event);
+    this.setState({ availableFloats: this.setFloatsForSelectedClient(value) });
+  }
+
+  getFloatsForSelectedClient(clientId) {
+    if (!this.props.clients || this.props.clients.length === 0) {
+      return [];
+    }
+
+    const selectedClient = this.props.clients.find((client) => client.clientId === clientId);
+    if (!selectedClient) {  
+      return [];
+    }
+
+    return selectedClient.floats;
+  }
+
   renderBonusPoolOptions() {
     const client = this.props.clients[0];
     if (!client) {
@@ -210,6 +274,18 @@ class BoostForm extends React.Component {
       return <optgroup label={`${float.floatName}`} key={float.floatId}>
         {float.bonusPoolIds.map(id => <option key={id} value={id}>{id}</option>)}
       </optgroup>;
+    });
+  }
+
+  onChangeBoostType = event => {
+    const { value } = event.target;
+    const defaultCategory = DEFAULT_CATEGORIES[value];
+    this.setState({
+      data: {
+        ...this.state.data,
+        type: value,
+        category: defaultCategory
+      }
     });
   }
 
@@ -246,6 +322,7 @@ class BoostForm extends React.Component {
         type: 'SIMPLE',
         category: 'TIME_LIMITED',
         clientId: clients[0] ? clients[0].clientId : '',
+        floatId: clients[0] ? clients[0].floats[0].floatId : '',
         endTime: moment().endOf('day').toDate(),
         totalBudget: 1000,
         source: 'primary_bonus_pool',
@@ -255,7 +332,10 @@ class BoostForm extends React.Component {
         pushBody: '',
         cardTitle: '',
         cardBody: '',
-        currency: 'ZAR'
+        currency: 'ZAR',
+        timeLimitSeconds: '10',
+        winningThreshold: '10',
+        arrowSpeedMultiplier: '5'
       };
     }
 
@@ -297,18 +377,30 @@ class BoostForm extends React.Component {
     body.boostAmountOffered = `${data.perUserAmount}::WHOLE_CURRENCY::${data.currency}`;
 
     // source
-    body.boostSource = { bonusPoolId: data.source, clientId: 'za_client_co', floatId: 'zar_mmkt_float' };
+    body.boostSource = { bonusPoolId: data.source, clientId: data.clientId, floatId: 'zar_mmkt_float' };
 
     // required save
-    const redemptionThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
-    const redemptionCondition = `save_event_greater_than #{${redemptionThreshold}}`;
-    body.statusConditions = { REDEEMED: [redemptionCondition] };
+    const addCashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
+    const addCashCondition = `save_event_greater_than #{${addCashThreshold}}`;
 
     // total budget
     body.boostBudget = `${data.totalBudget}::WHOLE_CURRENCY::${data.currency}`;
 
     // expiry time
     body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
+
+    // game paramaters
+    if (data.type === 'GAME') {
+      body.gameParams = {
+        gameType: data.category,
+        entryCondition: addCashCondition,
+        timeLimitSeconds: parseInt(data.timeLimitSeconds, 10),
+        winningThreshold: parseInt(data.winningThreshold, 10),
+        arrowSpeedMultiplier: parseInt(data.arrowSpeedMultiplier, 10),
+      }
+    } else {
+      body.statusConditions = { REDEEMED: [addCashCondition] };
+    }
 
     const messagesToCreate = [];
     // push notification
@@ -338,7 +430,7 @@ class BoostForm extends React.Component {
           body: data.cardBody,
           actionToTake: 'ADD_CASH',
           actionContext: {
-            addCashPreFilled: redemptionThreshold
+            addCashPreFilled: addCashThreshold
           }
         }
       });
