@@ -240,8 +240,9 @@ class MessageForm extends React.Component {
       errors.actionContext = 'URLs must start with https://';
     }
 
-    console.log('Finished error checking: ', errors);
-    if (Object.keys(errors) === 0) {
+    console.log('Finished error checking: ', JSON.stringify(errors));
+    if (Object.keys(errors).length === 0) {
+      console.log('No errors, returning true');
       this.setState({ hasErrors: false });
       return true;
     }
