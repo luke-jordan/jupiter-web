@@ -8,12 +8,15 @@ import TextArea from 'src/components/textArea/TextArea';
 import DatePicker from 'src/components/datePicker/DatePicker';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 
+import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
+
 import './BoostForm.scss';
 
 const DEFAULT_CATEGORIES = {
   'SIMPLE': 'TIME_LIMITED',
   'GAME': 'TAP_SCREEN'
 };
+
 
 class BoostForm extends React.Component {
   constructor(props) {
@@ -25,6 +28,19 @@ class BoostForm extends React.Component {
       data: this.boostToFormData(props),
       availableFloats: []
     };
+
+    // note : not extracting a common param component because in message form we have full rich text editor, here not
+    // (this may change in future if we restructure this form)
+    this.bodyParameters = [
+      'user_first_name',
+      'user_full_name',
+      'current_balance',
+      'opened_date',
+      'total_interest',
+      'last_capitalization',
+      'total_earnings',
+      'last_saved_amount'
+    ];
   }
 
   isView() {
@@ -236,7 +252,12 @@ class BoostForm extends React.Component {
               value={state.data.cardTitle} onChange={this.inputChange}/>
           </div>
           <div className="form-group">
-            <div className="form-label">Card body</div>
+            <div className="form-label">
+              Card body
+              {!this.isView() && <DropdownMenu className="insert-parameter"
+                items={this.bodyParameters.map(param => ({ text: param, click: () => this.insertParameter(param) }))}
+                trigger={<span className="link text-underline">Insert parameter</span>}/>}
+            </div>
             <TextArea name="cardBody" rows="3" placeholder="Enter body" disabled={this.isView()}
               value={state.data.cardBody} onChange={this.inputChange}/>
           </div>
@@ -294,6 +315,20 @@ class BoostForm extends React.Component {
       <AudienceSelection headerText="Who is Eligible?"
         clientId={this.state.data.clientId}
         ref={ref => this.audienceRef = ref}/> : null;
+  }
+
+  insertParameter = param => {
+    const textarea = document.querySelector('.boost-form [name="cardBody"]');
+    const value = textarea.value;
+    const index = textarea.selectionStart;
+    const cardBody = `${value.slice(0, index)}#{${param}}${value.slice(index)}`;
+
+    this.setState({
+      data: {  ...this.state.data, cardBody }
+    }, () => {
+      textarea.selectionStart = textarea.selectionEnd = index + param.length + 3;
+      textarea.focus();
+    });
   }
 
   inputChange = event => {
