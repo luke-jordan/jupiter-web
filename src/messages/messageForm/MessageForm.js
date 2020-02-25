@@ -1,11 +1,13 @@
 import React from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 
 import { messageDisplayTypeMap } from 'src/core/constants';
 import { mapToOptions } from 'src/core/utils';
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
 import DatePicker from 'src/components/datePicker/DatePicker';
+import Checkbox from 'src/components/checkbox/Checkbox';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 import TextEditor from 'src/components/textEditor/TextEditor';
 
@@ -63,7 +65,7 @@ class MessageForm extends React.Component {
 
     return <form className={rootClass} onSubmit={this.submit}>
       {this.renderDetails()}
-      {this.renderConditions()}
+      {this.renderParameters()}
       {this.renderAudienceSelection()}
       <div className="form-group text-right">
         <button className="button">{this.submitButtonText[this.props.mode]}</button>
@@ -104,6 +106,7 @@ class MessageForm extends React.Component {
               <option value="VIEW_HISTORY">View history</option>
               <option value="ADD_CASH">Add cash</option>
               <option value="VISIT_WEB">Visit website</option>
+              <option value="VIEW_BOOSTS">View boosts</option>
             </Select>
           </div>
         </div>
@@ -121,13 +124,13 @@ class MessageForm extends React.Component {
     </>;
   }
 
-  renderConditions() {
+  renderParameters() {
     const { state } = this;
-    const currentDate = new Date();
+
     return <>
       <div className="form-section">
         <div className="section-num">2</div>
-        <div className="section-text">Specify conditions</div>
+        <div className="section-text">Specify message parameters</div>
       </div>
       <div className="grid-row">
         {/* Type */}
@@ -176,12 +179,21 @@ class MessageForm extends React.Component {
             value={state.data.priority} onChange={this.inputChange}/>
         </div>
       </div>
-      {/* Send message */}
+      {/* Expiry date */}
       <div className="grid-col-4">
         <div className="form-group">
-          <div className="form-label">Send message</div>
-          <DatePicker selected={state.data.sendDate} disabled={this.isView()}
-            onChange={value => this.inputChange({ target: { name: 'sendDate', value } })}/>
+          <div className="form-label">Message expiry (time)</div>
+          <DatePicker 
+            selected={state.data.endDate} 
+            disabled={this.isView() || state.data.noExpiry}
+            showTimeSelect={true}
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            dateFormat="dd/MM/yyyy HH:mm"
+            onChange={value => this.inputChange({ target: { name: 'endDate', value } })}/>
+          <Checkbox name="noExpiry" checked={state.data.noExpiry} className="expiry-checkbox" 
+            onChange={event => this.inputChange({ target: { name: 'noExpiry', value: event.target.checked }})}>
+            Do not expire</Checkbox>
         </div>
       </div>
       </div>
@@ -193,11 +205,28 @@ class MessageForm extends React.Component {
           <Select name="recurrence" disabled={this.isView()}
             value={state.data.recurrence} onChange={this.inputChange}>
             <option value="ONCE_OFF">Only now</option>
+            <option value="SCHEDULED">Once in the future</option>
             <option value="RECURRING">Repeatedly</option>
             <option value="EVENT_DRIVEN">When some event occurs</option>
           </Select>
         </div>
         </div>
+        {state.data.recurrence === 'SCHEDULED' &&
+          <div className="grid-col-4">
+            <div className="form-group">
+              <div className="form-label">When to send</div>
+              <DatePicker
+                name="sendDate"
+                selected={state.data.sendDate}
+                disabled={this.isView()}
+                showTimeSelect={true}
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="dd/MM/yyyy HH:mm"
+                onChange={value => this.inputChange({ target: { name: 'sendDate', value }})} />
+            </div>
+          </div>
+        }
         {state.data.recurrence === 'EVENT_DRIVEN' && <div className="grid-col-4">
         {/* Event type and category */}
         <div className="form-group">
@@ -206,8 +235,6 @@ class MessageForm extends React.Component {
             value={state.data.eventTypeCategory} onChange={this.inputChange}/>
         </div>
       </div>}
-      </div>
-      <div className="grid-row">
       {state.data.recurrence === 'RECURRING' && <>
       {/* Recurring min interval days */}
       <div className="grid-col-4">
@@ -220,17 +247,9 @@ class MessageForm extends React.Component {
       {/* Recurring max in queue */}
       <div className="grid-col-4">
         <div className="form-group">
-          <div className="form-label">Skip sending if more than X messages have been sent</div>
+          <div className="form-label">Skip if more than X msgs for user</div>
           <Input type="number" name="recurringMaxInQueue" disabled={this.isView()}
             value={state.data.recurringMaxInQueue} onChange={this.inputChange} />
-        </div>
-      </div>
-      {/* Message expiry date */}
-      <div className="grid-col-4">
-        <div className="form-group">
-          <div className="form-label">Do not send messages after this date</div>
-          <DatePicker selected={state.data.sendDate} disabled={this.isView()} defaultValue={currentDate}
-            onChange={value => this.inputChange({ target: { name: 'sendDate', value } })}/>
         </div>
       </div>
       </>}
@@ -253,7 +272,7 @@ class MessageForm extends React.Component {
     const newState = {
       data: { ...state.data, [name]: value }
     };
-
+    
     // Convert body to text if "html" type changed to "text" type
     if (
       name === 'type' && this.htmlTypes.includes(state.data.type) && !this.htmlTypes.includes(value)
@@ -299,8 +318,10 @@ class MessageForm extends React.Component {
       return;
     }
 
+    // this.getMessageReqBody();
     this.props.onSubmit(this.getMessageReqBody(), this.getAudienceReqBody());
   }
+
 
   messageToFormData(message) {
     if (!message) {
@@ -309,13 +330,15 @@ class MessageForm extends React.Component {
         body: '',
         quickAction: 'ADD_CASH',
         type: 'CARD',
-        priority: 0,
-        sendDate: new Date(),
+        priority: 10,
+        endDate: moment().endOf('day').toDate(),
+        sendDate: moment().toDate(),
         recurrence: 'ONCE_OFF',
         recurringMinIntervalDays: 0,
         recurringMaxInQueue: 0,
         eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER',
-        urlToVisit: ''
+        urlToVisit: '',
+        noExpiry: true,
       };
     }
 
@@ -328,6 +351,7 @@ class MessageForm extends React.Component {
       quickAction: defaultTemplate.actionToTake,
       type: defaultTemplate.display.type,
       priority: message.messagePriority,
+      endDate: null,
       sendDate: null,
       recurrence: message.presentationType,
       recurringMinIntervalDays: recurrenceParameters ? recurrenceParameters.minIntervalDays : 0,
@@ -344,6 +368,18 @@ class MessageForm extends React.Component {
       format: this.htmlTypes.includes(data.type) ? 'html' : 'text'
     });
 
+    const formalRecurrence = data.recurrence === 'SCHEDULED' ? 'ONCE_OFF' : data.recurrence;
+
+    const msgDisplay = { type: data.type };
+    
+    if (data.titleType) {
+      msgDisplay.titleType = data.titleType;
+    }
+
+    if (data.iconType) {
+      msgDisplay.iconType = data.iconType;
+    }
+
     const body = {
       audienceType: 'GROUP',
       templates: {
@@ -351,18 +387,23 @@ class MessageForm extends React.Component {
           DEFAULT: {
             title: data.title,
             body: msgBody,
-            display: {
-              type: data.type,
-              titleType: data.titleType,
-              iconType: data.iconType
-            },
+            display: msgDisplay,
             actionToTake: data.quickAction
           }
         }
       },
       messagePriority: parseInt(data.priority),
-      presentationType: data.recurrence
+      presentationType: formalRecurrence
     };
+
+    if (!data.noExpiry) {
+      body.endTime = moment(data.endDate).format();
+    }
+
+    if (data.recurrence === 'SCHEDULED') {
+      body.holdFire = true;
+      body.startTime = moment(data.sendDate).format();
+    }
 
     if (data.recurrence === 'RECURRING') {
       body.recurrenceParameters = {
@@ -380,6 +421,8 @@ class MessageForm extends React.Component {
       const action = this.getActionProperties(data.quickAction);
       body.templates.template.DEFAULT.actionContext = { [action.name]: data[action.name] }
     }
+
+    console.log('Created request body: ', body);
 
     return body;
   }
