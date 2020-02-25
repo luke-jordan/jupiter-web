@@ -123,6 +123,7 @@ class MessageForm extends React.Component {
 
   renderConditions() {
     const { state } = this;
+    const currentDate = new Date();
     return <>
       <div className="form-section">
         <div className="section-num">2</div>
@@ -140,63 +141,100 @@ class MessageForm extends React.Component {
             </Select>
           </div>
         </div>
-        {/* Send message */}
-        <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">Send message</div>
-            <DatePicker selected={state.data.sendDate} disabled={this.isView()}
-               onChange={value => this.inputChange({ target: { name: 'sendDate', value } })}/>
-          </div>
-        </div>
-        {/* Priority */}
-        <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">Assign a priority (0=low, 100=high)</div>
-            <Input type="number" name="priority" disabled={this.isView()}
-              value={state.data.priority} onChange={this.inputChange}/>
-          </div>
-        </div>
-      </div>
-      <div className="grid-row">
-        {/* Send message (recurrence) */}
-        <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">Send message</div>
-            <Select name="recurrence" disabled={this.isView()}
-              value={state.data.recurrence} onChange={this.inputChange}>
-              <option value="ONCE_OFF">Only now</option>
-              <option value="RECURRING">Repeatedly</option>
-              <option value="EVENT_DRIVEN">When some event occurs</option>
-            </Select>
-          </div>
-        </div>
-        {state.data.recurrence === 'RECURRING' && <>
-          {/* Recurring min interval days */}
+        {state.data.type === 'CARD' && <>
+          {/* Card title style */}
           <div className="grid-col-4">
             <div className="form-group">
-              <div className="form-label">Assign minimum days between sending messages</div>
-              <Input type="number" name="recurringMinIntervalDays" disabled={this.isView()}
-                value={state.data.recurringMinIntervalDays} onChange={this.inputChange}/>
+              <div className="form-label">Card title style</div>
+                <Select name="titleType" disabled={this.isView()}
+                  value={state.data.titleType} onChange={this.inputChange}>
+                  <option value="NORMAL">Normal</option>
+                  <option value="EMPHASIS">Emphasis</option>
+              </Select>
             </div>
           </div>
-          {/* Recurring max in queue */}
+          {/* Card icon style */}
           <div className="grid-col-4">
             <div className="form-group">
-              <div className="form-label">Skip sending if more than X messages have been sent</div>
-              <Input type="number" name="recurringMaxInQueue" disabled={this.isView()}
-                value={state.data.recurringMaxInQueue} onChange={this.inputChange} />
+              <div className="form-label">Card icon</div>
+              <Select name="iconType" disabled={this.isView()}
+                value={state.data.iconType} onChange={this.inputChange}>
+                <option value="NORMAL">Normal</option>
+                <option value="BOOST_ROCKET">Boost rocket</option>
+                <option value="UNLOCKED">Unlocked</option>
+              </Select>
             </div>
           </div>
         </>}
-        {state.data.recurrence === 'EVENT_DRIVEN' && <div className="grid-col-4">
-          {/* Event type and category */}
-          <div className="form-group">
-            <div className="form-label">Event type and category</div>
-            <Input name="eventTypeCategory" disabled={this.isView()}
-              value={state.data.eventTypeCategory} onChange={this.inputChange}/>
-          </div>
-        </div>}
       </div>
+      <div className="grid-row">
+      {/* Priority */}
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">Assign a priority (0=low, 100=high)</div>
+          <Input type="number" name="priority" disabled={this.isView()}
+            value={state.data.priority} onChange={this.inputChange}/>
+        </div>
+      </div>
+      {/* Send message */}
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">Send message</div>
+          <DatePicker selected={state.data.sendDate} disabled={this.isView()}
+            onChange={value => this.inputChange({ target: { name: 'sendDate', value } })}/>
+        </div>
+      </div>
+      </div>
+      <div className="grid-row">
+      {/* Send message (recurrence) */}
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">Send message</div>
+          <Select name="recurrence" disabled={this.isView()}
+            value={state.data.recurrence} onChange={this.inputChange}>
+            <option value="ONCE_OFF">Only now</option>
+            <option value="RECURRING">Repeatedly</option>
+            <option value="EVENT_DRIVEN">When some event occurs</option>
+          </Select>
+        </div>
+        </div>
+        {state.data.recurrence === 'EVENT_DRIVEN' && <div className="grid-col-4">
+        {/* Event type and category */}
+        <div className="form-group">
+          <div className="form-label">Event type and category</div>
+          <Input name="eventTypeCategory" disabled={this.isView()}
+            value={state.data.eventTypeCategory} onChange={this.inputChange}/>
+        </div>
+      </div>}
+      </div>
+      <div className="grid-row">
+      {state.data.recurrence === 'RECURRING' && <>
+      {/* Recurring min interval days */}
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">Assign minimum days between sending messages</div>
+          <Input type="number" name="recurringMinIntervalDays" disabled={this.isView()}
+            value={state.data.recurringMinIntervalDays} onChange={this.inputChange}/>
+        </div>
+      </div>
+      {/* Recurring max in queue */}
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">Skip sending if more than X messages have been sent</div>
+          <Input type="number" name="recurringMaxInQueue" disabled={this.isView()}
+            value={state.data.recurringMaxInQueue} onChange={this.inputChange} />
+        </div>
+      </div>
+      {/* Message expiry date */}
+      <div className="grid-col-4">
+        <div className="form-group">
+          <div className="form-label">Do not send messages after this date</div>
+          <DatePicker selected={state.data.sendDate} disabled={this.isView()} defaultValue={currentDate}
+            onChange={value => this.inputChange({ target: { name: 'sendDate', value } })}/>
+        </div>
+      </div>
+      </>}
+    </div>
     </>;
   }
 
@@ -313,7 +351,11 @@ class MessageForm extends React.Component {
           DEFAULT: {
             title: data.title,
             body: msgBody,
-            display: { type: data.type },
+            display: {
+              type: data.type,
+              titleType: data.titleType,
+              iconType: data.iconType
+            },
             actionToTake: data.quickAction
           }
         }
