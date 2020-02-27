@@ -2,7 +2,6 @@ import React from 'react';
 
 import Select from 'src/components/select/Select';
 import Input from 'src/components/input/Input';
-import { NavLink } from 'react-router-dom';
 import { mapToOptions } from 'src/core/utils';
 import { userStatusMap, userKycStatusMap } from 'src/core/constants';
 
