@@ -46,11 +46,11 @@ class ConditionRule extends React.Component {
     const item = this.props.item;
     const inputType = itemField.expects;
 
-    if (inputType === 'string') {
+    if (inputType === 'string' || inputType === 'stringMultiple') {
       return <Input value={item.value} onChange={e => this.inputChange(e, inputType)}/>;
     }
 
-    if (inputType === 'number') {
+    if (inputType === 'number' || inputType === 'amount') {
       return <Input type="number" value={item.value} onChange={e => this.inputChange(e, inputType)}/>;
     }
 

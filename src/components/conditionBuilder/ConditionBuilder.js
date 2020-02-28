@@ -100,7 +100,9 @@ class ConditionBuilder extends React.Component {
   getDefaultValue(inputType) {
     switch (inputType) {
       case 'string': return '';
+      case 'stringMultiple': return '';
       case 'number': return '0';
+      case 'amount': return '0';
       case 'boolean': return true;
       case 'epochMillis': return Date.now();
       default: return '';
