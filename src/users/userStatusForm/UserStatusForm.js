@@ -3,7 +3,7 @@ import React from 'react';
 import Select from 'src/components/select/Select';
 import Input from 'src/components/input/Input';
 import { mapToOptions } from 'src/core/utils';
-import { userStatusMap, userKycStatusMap } from 'src/core/constants';
+import { userStatusMap, userKycStatusMap, userRegulatoryStatusMap } from 'src/core/constants';
 
 import './UserStatusForm.scss';
 
@@ -13,6 +13,7 @@ class UserStatusForm extends React.Component {
 
     this.userStatusOptions = mapToOptions(userStatusMap);
     this.kysStatusOptions = mapToOptions(userKycStatusMap);
+    this.regulatoryStatusOptions = mapToOptions(userRegulatoryStatusMap);
 
     this.state = this.getState(props.user);
   }
@@ -26,7 +27,9 @@ class UserStatusForm extends React.Component {
       kycStatusEdit: false,
       kycStatusReason: '',
       bSheetId: user.userBalance.bsheetIdentifier || '',
-      bSheetIdEdit: false
+      bSheetIdEdit: false,
+      regulatoryStatus: user.regulatoryStatus,
+      regulatoryStatusEdit: false,
     };
   }
 
@@ -41,7 +44,9 @@ class UserStatusForm extends React.Component {
       <div className="status-header">Status</div>
       {this.renderUserStatus()}
       {this.renderKycStatus()}
+      {this.renderRegulatoryStatus()}
       {this.renderBSheetId()}
+      {this.renderPwdResetBtn()}
     </form>;
   }
 
@@ -99,6 +104,33 @@ class UserStatusForm extends React.Component {
     </div>;
   }
 
+  renderRegulatoryStatus() {
+    const state = this.state;
+    return <div className="form-group">
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-label">Regulatory (stokvel) status</div>
+          <Select name="regulatoryStatus" value={state.regulatoryStatus} onChange={this.inputChange}
+            disabled={state.userStatusEdit || state.regulatoryStatusEdit || state.bSheetIdEdit}>
+            {this.regulatoryStatusOptions.map((item) => <option key={item.value} value={item.value}>{item.text}</option>)}
+          </Select>
+        </div>
+        {state.regulatoryStatusEdit && <>
+          <div className="grid-col-4">
+            <div className="form-label attention">Please provide a reason for the user regulatory status change:</div>
+            <Input name="regulatoryStatusReason" placeholder="Type reason here..." attention
+              value={state.regulatoryStatusReason} onChange={this.inputChange}/>
+          </div>
+          <div className="grid-col-4 change-actions">
+            <button type="button" className="button" onClick={this.regulatoryStatusChangeClick}
+              disabled={!state.regulatoryStatusReason}>Change</button>
+            <span className="link" onClick={this.regulatoryStatusCancelClick}>Cancel</span>
+          </div>
+        </>}
+      </div>
+    </div>;
+  }
+
   renderBSheetId() {
     const state = this.state;
     return <div className="form-group">
@@ -117,6 +149,12 @@ class UserStatusForm extends React.Component {
     </div>;
   }
 
+  renderPwdResetBtn() {
+    return <div className="page-actions">
+      <button type="button" className="button" onClick={this.pwdResetClick}>Reset user password</button>
+    </div>;
+  }
+
   inputChange = event => {
     const { name, value } = event.target;
     const newState = { ...this.state, [name]: value };
@@ -125,6 +163,8 @@ class UserStatusForm extends React.Component {
       newState.userStatusEdit = true;
     } else if (name === 'kycStatus') {
       newState.kycStatusEdit = true;
+    } else if (name === 'regulatoryStatus') {
+      newState.regulatoryStatusEdit = true;
     } else if (name === 'bSheetId') {
       newState.bSheetIdEdit = true;
     }
@@ -158,6 +198,22 @@ class UserStatusForm extends React.Component {
       reasonToLog: state.kycStatusReason
     });
   }
+
+  regulatoryStatusChangeClick = () => {
+    const state = this.state;
+    this.submit({
+      fieldToUpdate: 'REGULATORY',
+      newStatus: state.regulatoryStatus,
+      reasonToLog: state.regulatoryStatusReason
+    });
+  }
+
+  pwdResetClick = () => {
+    this.submit({
+      fieldToUpdate: 'PWORD',
+      reasonToLog: 'Password update',
+    });
+  };
 
   kycStatusCancelClick = () => {
     this.setState({

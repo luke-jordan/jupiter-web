@@ -66,7 +66,7 @@ class UserTransactions extends React.Component {
       {type === 'WITHDRAWAL' && <button className="button button-outline button-small"
         onClick={() => this.openReason(transaction, 'Complete transaction withdrawal', 'SETTLED')}>Complete withdrawal</button>}
       <button className="button button-outline button-small"
-        onClick={() => this.openReason(transaction, 'Cancel transaction', 'EXPIRED')}>Cancel</button>
+        onClick={() => this.openReason(transaction, 'Cancel transaction', 'CANCELLED')}>Cancel</button>
     </td>
   }
 
