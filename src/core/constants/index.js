@@ -20,6 +20,11 @@ export const userKycStatusMap = {
   REVIEW_FAILED: 'Review failed'
 };
 
+export const userRegulatoryStatusMap = {
+  REQUIRES_AGREEMENT: 'Must still agree',
+  HAS_GIVEN_AGREEMENT: 'Has agreed'
+};
+
 export const userHistoryEventTypeMap = {
   USER_LOGIN: 'User logged in',
   SAVING_PAYMENT_SUCCESSFUL: 'Saving payment successful',
