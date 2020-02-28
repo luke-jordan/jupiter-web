@@ -42,6 +42,7 @@ class UserStatusForm extends React.Component {
       {this.renderUserStatus()}
       {this.renderKycStatus()}
       {this.renderBSheetId()}
+      {this.renderPwdResetBtn()}
     </form>;
   }
 
@@ -117,6 +118,13 @@ class UserStatusForm extends React.Component {
     </div>;
   }
 
+  renderPwdResetBtn() {
+    const state = this.state;
+    return <div className="page-actions">
+      <button type="button" className="button" onClick={this.pwdResetClick}>Reset user password</button>
+    </div>;
+  }
+
   inputChange = event => {
     const { name, value } = event.target;
     const newState = { ...this.state, [name]: value };
@@ -158,6 +166,13 @@ class UserStatusForm extends React.Component {
       reasonToLog: state.kycStatusReason
     });
   }
+
+  pwdResetClick = () => {
+    this.submit({
+      fieldToUpdate: 'PWORD',
+      reasonToLog: 'Password update',
+    });
+  };
 
   kycStatusCancelClick = () => {
     this.setState({
