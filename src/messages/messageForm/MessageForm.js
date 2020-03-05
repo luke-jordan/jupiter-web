@@ -292,12 +292,12 @@ class MessageForm extends React.Component {
       errors.title = 'Remember to set a title';
     }
 
-    console.log('Checking validity of data quick action: ', data.quickAction, 'and url: ', data.urlToVisit);
+    // console.log('Checking validity of data quick action: ', data.quickAction, 'and url: ', data.urlToVisit);
     if (data.quickAction === 'VISIT_WEB' && !data.urlToVisit.startsWith('https://')) {
       errors.actionContext = 'URLs must start with https://';
     }
 
-    console.log('Finished error checking: ', JSON.stringify(errors));
+    // console.log('Finished error checking: ', JSON.stringify(errors));
     if (Object.keys(errors).length === 0) {
       console.log('No errors, returning true');
       this.setState({ hasErrors: false });
@@ -336,7 +336,7 @@ class MessageForm extends React.Component {
         recurrence: 'ONCE_OFF',
         recurringMinIntervalDays: 0,
         recurringMaxInQueue: 0,
-        eventTypeCategory: 'REFERRAL::REDEEMED::REFERRER',
+        eventTypeCategory: '',
         urlToVisit: '',
         noExpiry: true,
       };

@@ -38,6 +38,14 @@ export class UsersService {
     );
   }
 
+  // todo : almost certainly a better way to do this but not worth trade-off at present
+  getAccountsList() {
+    const params = { type: 'list' };
+    return this.apiService.get(`${this.url}/user/find`, { params }).pipe(
+      map(res => res.map((account) => this._modifyUserAccountSummary(account)))
+    );
+  }
+
   searchUser(params) {
     params = Object.assign({}, params, { countryCode: 'ZAF' });
 
@@ -71,5 +79,11 @@ export class UsersService {
     history.eventTypeText = userHistoryEventTypeMap[history.eventType] || history.eventType;
     history.formattedDate = moment(history.timestamp).format('DD/MM/YYYY HH:mm');
     history.date = new Date(history.timestamp);
+  }
+
+  _modifyUserAccountSummary(account) {
+    account.formattedCreationTime = moment(account.creationTime).format('DD/MM/YYYY HH:mm');
+    account.saveCount = account.count;
+    return account;
   }
 }

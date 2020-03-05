@@ -12,6 +12,7 @@ import UserTransactions from '../userTransactions/UserTransactions';
 
 import './UserSearchPage.scss';
 import arrowRightWhite from 'src/assets/images/arrow-right-white.svg';
+import UsersListPage from '../usersListPage/UsersListPage';
 
 class UserSearchPage extends React.Component {
   constructor() {
@@ -51,7 +52,7 @@ class UserSearchPage extends React.Component {
       </>;
     }
 
-    return null;
+    return this.renderUserList();
   }
 
   renderUserDetails() {
@@ -73,6 +74,14 @@ class UserSearchPage extends React.Component {
         </div>
       </div>
     </>;
+  }
+
+  renderUserList() {
+    return <>
+      <div className="card user-list">
+        <UsersListPage />
+      </div>
+    </>
   }
 
   componentDidMount() {

@@ -25,6 +25,16 @@ export const convertAmount = (amount, unit) => {
   }
 }
 
+export const revertAmount = (amount, destUnit) => {
+  if (destUnit === 'WHOLE_CENT') {
+    return amount * 100;
+  } else if (destUnit === 'HUNDREDTH_CENT') {
+    return amount * 10000;
+  } else {
+    return +amount;
+  }
+}
+
 export const formatMoney = (amount, currencyCode) => {
   const defaults = { formatWithSymbol: true, symbol: '' };
   const options = {
