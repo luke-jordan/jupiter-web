@@ -114,6 +114,7 @@ class ConditionRule extends React.Component {
     let newValue;
 
     if (inputType === 'epochMillis') {
+      console.log('Alright, event get time: ', event.getTime());
       newValue = event ? event.getTime() : null;
     } else if (inputType === 'boolean') {
       newValue = event.target.value === 'yes';
