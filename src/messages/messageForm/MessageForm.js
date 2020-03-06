@@ -96,6 +96,14 @@ class MessageForm extends React.Component {
         <TextEditor init={{ setup: this.setupBodyEditor }} value={state.data.body} disabled={this.isView()}
           onEditorChange={value => this.inputChange({ target: { name: 'body', value }})}/>
       </div>
+      {/* smsBackup */}
+      {this.state.data.type === 'EMAIL' &&
+        <div className="form-group">
+          <div className="form-label">SMS backup</div>
+          <Input placeholder="SMS for users without email addresses (leave blank to not send)" name="smsBackup"
+            value={state.data.smsBackup} onChange={this.inputChange} />
+        </div>
+      }
       <div className="grid-row">
         {/* Quick action */}
         <div className="grid-col-4">
@@ -380,16 +388,22 @@ class MessageForm extends React.Component {
       msgDisplay.iconType = data.iconType;
     }
 
+    if (data.type === 'EMAIL' && typeof data.smsBackup === 'string' && data.smsBackup.length > 0) {
+      msgDisplay.backupSms = data.smsBackup;
+    }
+
+    const msgTemplate = {
+      title: data.title,
+      body: msgBody,
+      display: msgDisplay,
+      actionToTake: data.quickAction
+    };
+
     const body = {
       audienceType: 'GROUP',
       templates: {
         template: {
-          DEFAULT: {
-            title: data.title,
-            body: msgBody,
-            display: msgDisplay,
-            actionToTake: data.quickAction
-          }
+          DEFAULT: msgTemplate
         }
       },
       messagePriority: parseInt(data.priority),
@@ -411,8 +425,8 @@ class MessageForm extends React.Component {
         maxInQueue: data.recurringMaxInQueue
       };
     } else if (data.recurrence === 'EVENT_DRIVEN') {
-      if (this.state.mode === 'edit') {
-        body.flags = [data.eventTypeCategory];
+      body.flags = [data.eventTypeCategory];
+      if (this.state.mode !== 'edit') {
         body.eventTypeCategory = data.eventTypeCategory;
       }
     }
