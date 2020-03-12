@@ -17,18 +17,22 @@ class UserTransactions extends React.Component {
 
     this.state = {
       loading: false,
-      reasonData: null
+      reasonData: null,
+      showInitiateTxModal: false,
     };
 
     unmountDecorator(this);
   }
 
   render() {
+    // doing this as a button requires finding the class and that is 10 minutes that the warning is not worth at present
     return <div className="user-transactions">
-      <header className="transactions-header">Pending EFT Transactions</header>
+      <header className="transactions-header">Pending EFT Transactions 
+        (<a href="#" onClick={this.openInitiateTransactionModal}>create new</a>)</header>
       {this.renderTable()}
       {this.renderTransactionStatusChangeModal()}
       {this.renderTransactionAmountModal()}
+      {this.renderTransactionInitiateModal()}
     </div>;
   }
 
@@ -135,6 +139,59 @@ class UserTransactions extends React.Component {
     });
   }
 
+  openInitiateTransactionModal = e => {
+    e.preventDefault();
+    this.setState({
+      showInitiateTxModal: true,
+      txInitiateData: {
+        amount: 0,
+        currency: 'ZAR',
+        unit: 'WHOLE_CURRENCY',
+        accountId: this.props.user.userBalance.accountId[0],
+        reasonText: ''
+      }
+    });
+  }
+
+  closeInitiateTransactionModal = (clearTxDetails) => {
+    if (clearTxDetails) {
+      this.setState({ showInitiateTxModal: false, txInitiateData: null });
+    } else {
+      // we do not wipe the data in case user wants to continue
+      this.setState({ showInitiateTxModal: false });
+    }
+  }
+
+  // todo : at some point this could use a clean up / generalization with the above, but for now they are simple enough
+  changeInitiateTxField = e => {
+    this.setState({
+      txInitiateData: { ...this.state.txInitiateData, [e.target.name]: e.target.value }
+    });
+  }
+
+  renderTransactionInitiateModal() {
+    const { txInitiateData } = this.state;
+    return this.state.showInitiateTxModal &&
+    <Modal open className="transaction-change-reason" header="Initiate transaction" onClose={this.closeInitiateTransactionModal}>
+      <form onSubmit={this.submitNewTransaction}>
+        <div className="reason-msg">Please enter the amount below and a note to log</div>
+        <div className="grid-row">
+          <div className="grid-col-4">
+            <span className="reason-msg">Amount:</span>
+            <Input name="amount" type="number" placeholder={txInitiateData.amount} onChange={this.changeInitiateTxField} />
+          </div>
+          <div className="grid-col-6">
+          <span className="reason-msg">Reason:</span>
+            <Input name="reasonText" placeholder="Enter reason" value={txInitiateData.reasonText} onChange={this.changeInitiateTxField}/>
+          </div>
+          <div className="grid-col-2" style={{ paddingTop: 20 }}>
+            <button className="button" disabled={!txInitiateData.reasonText.trim() || txInitiateData.amount === 0}>Submit</button>
+          </div>
+        </div>
+      </form>
+    </Modal> 
+  }
+
   renderTransactionStatusChangeModal() {
     const reasonData = this.state.reasonData;
     return reasonData && 
@@ -155,12 +212,12 @@ class UserTransactions extends React.Component {
     </Modal>;
   }
 
-  openTransactionStatus(transaction, modalHeader, newStatus) {
+  openTransactionStatus(transaction, modalHeader, newTxStatus) {
     this.setState({
       reasonData: {
         transactionId: transaction.transactionId, 
         modalHeader, 
-        newStatus, 
+        newTxStatus, 
         reasonText: ''
       }
     });
@@ -176,27 +233,25 @@ class UserTransactions extends React.Component {
     });
   }
 
-  submitUserChange = ({ transactionId, reasonText, newStatus, newAmount }) => {
+  submitUserChange = (submissionData) => {
     this.setState({ loading: true });
-
-    const newTxStatus = newStatus; // todo : clean up convention on backend eventually
 
     this.usersService.updateUser({
       systemWideUserId: this.props.user.systemWideUserId,
       fieldToUpdate: 'TRANSACTION',
-      reasonToLog: reasonText,
-      newTxStatus,
-      newAmount,
-      transactionId,
+      reasonToLog: submissionData.reasonText,
+      ...submissionData,
     }).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
       this.closeTransactionStatus();
       this.closeTransactionAmountModal();
+      this.closeInitiateTransactionModal(true);
       this.props.onChanged();
     }, () => {
       this.closeTransactionStatus();
       this.closeTransactionAmountModal();
+      this.closeInitiateTransactionModal(false);
       this.modalService.openCommonError();
     });
   }
@@ -218,6 +273,27 @@ class UserTransactions extends React.Component {
     }
 
     this.submitUserChange({ ...txAmountData, newAmount });
+  }
+
+  submitNewTransaction = e => {
+    e.preventDefault();
+
+    const { txInitiateData } = this.state;
+    console.log('Submitting: ', txInitiateData);
+
+    const submissionBody = {
+      operation: 'INITIATE',
+      parameters: {
+        accountId: txInitiateData.accountId,
+        amount: revertAmount(txInitiateData.amount, 'HUNDREDTH_CENT'),
+        unit: 'HUNDREDTH_CENT',
+        currency: txInitiateData.currency,
+        transactionType: 'USER_SAVING_EVENT',
+      },
+      reasonText: txInitiateData.reasonText
+    };
+
+    this.submitUserChange(submissionBody);
   }
   
 }
