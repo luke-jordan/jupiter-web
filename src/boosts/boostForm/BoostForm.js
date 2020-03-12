@@ -179,20 +179,31 @@ class BoostForm extends React.Component {
         </div>
       </div>
       <div className="grid-row">
+        {/* Initial status */}
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">What is its initial state?</div>
+            <Select name="initialStatus" value={state.data.initialStatus}
+                onChange={this.inputChange} disabled={this.isView() || this.state.data.type !== 'GAME'}>
+              <option value="CREATED">Only offered</option>
+              <option value="UNLOCKED">Already unlocked</option>
+            </Select>
+          </div>
+        </div>
         {/* Required save */}
         <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">How much must a user save to get it?</div>
-            <Input name="requiredSave" type="number" value={state.data.requiredSave}
-              onChange={this.inputChange} disabled={this.isView()}/>
+            <Input name="requiredSave" type="number" value={state.data.requiredSave} onChange={this.inputChange} 
+              disabled={this.isView() || (this.state.data.type === 'GAME' && this.state.data.initialStatus === 'UNLOCKED')}/>
           </div>
         </div>
         {/* Per user amount */}
         <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">How much is it worth (per user)?</div>
-            <Input name="perUserAmount" type="number" value={state.data.perUserAmount}
-              onChange={this.inputChange} disabled={this.isView()}/>
+            <Input name="perUserAmount" type="number" value={state.data.perUserAmount} onChange={this.inputChange} 
+              disabled={this.isView() || (this.state.data.type === 'GAME' && this.state.data.initialStatus === 'UNLOCKED')}/>
           </div>
         </div>
       </div>
@@ -424,6 +435,11 @@ class BoostForm extends React.Component {
     // expiry time
     body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
 
+    // we only have to bother if it is unlocked; and this has no meaning for non-games
+    if (data.initialStatus === 'UNLOCKED') {
+      body.initialStatus = data.initialStatus;
+    }
+
     // game paramaters
     if (data.type === 'GAME') {
       body.gameParams = {
@@ -438,12 +454,13 @@ class BoostForm extends React.Component {
     }
 
     const messagesToCreate = [];
+    const actionToTake = data.initialStatus === 'UNLOCKED' ? 'VIEW_BOOSTS' : 'ADD_CASH';
     // push notification
     if (data.pushBody) {
       messagesToCreate.push({
         boostStatus: 'CREATED',
         presentationType: 'ONCE_OFF',
-        actionToTake: 'ADD_CASH',
+        actionToTake,
         isMessageSequence: false,
         template: {
           title: data.pushTitle, body: data.pushBody,
@@ -463,7 +480,7 @@ class BoostForm extends React.Component {
           display: { type: 'CARD' }, 
           title: data.cardTitle, 
           body: data.cardBody,
-          actionToTake: 'ADD_CASH',
+          actionToTake,
           actionContext: {
             addCashPreFilled: addCashThreshold
           }

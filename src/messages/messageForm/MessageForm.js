@@ -207,7 +207,7 @@ class MessageForm extends React.Component {
       </div>
       <div className="grid-row">
       {/* Send message (recurrence) */}
-      <div className="grid-col-4">
+      <div className="grid-col-3">
         <div className="form-group">
           <div className="form-label">Send message</div>
           <Select name="recurrence" disabled={this.isView()}
@@ -220,7 +220,7 @@ class MessageForm extends React.Component {
         </div>
         </div>
         {state.data.recurrence === 'SCHEDULED' &&
-          <div className="grid-col-4">
+          <div className="grid-col-3">
             <div className="form-group">
               <div className="form-label">When to send</div>
               <DatePicker
@@ -235,19 +235,35 @@ class MessageForm extends React.Component {
             </div>
           </div>
         }
-        {state.data.recurrence === 'EVENT_DRIVEN' && <div className="grid-col-4">
-        {/* Event type and category */}
-        <div className="form-group">
-          <div className="form-label">Event type and category</div>
-          <Input name="eventTypeCategory" disabled={this.isView()}
-            value={state.data.eventTypeCategory} onChange={this.inputChange}/>
-        </div>
-      </div>}
+        {state.data.recurrence === 'EVENT_DRIVEN' && <>
+          {/* Event type and category */}
+          <div className="grid-col-3">
+            <div className="form-group">
+              <div className="form-label">Event that triggers message</div>
+              <Input name="eventTypeCategory" disabled={this.isView()}
+                value={state.data.eventTypeCategory} onChange={this.inputChange}/>
+            </div>
+          </div>
+          <div className="grid-col-3">
+            <div className="form-group">
+              <div className="form-label">Event that halts message (optional)</div>
+              <Input name="haltingEvent" disabled={this.isView()}
+                value={state.data.haltingEvent} onChange={this.inputChange}/>
+            </div>
+          </div>
+          <div className="grid-col-3">
+            <div className="form-group">
+              <div className="form-label">Hours after message (optional)</div>
+              <Input name="triggerTimeDelay" type="number" disabled={this.isView()}
+                value={state.data.triggerTimeDelay} onChange={this.inputChange}/>
+            </div>
+          </div>
+        </>}
       {state.data.recurrence === 'RECURRING' && <>
       {/* Recurring min interval days */}
       <div className="grid-col-4">
         <div className="form-group">
-          <div className="form-label">Assign minimum days between sending messages</div>
+          <div className="form-label">Minimum days between resending</div>
           <Input type="number" name="recurringMinIntervalDays" disabled={this.isView()}
             value={state.data.recurringMinIntervalDays} onChange={this.inputChange}/>
         </div>
@@ -425,10 +441,23 @@ class MessageForm extends React.Component {
         maxInQueue: data.recurringMaxInQueue
       };
     } else if (data.recurrence === 'EVENT_DRIVEN') {
-      body.flags = [data.eventTypeCategory];
-      if (this.state.mode !== 'edit') {
-        body.eventTypeCategory = data.eventTypeCategory;
+      body.eventTypeCategory = data.eventTypeCategory;
+      const triggerParameters = {
+        triggerEvent: [data.eventTypeCategory]
       }
+
+      if (data.haltingEvent.trim().length > 0) {
+        triggerParameters.haltingEvent = [data.haltingEvent];
+      }
+
+      if (data.triggerTimeDelay && data.triggerTimeDelay > 0) {
+        triggerParameters.messageSchedule = {
+          type: 'RELATIVE',
+          offset: { unit: 'hours', number: parseInt(data.triggerTimeDelay, 10) }
+        }
+      }
+
+      body.triggerParameters = triggerParameters;
     }
     
     if (this.hasActionParameters(data.quickAction)) {
