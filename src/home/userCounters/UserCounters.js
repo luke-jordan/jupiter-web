@@ -71,7 +71,7 @@ export class UserCounters extends React.Component {
             <div className="total-users">
               <img alt="" src={userCirleImage}/>
               <div className="total-count">{state.totalCount}</div>
-              <div className="total-label">Total Users</div>
+              <div className="total-label">Active Users</div>
             </div>}
         </div>
       </div>
@@ -86,11 +86,11 @@ export class UserCounters extends React.Component {
           {state.todayLoading ? <Spinner/> :
             <ul className="counters-list">
               <li>
-                <span className="counter-name">Daily Users</span>
+                <span className="counter-name">Daily Savers</span>
                 <span className="counter-value">{state.todayDailyCount}</span>
               </li>
               <li>
-                <span className="counter-name">Weekly User</span>
+                <span className="counter-name">Weekly Savers</span>
                 <span className="counter-value">{state.todayWeeklyCount}</span>
               </li>
             </ul>}
@@ -107,11 +107,11 @@ export class UserCounters extends React.Component {
           {state.yesterdayLoading ? <Spinner/> :
             <ul className="counters-list">
               <li>
-                <span className="counter-name">Daily Users</span>
+                <span className="counter-name">Daily Savers</span>
                 <span className="counter-value">{state.yesterdayDailyCount}</span>
               </li>
               <li>
-                <span className="counter-name">Weekly Users</span>
+                <span className="counter-name">Weekly Savers</span>
                 <span className="counter-value">{state.yesterdayWeeklyCount}</span>
               </li>
             </ul>}
