@@ -3,13 +3,16 @@ import classNames from 'classnames';
 import moment from 'moment';
 
 import { messageDisplayTypeMap } from 'src/core/constants';
-import { mapToOptions } from 'src/core/utils';
+import { mapToOptions, inject } from 'src/core/utils';
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
 import DatePicker from 'src/components/datePicker/DatePicker';
 import Checkbox from 'src/components/checkbox/Checkbox';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 import TextEditor from 'src/components/textEditor/TextEditor';
+import MessageEvents from '../messageSentResult/MessageEvents';
+
+// import Modal from 'src/components/modal/Modal';
 
 import './MessageForm.scss';
 
@@ -17,6 +20,7 @@ class MessageForm extends React.Component {
   constructor(props) {
     super();
 
+    this.modalService = inject('ModalService');
     this.typeOptions = mapToOptions(messageDisplayTypeMap);
 
     this.htmlTypes = ['EMAIL', 'MODAL'];
@@ -278,8 +282,49 @@ class MessageForm extends React.Component {
       </div>
       </>}
     </div>
+    <div>
+      <button className="link text-underline" onClick={this.renderModal}>Available Events</button>
+    </div>
     </>;
   }
+
+  renderModal() {
+    // const { state } = this;
+    return <MessageEvents/>;
+  }
+
+  // renderEventsTable() {
+  //   // const state = this.state;
+
+  //   // const rows = this.itemsConfig.map(item => {
+  //   //   return <tr key={item.name}>
+  //   //     <td>{item.title}</td>
+  //   //     <td>
+  //   //       {state.edit ?
+  //   //         <><Input type="number" name={item.name}
+  //   //             value={state.data[item.name]} onChange={this.inputChange}/> {item.unit}</> :
+  //   //         `${state.data[item.name]}${item.unit}`}
+  //   //     </td>
+  //   //   </tr>;
+  //   // });
+
+  //   // const className = classNames('table', { edit: state.edit });
+
+  //   return <table className='table'>
+  //     <thead>
+  //       <tr>
+  //         <th>Name</th>
+  //         <th style={{width: 200}}>Value</th>
+  //       </tr>
+  //     </thead>
+  //     <tbody>{[<tr key='test-key'>
+  //       <td>{'TIESTO'}</td>
+  //       <td>
+  //         {`test Test`}
+  //       </td>
+  //     </tr>]}</tbody>
+  //   </table>;
+  // }
 
   renderAudienceSelection() {
     const clients = this.props.clients;
