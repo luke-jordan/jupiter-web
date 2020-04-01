@@ -14,3 +14,16 @@
 .expiry-checkbox {
   margin-top: 10px;
 }
+
+.modal.system-events-list {
+  overflow: inherit;
+
+  .modal-body {
+    position: relative;
+    font-size: 20px;
+    padding: 30px;
+  }
+  .button {
+    width: 100%;
+  }
+}
