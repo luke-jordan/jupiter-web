@@ -10,9 +10,8 @@ import DatePicker from 'src/components/datePicker/DatePicker';
 import Checkbox from 'src/components/checkbox/Checkbox';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 import TextEditor from 'src/components/textEditor/TextEditor';
-import MessageEvents from '../messageSentResult/MessageEvents';
 
-// import Modal from 'src/components/modal/Modal';
+import Modal from 'src/components/modal/Modal';
 
 import './MessageForm.scss';
 
@@ -39,7 +38,8 @@ class MessageForm extends React.Component {
     this.bodyEditor = null;
 
     this.state = {
-      data: this.messageToFormData(props.message)
+      data: this.messageToFormData(props.message),
+      showEventsModal: false,
     };
   }
 
@@ -67,14 +67,19 @@ class MessageForm extends React.Component {
       'hide-editor-btns': !this.htmlTypes.includes(this.state.data.type)
     });
 
-    return <form className={rootClass} onSubmit={this.submit}>
-      {this.renderDetails()}
-      {this.renderParameters()}
-      {this.renderAudienceSelection()}
-      <div className="form-group text-right">
-        <button className="button">{this.submitButtonText[this.props.mode]}</button>
-      </div>
-    </form>;
+    return ( 
+    <>
+      <form className={rootClass} onSubmit={this.submit}>
+        {this.renderDetails()}
+        {this.renderParameters()}
+        {this.renderAudienceSelection()}
+        <div className="form-group text-right">
+          <button className="button">{this.submitButtonText[this.props.mode]}</button>
+        </div>
+      </form>
+      <div className="modal-container">{this.renderModal()}</div>
+    </>
+    );
   }
 
   renderDetails() {
@@ -245,7 +250,8 @@ class MessageForm extends React.Component {
             <div className="form-group">
               <div className="form-label">Event that triggers message</div>
               <Input name="eventTypeCategory" disabled={this.isView()}
-                value={state.data.eventTypeCategory} onChange={this.inputChange}/>
+                value={state.data.triggerEvent} onChange={this.inputChange}/>
+              <button className="link text-underline" onClick={this.showEventModal}>Available Events</button>
             </div>
           </div>
           <div className="grid-col-3">
@@ -282,49 +288,36 @@ class MessageForm extends React.Component {
       </div>
       </>}
     </div>
-    <div>
-      <button className="link text-underline" onClick={this.renderModal}>Available Events</button>
-    </div>
     </>;
   }
 
-  renderModal() {
-    // const { state } = this;
-    return <MessageEvents/>;
+  showEventModal = event => {
+    event.preventDefault();
+    this.setState({ showEventsModal: true });
   }
 
-  // renderEventsTable() {
-  //   // const state = this.state;
+  renderTableLines = (systemName, humanName) => (<tr key={systemName}><td>{systemName}</td><td>{humanName}</td></tr>);
 
-  //   // const rows = this.itemsConfig.map(item => {
-  //   //   return <tr key={item.name}>
-  //   //     <td>{item.title}</td>
-  //   //     <td>
-  //   //       {state.edit ?
-  //   //         <><Input type="number" name={item.name}
-  //   //             value={state.data[item.name]} onChange={this.inputChange}/> {item.unit}</> :
-  //   //         `${state.data[item.name]}${item.unit}`}
-  //   //     </td>
-  //   //   </tr>;
-  //   // });
+  renderModal() {
+    const events = [
+      ['SAVING_PAYMENT_SUCCESSFUL', 'Save completed'], 
+      ['WITHDRAWAL_EVENT_CONFIRMED', 'Withdrawal finished'],
+      ['USER_CREATED_ACCOUNT', 'Account opened'],
+      ['BOOST_REDEEMED', 'Boost redeemed'],
+      ['SAVING_EVENT_CANCELLED', 'Save cancelled']
+    ];
 
-  //   // const className = classNames('table', { edit: state.edit });
-
-  //   return <table className='table'>
-  //     <thead>
-  //       <tr>
-  //         <th>Name</th>
-  //         <th style={{width: 200}}>Value</th>
-  //       </tr>
-  //     </thead>
-  //     <tbody>{[<tr key='test-key'>
-  //       <td>{'TIESTO'}</td>
-  //       <td>
-  //         {`test Test`}
-  //       </td>
-  //     </tr>]}</tbody>
-  //   </table>;
-  // }
+    return this.state.showEventsModal && 
+      <Modal open={this.state.showEventsModal} header="Available message events"
+        className="system-events-list" onClose={() => this.setState({ showEventsModal: false })}>
+        <table className="table">
+          <thead><tr><th>System name</th><th>Human name</th></tr></thead>
+          <tbody>
+            {events.map((eventPair) => this.renderTableLines(...eventPair))}
+          </tbody>
+        </table>
+      </Modal>;
+  }
 
   renderAudienceSelection() {
     const clients = this.props.clients;
@@ -413,8 +406,8 @@ class MessageForm extends React.Component {
 
     const defaultTemplate = message.templates.template.DEFAULT;
     const recurrenceParameters = message.recurrenceParameters;
-
-    return {
+    
+    const formData = {
       title: defaultTemplate.title,
       body: defaultTemplate.body,
       quickAction: defaultTemplate.actionToTake,
@@ -428,6 +421,15 @@ class MessageForm extends React.Component {
       eventTypeCategory: (message.flags && message.flags[0]) ? message.flags[0] : '',
       urlToVisit: defaultTemplate.urlToVisit
     };
+
+    if (message.presentationType === 'EVENT_DRIVEN') {
+      const { triggerEvent, haltingEvent, messageSchedule } = message.triggerParameters;
+      formData.triggerEvent = triggerEvent ? triggerEvent.join(', ') : '';
+      formData.haltingEvent = haltingEvent ? haltingEvent.join(', ') : '';
+      formData.triggerTimeDelay = messageSchedule.offset ? messageSchedule.offset.number : '';
+    }
+
+    return formData;
   }
 
   getMessageReqBody() {
@@ -486,13 +488,12 @@ class MessageForm extends React.Component {
         maxInQueue: data.recurringMaxInQueue
       };
     } else if (data.recurrence === 'EVENT_DRIVEN') {
-      body.eventTypeCategory = data.eventTypeCategory;
       const triggerParameters = {
-        triggerEvent: [data.eventTypeCategory]
+        triggerEvent: data.triggerEvent.split(', ').map((event) => event.trim().toUpperCase())
       }
 
       if (data.haltingEvent.trim().length > 0) {
-        triggerParameters.haltingEvent = [data.haltingEvent];
+        triggerParameters.haltingEvent = data.haltingEvent.split(', ').map((event) => event.trim().toUpperCase());
       }
 
       if (data.triggerTimeDelay && data.triggerTimeDelay > 0) {
@@ -560,6 +561,7 @@ class MessageForm extends React.Component {
     });
     this.bodyEditor = editor;
   }
+
 }
 
 export default MessageForm;
