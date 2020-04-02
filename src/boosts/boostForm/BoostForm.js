@@ -207,31 +207,58 @@ class BoostForm extends React.Component {
           </div>
         </div>
       </div>
-      {this.state.data.type === 'GAME' && 
+      {/* Game params */}
+      {this.state.data.type === 'GAME' && this.renderGameOptions()}
+    </>;
+  }
+
+  renderGameOptions() {
+    const { state } = this;
+    return (
+      <>
         <div className="grid-row">
-          <div className="grid-col-4">
-            <div className="form-label">What is the game time limit? (seconds)</div>
-            <Input name="timeLimitSeconds" type="number" value={state.data.timeLimitSeconds}
-              onChange={this.inputChange} disabled={this.isView()}/>
+          <div className="grid-col-6">
+            <div className="form-group">
+              <div className="form-label">What is the game time limit? (seconds)</div>
+              <Input name="timeLimitSeconds" type="number" value={state.data.timeLimitSeconds}
+                onChange={this.inputChange} disabled={this.isView()}/>
+            </div>
           </div>
-          <div className="grid-col-4">
-            <div className="form-label">How many successful taps win the game?</div>
-            <Input name="winningThreshold" type="number" value={state.data.winningThreshold}
-              onChange={this.inputChange} disabled={this.isView()}/>
+          <div className="grid-col-6">
+            <div className="form-group">
+              <div className="form-label">How does someone win?</div>
+                <Select name="thresholdType" value={state.data.thresholdType} onChange={this.inputChange} disabled={this.isView()}>
+                  <option value="THRESHOLD">More than X taps</option>
+                  <option value="TOURNAMENT">Top X scores</option>
+                </Select>
+              </div>
+            </div>
+        </div>
+        <div className="grid-row">
+          <div className="grid-col-6">
+            <div className="form-group">
+              <div className="form-label">
+                {state.data.thresholdType === 'TOURNAMENT' ? 'How many users will win?' : 'How many successful taps win the game?'}
+              </div>
+              <Input name="winningThreshold" type="number" value={state.data.winningThreshold}
+                onChange={this.inputChange} disabled={this.isView()}/>
+            </div>
           </div>
-          <div className="grid-col-4">
-            <div className="form-label">How much should the arrow speed up?</div>
-            <Select name="source" value={state.data.arrowSpeedMultiplier}
-              onChange={this.inputChange} disabled={this.isView() || this.state.data.category !== 'CHASE_ARROW'}>
-              <option value="3">3x</option>
-              <option value="5">5x</option>
-              <option value="7">7x</option>
-              <option value="10">10x</option>
-            </Select>
+          <div className="grid-col-6">
+            <div className="form-group">
+              <div className="form-label">How much should the arrow speed up?</div>
+              <Select name="arrowSpeed" value={state.data.arrowSpeedMultiplier}
+                onChange={this.inputChange} disabled={this.isView() || this.state.data.category !== 'CHASE_ARROW'}>
+                <option value="3">3x</option>
+                <option value="5">5x</option>
+                <option value="7">7x</option>
+                <option value="10">10x</option>
+              </Select>
+            </div>
           </div>
         </div>
-      }
-    </>;
+      </>
+    )
   }
 
   renderPushAndCardDetails() {
@@ -442,13 +469,21 @@ class BoostForm extends React.Component {
 
     // game paramaters
     if (data.type === 'GAME') {
-      body.gameParams = {
+      const gameParams = {
         gameType: data.category,
         entryCondition: addCashCondition,
         timeLimitSeconds: parseInt(data.timeLimitSeconds, 10),
-        winningThreshold: parseInt(data.winningThreshold, 10),
-        arrowSpeedMultiplier: parseInt(data.arrowSpeedMultiplier, 10),
+        arrowSpeedMultiplier: parseInt(data.arrowSpeedMultiplier, 10)
+      };
+
+      // todo : could make this more elegant tbh
+      if (data.thresholdType === 'TOURNAMENT') {
+        gameParams.numberWinners = parseInt(data.winningThreshold, 10);
+      } else {
+        gameParams.winningThreshold = parseInt(data.winningThreshold, 10);
       }
+
+      body.gameParams = gameParams;
     } else {
       body.statusConditions = { REDEEMED: [addCashCondition] };
     }
@@ -507,10 +542,13 @@ class BoostForm extends React.Component {
       return false;
     }
 
-    
     if (this.audienceRef && !this.audienceRef.isValid()) {
       this.audienceRef.showInvalidMessage();
       return false;
+    }
+
+    if (data.thresholdType === 'TOURNAMENT' && !data.endTime) {
+      this.modalService.openInfo('Boost create', 'For tournament games please set an expiry time');
     }
 
     return true;
