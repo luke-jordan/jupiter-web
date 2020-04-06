@@ -9,6 +9,7 @@ import DatePicker from 'src/components/datePicker/DatePicker';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
+import EventsListModal from 'src/components/eventsModal/EventsModal';
 
 import './BoostForm.scss';
 
@@ -61,7 +62,8 @@ class BoostForm extends React.Component {
   }
 
   render() {
-    return <form className="boost-form" onSubmit={this.submit}>
+    return <>
+    <form className="boost-form" onSubmit={this.submit}>
       {this.renderDetails()}
       {this.renderConditions()}
       {this.renderPushAndCardDetails()}
@@ -69,7 +71,12 @@ class BoostForm extends React.Component {
       {!this.isView() && <div className="text-right">
         <button className="button">Submit</button>
       </div>}
-    </form>;
+    </form>
+    <div className="modal-container">
+      {this.state.showEventsModal && 
+        <EventsListModal showEventsModal={this.state.showEventsModal} onClose={() => this.setState({ showEventsModal: false })}/>}
+    </div>
+    </>;
   }
 
   renderDetails() {
@@ -185,7 +192,7 @@ class BoostForm extends React.Component {
             <div className="form-label">What is its initial state?</div>
             <Select name="initialStatus" value={state.data.initialStatus}
                 onChange={this.inputChange} disabled={this.isView() || this.state.data.type !== 'GAME'}>
-              <option value="CREATED">Only offered</option>
+              <option value="OFFERED">Only offered</option>
               <option value="UNLOCKED">Already unlocked</option>
             </Select>
           </div>
@@ -209,7 +216,32 @@ class BoostForm extends React.Component {
       </div>
       {/* Game params */}
       {this.state.data.type === 'GAME' && this.renderGameOptions()}
+      {/* Start time/conditions */}
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">When will it be offered?</div>
+            <Select name="offeredCondition" value={state.data.offeredCondition} onChange={this.inputChange} disabled={this.isView()}>
+              <option value="IMMEDIATE">Now</option>
+              <option value="EVENT">On an event</option>
+            </Select>
+          </div>
+        </div>
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">What event creates the boost?</div>
+            <Input name="offerEvent" value={state.data.offerEvent} onChange={this.inputChange}
+              disabled={state.data.offeredCondition !== 'EVENT'}></Input>
+            <button className="link text-underline" onClick={this.showEventsModal}>Available Events</button>
+          </div>
+        </div>
+      </div>
     </>;
+  }
+
+  showEventsModal = event => {
+    event.preventDefault();
+    this.setState({ showEventsModal: true });
   }
 
   renderGameOptions() {
@@ -352,7 +384,9 @@ class BoostForm extends React.Component {
     return /(new|duplicate)/.test(this.props.mode) ?
       <AudienceSelection headerText="Who is Eligible?"
         clientId={this.state.data.clientId}
-        ref={ref => this.audienceRef = ref}/> : null;
+        ref={ref => this.audienceRef = ref}
+        allowEvent={true}
+      /> : null;
   }
 
   insertParameter = param => {
@@ -408,7 +442,8 @@ class BoostForm extends React.Component {
         currency: 'ZAR',
         timeLimitSeconds: '10',
         winningThreshold: '10',
-        arrowSpeedMultiplier: '5'
+        arrowSpeedMultiplier: '5',
+        initialStatus: 'OFFERED'
       };
     }
 
@@ -462,8 +497,13 @@ class BoostForm extends React.Component {
     // expiry time
     body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
 
-    // we only have to bother if it is unlocked; and this has no meaning for non-games
-    if (data.initialStatus === 'UNLOCKED') {
+    const isEventTriggered = data.offeredCondition === 'EVENT';
+    const statusConditions = {};
+
+    if (isEventTriggered) {
+      body.initialStatus = 'UNCREATED';
+      statusConditions[data.initialStatus] = [`event_occurs #{${data.offerEvent}}`];
+    } else {
       body.initialStatus = data.initialStatus;
     }
 
@@ -485,22 +525,28 @@ class BoostForm extends React.Component {
 
       body.gameParams = gameParams;
     } else {
-      body.statusConditions = { REDEEMED: [addCashCondition] };
+      statusConditions.REDEEMED = [addCashCondition];
     }
 
+    // general message params
     const messagesToCreate = [];
     const actionToTake = data.initialStatus === 'UNLOCKED' ? 'VIEW_BOOSTS' : 'ADD_CASH';
+    
+    const presentationType = isEventTriggered ? 'EVENT_DRIVEN' : 'ONCE_OFF';
+    const triggerParameters = isEventTriggered ? { triggerEvent: [data.offerEvent] } : {}; 
+    
     // push notification
     if (data.pushBody) {
       messagesToCreate.push({
         boostStatus: 'CREATED',
-        presentationType: 'ONCE_OFF',
+        presentationType,
         actionToTake,
         isMessageSequence: false,
         template: {
           title: data.pushTitle, body: data.pushBody,
           display: { type: 'PUSH' }
-        }
+        },
+        triggerParameters
       });
     }
 
@@ -508,7 +554,7 @@ class BoostForm extends React.Component {
     if (data.cardBody) {
       messagesToCreate.push({
         boostStatus: 'OFFERED',
-        presentationType: 'ONCE_OFF',
+        presentationType,
         actionToTake: 'ADD_CASH',
         isMessageSequence: false,
         template: {
@@ -519,11 +565,14 @@ class BoostForm extends React.Component {
           actionContext: {
             addCashPreFilled: addCashThreshold
           }
-        }
+        },
+        triggerParameters
       });
     }
 
     body.messagesToCreate = messagesToCreate;
+
+    body.statusConditions = statusConditions;
 
     return body;
   }

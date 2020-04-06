@@ -11,9 +11,8 @@ import Checkbox from 'src/components/checkbox/Checkbox';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 import TextEditor from 'src/components/textEditor/TextEditor';
 
-import Modal from 'src/components/modal/Modal';
-
 import './MessageForm.scss';
+import EventsListModal from 'src/components/eventsModal/EventsModal';
 
 class MessageForm extends React.Component {
   constructor(props) {
@@ -296,27 +295,9 @@ class MessageForm extends React.Component {
     this.setState({ showEventsModal: true });
   }
 
-  renderTableLines = (systemName, humanName) => (<tr key={systemName}><td>{systemName}</td><td>{humanName}</td></tr>);
-
   renderModal() {
-    const events = [
-      ['SAVING_PAYMENT_SUCCESSFUL', 'Save completed'], 
-      ['WITHDRAWAL_EVENT_CONFIRMED', 'Withdrawal finished'],
-      ['USER_CREATED_ACCOUNT', 'Account opened'],
-      ['BOOST_REDEEMED', 'Boost redeemed'],
-      ['SAVING_EVENT_CANCELLED', 'Save cancelled']
-    ];
-
     return this.state.showEventsModal && 
-      <Modal open={this.state.showEventsModal} header="Available message events"
-        className="system-events-list" onClose={() => this.setState({ showEventsModal: false })}>
-        <table className="table">
-          <thead><tr><th>System name</th><th>Human name</th></tr></thead>
-          <tbody>
-            {events.map((eventPair) => this.renderTableLines(...eventPair))}
-          </tbody>
-        </table>
-      </Modal>;
+      <EventsListModal showEventsModal={this.state.showEventsModal} onClose={() => this.setState({ showEventsModal: false })}/>
   }
 
   renderAudienceSelection() {
@@ -406,15 +387,20 @@ class MessageForm extends React.Component {
 
     const defaultTemplate = message.templates.template.DEFAULT;
     const recurrenceParameters = message.recurrenceParameters;
-    
+
+    console.log('Message: ', message);
+    const endMoment = moment(message.endTime);
+    const noExpiry = endMoment.isAfter(moment().add(1, 'year').endOf('year')); // end of next year, good as any
+
     const formData = {
       title: defaultTemplate.title,
       body: defaultTemplate.body,
       quickAction: defaultTemplate.actionToTake,
       type: defaultTemplate.display.type,
       priority: message.messagePriority,
-      endDate: null,
-      sendDate: null,
+      endDate: endMoment.toDate(),
+      noExpiry,
+      sendDate: moment(message.startTime).toDate(),
       recurrence: message.presentationType,
       recurringMinIntervalDays: recurrenceParameters ? recurrenceParameters.minIntervalDays : 0,
       recurringMaxInQueue: recurrenceParameters ? recurrenceParameters.maxInQueue : 0,
