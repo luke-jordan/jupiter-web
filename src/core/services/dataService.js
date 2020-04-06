@@ -22,4 +22,26 @@ export class DataService {
     );
     return this._countriesObs;
   }
+
+  getUserEvents() {
+    return [
+      'USER_REGISTERED',
+      'PASSWORD_SET',
+      'USER_LOGIN',
+      'STATUS_CHANGED',
+      'SAVING_EVENT_INITIATED',
+      'SAVING_EVENT_PAYMENT_CHECK',
+      'SAVING_PAYMENT_SUCCESSFUL',
+      'SAVING_EVENT_CANCELLED',
+      'WITHDRAWAL_EVENT_CONFIRMED',
+      'WITHDRAWAL_EVENT_CANCELLED',
+      'WITHDRAWAL_COMPLETED',
+      'USER_CREATED_ACCOUNT',
+      'BOOST_REDEEMED',
+      'USER_GAME_COMPLETION',
+      'MESSAGE_PUSH_NOTIFICATION_SENT',
+      'MESSAGE_CREATED',
+      'MESSAGE_FETCHED'
+    ]
+  }
 }
