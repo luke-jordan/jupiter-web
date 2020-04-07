@@ -411,7 +411,7 @@ class MessageForm extends React.Component {
       const { triggerEvent, haltingEvent, messageSchedule } = message.triggerParameters;
       formData.triggerEvent = triggerEvent ? triggerEvent.join(', ') : '';
       formData.haltingEvent = haltingEvent ? haltingEvent.join(', ') : '';
-      formData.triggerTimeDelay = messageSchedule.offset ? messageSchedule.offset.number : '';
+      formData.triggerTimeDelay = messageSchedule && messageSchedule.offset ? messageSchedule.offset.number : '';
     }
 
     return formData;
@@ -477,7 +477,7 @@ class MessageForm extends React.Component {
         triggerEvent: data.triggerEvent.split(', ').map((event) => event.trim().toUpperCase())
       }
 
-      if (data.haltingEvent.trim().length > 0) {
+      if (data.haltingEvent && data.haltingEvent.trim().length > 0) {
         triggerParameters.haltingEvent = data.haltingEvent.split(', ').map((event) => event.trim().toUpperCase());
       }
 
