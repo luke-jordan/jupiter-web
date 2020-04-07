@@ -248,7 +248,7 @@ class MessageForm extends React.Component {
           <div className="grid-col-3">
             <div className="form-group">
               <div className="form-label">Event that triggers message</div>
-              <Input name="eventTypeCategory" disabled={this.isView()}
+              <Input name="triggerEvent" disabled={this.isView()}
                 value={state.data.triggerEvent} onChange={this.inputChange}/>
               <button className="link text-underline" onClick={this.showEventModal}>Available Events</button>
             </div>
@@ -379,7 +379,7 @@ class MessageForm extends React.Component {
         recurrence: 'ONCE_OFF',
         recurringMinIntervalDays: 0,
         recurringMaxInQueue: 0,
-        eventTypeCategory: '',
+        triggerEvent: '',
         urlToVisit: '',
         noExpiry: true,
       };
@@ -404,7 +404,6 @@ class MessageForm extends React.Component {
       recurrence: message.presentationType,
       recurringMinIntervalDays: recurrenceParameters ? recurrenceParameters.minIntervalDays : 0,
       recurringMaxInQueue: recurrenceParameters ? recurrenceParameters.maxInQueue : 0,
-      eventTypeCategory: (message.flags && message.flags[0]) ? message.flags[0] : '',
       urlToVisit: defaultTemplate.urlToVisit
     };
 
