@@ -80,10 +80,11 @@ export class UsersService {
   _modifyUserHistory(history) {
     const { eventType, context } = history;
     let eventTypeText = userHistoryEventTypeMap[history.eventType] || history.eventType;
-    if (eventType === 'SAVING_PAYMENT_SUCCESSFUL') {
+    const hasAmountInfo = context && context.savedAmount && typeof context.savedAmount === 'string' && context.savedAmount.length > 0;
+    if (eventType === 'SAVING_PAYMENT_SUCCESSFUL' && hasAmountInfo) {
       const { savedAmount } = context;
       eventTypeText = `${eventTypeText} (${formatAmountString(savedAmount)})`;
-    } else if (eventType === 'WITHDRAWAL_EVENT_CONFIRMED') {
+    } else if (eventType === 'WITHDRAWAL_EVENT_CONFIRMED' && hasAmountInfo) {
       const { withdrawalAmount } = context;
       eventTypeText = `${eventTypeText} (${formatAmountString(withdrawalAmount)})`;
     }

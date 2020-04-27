@@ -66,7 +66,11 @@ export const setAmountValueAndMoney = (obj, keys, unit, currency) => {
 }
 
 export const formatAmountString = (amountString) => {
-  const [amount, unit, currency] = amountString.split('::');
+  const splitInfo = amountString.split('::');
+  if (splitInfo.length !== 3) {
+    return '';
+  }
+  const [amount, unit, currency] = splitInfo;
   const convertedAmount = convertAmount(amount, unit);
   return formatMoney(convertedAmount, currency);
 }
