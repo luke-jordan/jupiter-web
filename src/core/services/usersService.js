@@ -2,7 +2,7 @@ import { forkJoin } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import moment from 'moment';
 
-import { setAmountValueAndMoney } from 'src/core/utils';
+import { setAmountValueAndMoney, formatAmountString } from 'src/core/utils';
 import { userHistoryEventTypeMap, userTransactionTypeMap } from 'src/core/constants';
 
 export class UsersService {
@@ -59,7 +59,8 @@ export class UsersService {
   }
 
   _modifyUser(user) {
-    user.fullName = `${user.personalName} ${user.familyName}`;
+    const calledNamePart = user.calledName ? ` (${user.calledName}) ` : ' ';
+    user.fullName = `${user.personalName}${calledNamePart}${user.familyName}`;
     user.formattedStartDate = moment(user.creationTimeEpochMillis).format('MMM YYYY');
 
     const currentBalance = user.userBalance.currentBalance;
@@ -75,8 +76,19 @@ export class UsersService {
     transaction.transactionTypeText = userTransactionTypeMap[transaction.transactionType] || transaction.transactionType;
   }
 
+  
   _modifyUserHistory(history) {
-    history.eventTypeText = userHistoryEventTypeMap[history.eventType] || history.eventType;
+    const { eventType, context } = history;
+    let eventTypeText = userHistoryEventTypeMap[history.eventType] || history.eventType;
+    if (eventType === 'SAVING_PAYMENT_SUCCESSFUL') {
+      const { savedAmount } = context;
+      eventTypeText = `${eventTypeText} (${formatAmountString(savedAmount)})`;
+    } else if (eventType === 'WITHDRAWAL_EVENT_CONFIRMED') {
+      const { withdrawalAmount } = context;
+      eventTypeText = `${eventTypeText} (${formatAmountString(withdrawalAmount)})`;
+    }
+    
+    history.eventTypeText = eventTypeText;
     history.formattedDate = moment(history.timestamp).format('DD/MM/YYYY HH:mm');
     history.date = new Date(history.timestamp);
   }

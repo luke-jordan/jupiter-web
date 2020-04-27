@@ -6,7 +6,7 @@ import './EventsModal.scss';
 
 const events = [
     ['SAVING_PAYMENT_SUCCESSFUL', 'Save completed'], 
-    ['WITHDRAWAL_EVENT_CONFIRMED', 'Withdrawal finished'],
+    ['ADMIN_SETTLED_WITHDRAWAL', 'Withdrawal finished'],
     ['USER_CREATED_ACCOUNT', 'Account opened'],
     ['BOOST_REDEEMED', 'Boost redeemed'],
     ['SAVING_EVENT_CANCELLED', 'Save cancelled'],

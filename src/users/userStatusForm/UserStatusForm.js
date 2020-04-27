@@ -152,6 +152,7 @@ class UserStatusForm extends React.Component {
   renderPwdResetBtn() {
     return <div className="page-actions">
       <button type="button" className="button" onClick={this.pwdResetClick}>Reset user password</button>
+      <button type="button" className="button" style={{ marginLeft: 10 }} onClick={this.otpFlowClick}>Manual OTP</button>
     </div>;
   }
 
@@ -212,6 +213,13 @@ class UserStatusForm extends React.Component {
     this.submit({
       fieldToUpdate: 'PWORD',
       reasonToLog: 'Password update',
+    });
+  };
+
+  otpFlowClick = () => {
+    this.submit({
+      fieldToUpdate: 'OTP',
+      reasonToLog: 'Manual OTP flow'
     });
   };
 

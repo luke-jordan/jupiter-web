@@ -65,6 +65,12 @@ export const setAmountValueAndMoney = (obj, keys, unit, currency) => {
   });
 }
 
+export const formatAmountString = (amountString) => {
+  const [amount, unit, currency] = amountString.split('::');
+  const convertedAmount = convertAmount(amount, unit);
+  return formatMoney(convertedAmount, currency);
+}
+
 export const getCountryByCode = (countries, code) => {
   return countries.find(country => {
     return (country['alpha-2'] === code || country['alpha-3'] === code);
