@@ -10,7 +10,9 @@ const events = [
     ['USER_CREATED_ACCOUNT', 'Account opened'],
     ['BOOST_REDEEMED', 'Boost redeemed'],
     ['SAVING_EVENT_CANCELLED', 'Save cancelled'],
-    ['BOOST_TOURNAMENT_WON', 'Boost tournament won']
+    ['BOOST_TOURNAMENT_WON', 'Boost tournament won'],
+    ['FRIEND_REQUEST_RECEIVED', 'Friend request received'],
+    ['FRIEND_ESTABLISHED', 'Friend request completed']
 ];
 
 const renderTableLines = (systemName, humanName) => (<tr key={systemName}><td>{systemName}</td><td>{humanName}</td></tr>);
