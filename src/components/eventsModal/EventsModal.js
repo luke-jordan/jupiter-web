@@ -12,7 +12,7 @@ const events = [
     ['SAVING_EVENT_CANCELLED', 'Save cancelled'],
     ['BOOST_TOURNAMENT_WON', 'Boost tournament won'],
     ['FRIEND_REQUEST_RECEIVED', 'Friend request received'],
-    ['FRIEND_ESTABLISHED', 'Friend request completed']
+    ['FRIEND_REQUEST_INITIATED_ACCEPTED', 'Friend request completed']
 ];
 
 const renderTableLines = (systemName, humanName) => (<tr key={systemName}><td>{systemName}</td><td>{humanName}</td></tr>);
