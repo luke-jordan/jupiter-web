@@ -15,7 +15,8 @@ import './BoostForm.scss';
 
 const DEFAULT_CATEGORIES = {
   'SIMPLE': 'TIME_LIMITED',
-  'GAME': 'TAP_SCREEN'
+  'GAME': 'TAP_SCREEN',
+  'SOCIAL': 'FRIENDS_ADDED'
 };
 
 
@@ -79,6 +80,17 @@ class BoostForm extends React.Component {
     </>;
   }
 
+  renderCategoryOptions() {
+    return <>
+        {this.state.data.type === 'SIMPLE' && <option value="TIME_LIMITED">Time limited</option>}
+        {this.state.data.type === 'GAME' && <option value="TAP_SCREEN">Tap the screen</option>}
+        {this.state.data.type === 'GAME' && <option value="CHASE_ARROW">Chase the arrow</option>}
+        {this.state.data.type === 'GAME' && <option value="DESTROY_IMAGE">Destroy image</option>}
+        {this.state.data.type === 'SOCIAL' && <option value="FRIENDS_ADDED">Friends added</option>}
+        {this.state.data.type === 'SOCIAL' && <option value="NUMBER_FRIENDS">Total friends (initiated)</option>}
+    </>
+  }
+
   renderDetails() {
     const { state, props } = this;
     return <>
@@ -103,6 +115,7 @@ class BoostForm extends React.Component {
               onChange={this.onChangeBoostType} disabled={this.isView()}>
               <option value="SIMPLE">Simple (e.g., time limited)</option>
               <option value="GAME">Game</option>
+              <option value="SOCIAL">Social</option>
             </Select>
           </div>
         </div>
@@ -110,11 +123,8 @@ class BoostForm extends React.Component {
         <div className="grid-col">
           <div className="form-group">
             <div className="form-label">Category</div>
-            <Select name="category" value={state.data.category}
-              onChange={this.inputChange} disabled={this.isView()}>
-              {this.state.data.type === 'SIMPLE' && <option value="TIME_LIMITED">Time limited</option>}
-              {this.state.data.type === 'GAME' && <option value="TAP_SCREEN">Tap the screen</option>}
-              {this.state.data.type === 'GAME' && <option value="CHASE_ARROW">Chase the arrow</option>}
+            <Select name="category" value={state.data.category} onChange={this.inputChange} disabled={this.isView()}>
+              {this.renderCategoryOptions()}
             </Select>
           </div>
         </div>
@@ -154,6 +164,11 @@ class BoostForm extends React.Component {
         </div>
       </div>
     </>;
+  }
+
+  doesNotRequireSaveThreshold() {
+    // social saves will have a variant "friends all save" in future, but for now it's simpler
+    return (this.state.data.type === 'GAME' && this.state.data.initialStatus === 'UNLOCKED') || this.state.data.type === 'SOCIAL';
   }
 
   renderConditions() {
@@ -202,7 +217,7 @@ class BoostForm extends React.Component {
           <div className="form-group">
             <div className="form-label">How much must a user save to get it?</div>
             <Input name="requiredSave" type="number" value={state.data.requiredSave} onChange={this.inputChange} 
-              disabled={this.isView() || (this.state.data.type === 'GAME' && this.state.data.initialStatus === 'UNLOCKED')}/>
+              disabled={this.isView() || this.doesNotRequireSaveThreshold()}/>
           </div>
         </div>
         {/* Per user amount */}
@@ -216,6 +231,8 @@ class BoostForm extends React.Component {
       </div>
       {/* Game params */}
       {this.state.data.type === 'GAME' && this.renderGameOptions()}
+      {/* Social params */}
+      {this.state.data.type === 'SOCIAL' && this.renderSocialOptions()}
       {/* Start time/conditions */}
       <div className="grid-row">
         <div className="grid-col-4">
@@ -244,8 +261,38 @@ class BoostForm extends React.Component {
     this.setState({ showEventsModal: true });
   }
 
+  renderSocialOptions() {
+    const { state } = this;
+    return (
+      <>
+        <div className="grid-row">
+          <div className="grid-col-4">
+            <div className="form-group">
+            <div className="form-label">How many friends must be added/reached?</div>
+              <Input name="friendThreshold" type="number" value={state.data.friendThreshold}
+                onChange={this.inputChange} disabled={this.isView()}/>
+            </div>
+          </div>
+          <div className="grid-col-4">
+            <div className="form-group">
+            <div className="form-label">Must user have initiated?</div>
+              <Select name="initiatedRequirement" type="number" value={state.data.initiatedRequirement}
+                onChange={this.inputChange} disabled={this.isView()}>
+                  <option value="EITHER">Any is fine</option>
+                  <option value="INITIATED">User must have initiated</option>
+              </Select>
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
   renderGameOptions() {
     const { state } = this;
+    const thresholdDescription = state.data.category === 'DESTROY_IMAGE' 
+      ? 'What % of image must be destroyed?' 
+      : 'How many successful taps win the game?';
     return (
       <>
         <div className="grid-row">
@@ -270,24 +317,35 @@ class BoostForm extends React.Component {
           <div className="grid-col-6">
             <div className="form-group">
               <div className="form-label">
-                {state.data.thresholdType === 'TOURNAMENT' ? 'How many users will win?' : 'How many successful taps win the game?'}
+                {state.data.thresholdType === 'TOURNAMENT' ? 'How many users will win?' : thresholdDescription}
               </div>
               <Input name="winningThreshold" type="number" value={state.data.winningThreshold}
                 onChange={this.inputChange} disabled={this.isView()}/>
             </div>
           </div>
-          <div className="grid-col-6">
-            <div className="form-group">
-              <div className="form-label">How much should the arrow speed up?</div>
-              <Select name="arrowSpeed" value={state.data.arrowSpeedMultiplier}
-                onChange={this.inputChange} disabled={this.isView() || this.state.data.category !== 'CHASE_ARROW'}>
-                <option value="3">3x</option>
-                <option value="5">5x</option>
-                <option value="7">7x</option>
-                <option value="10">10x</option>
-              </Select>
+          {state.data.category === 'CHASE_ARROW' && (
+            <div className="grid-col-6">
+              <div className="form-group">
+                <div className="form-label">How much should the arrow speed up?</div>
+                <Select name="arrowSpeed" value={state.data.arrowSpeedMultiplier}
+                  onChange={this.inputChange} disabled={this.isView()}>
+                  <option value="3">3x</option>
+                  <option value="5">5x</option>
+                  <option value="7">7x</option>
+                  <option value="10">10x</option>
+                </Select>
+              </div>
             </div>
-          </div>
+          )}
+          {state.data.category === 'DESTROY_IMAGE' && (
+            <div className="grid-col-4">
+              <div className="form-group">
+                <div className="form-label">How many taps break a block?</div>
+                <Input name="imageBlockTapsToDestroy" type="number" value={state.data.imageBlockTapsToDestroy}
+                  onChange={this.inputChange} disabled={this.isView()}/>
+              </div>
+            </div>
+          )};
         </div>
       </>
     )
@@ -526,6 +584,13 @@ class BoostForm extends React.Component {
       body.gameParams = gameParams;
     } else {
       statusConditions.REDEEMED = [addCashCondition];
+    }
+
+    if (data.type === 'SOCIAL') {
+      const isAdded = data.category === 'FRIENDS_ADDED';
+      const conditionType = isAdded ? 'friends_added_since' : 'total_number_friends';
+      const conditionSuffix = isAdded ? `${moment().valueOf()}` : data.initiatedRequirement;
+      statusConditions.REDEEMED = [`${conditionType} #{${data.friendThreshold}::${conditionSuffix}}`];
     }
 
     // general message params
