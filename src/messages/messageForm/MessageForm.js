@@ -123,6 +123,7 @@ class MessageForm extends React.Component {
               <option value="ADD_CASH">Add cash</option>
               <option value="VISIT_WEB">Visit website</option>
               <option value="VIEW_BOOSTS">View boosts</option>
+              <option value="VIEW_FRIENDS">View friends</option>
             </Select>
           </div>
         </div>
