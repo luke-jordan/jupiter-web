@@ -595,7 +595,12 @@ class BoostForm extends React.Component {
 
     // general message params
     const messagesToCreate = [];
-    const actionToTake = data.initialStatus === 'UNLOCKED' ? 'VIEW_BOOSTS' : 'ADD_CASH';
+    let actionToTake = 'ADD_CASH';
+    if (data.type === 'SOCIAL') {
+      actionToTake = 'VIEW_FRIENDS';
+    } else if (data.initialStatus === 'UNLOCKED') {
+      actionToTake = 'VIEW_BOOSTS';
+    }
     
     const presentationType = isEventTriggered ? 'EVENT_DRIVEN' : 'ONCE_OFF';
     const triggerParameters = isEventTriggered ? { triggerEvent: [data.offerEvent] } : {}; 
@@ -620,7 +625,7 @@ class BoostForm extends React.Component {
       messagesToCreate.push({
         boostStatus: 'OFFERED',
         presentationType,
-        actionToTake: 'ADD_CASH',
+        actionToTake,
         isMessageSequence: false,
         template: {
           display: { type: 'CARD' }, 
