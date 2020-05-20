@@ -571,8 +571,15 @@ class BoostForm extends React.Component {
         gameType: data.category,
         entryCondition: addCashCondition,
         timeLimitSeconds: parseInt(data.timeLimitSeconds, 10),
-        arrowSpeedMultiplier: parseInt(data.arrowSpeedMultiplier, 10)
       };
+
+      if (data.category === 'CHASE_ARROW') {
+        gameParams.arrowSpeedMultiplier = parseInt(data.arrowSpeedMultiplier, 10);
+      }
+
+      if (data.category === 'DESTROY_IMAGE') {
+        gameParams.tapsPerSquare = parseInt(data.imageBlockTapsToDestroy, 10);
+      }
 
       // todo : could make this more elegant tbh
       if (data.thresholdType === 'TOURNAMENT') {
