@@ -31,7 +31,9 @@ class MessageForm extends React.Component {
       'total_interest',
       'last_capitalization',
       'total_earnings',
-      'last_saved_amount'
+      'last_saved_amount',
+      'friendName',
+      'poolName',
     ];
 
     this.bodyEditor = null;

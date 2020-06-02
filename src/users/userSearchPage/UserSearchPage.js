@@ -45,11 +45,12 @@ class UserSearchPage extends React.Component {
       return <div className="user-not-found">{state.error}</div>;
     }
 
-    if (state.loading || state.user) {
-      return <>
-        {state.loading && <Spinner overlay/>}
-        {state.user && this.renderUserDetails()}
-      </>;
+    if (state.loading) {
+      return <Spinner overlay/>;
+    }
+
+    if (state.user) {
+      return this.renderUserDetails();
     }
 
     return this.renderUserList();
@@ -79,7 +80,7 @@ class UserSearchPage extends React.Component {
   renderUserList() {
     return <>
       <div className="card user-list">
-        <UsersListPage />
+        <UsersListPage accounts={this.state.possibleUsers} />
       </div>
     </>
   }
@@ -107,17 +108,22 @@ class UserSearchPage extends React.Component {
 
     this.usersService.searchUser({ [searchType]: searchValue }).pipe(
       takeUntil(this.unmount)
-    ).subscribe(user => {
-      this.setState({
-        loading: false,
-        error: null,
-        user
-      });
-    }, () => {
-      this.setState({
-        loading: false, user: null,
-        error: 'USER NOT FOUND: Please check the user details and try again'
-      });
+    ).subscribe(response => {
+      console.log('Search result: ', response);
+      if (response.length === 0) {
+        this.setState({ loading: false, possibleUsers: null, user: null, error: 'USER NOT FOUND: Please check the user details and try again' });
+      } else if (response.length === 1) {
+        this.setState({ loading: false, error: null, possibleUsers: null, user: response.user });  
+      } else {
+        this.setState({ loading: false, error: null, user: null, possibleUsers: response.possibleUsers });
+      }
+    }, (error) => {
+      console.log('Error finding user: ', error);
+      if (error && error.status === 404) {
+        this.setState({ loading: false, possibleUsers: null, user: null, error: 'USER NOT FOUND: Please check the user details and try again' });
+      } else {
+        this.setState({ loading: false, user: null, error: 'Error on backend searching for user, please contact dev team' });
+      }
     });
   }
 
