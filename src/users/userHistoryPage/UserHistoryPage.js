@@ -114,7 +114,8 @@ class UserHistoryPage extends React.Component {
 
     this.usersService.searchUser({ [searchType]: searchValue }).pipe(
       takeUntil(this.unmount)
-    ).subscribe(user => {
+    ).subscribe(result => {
+      const { user } = result;
       this.setState({
         user,
         userEvents: user.userHistory.userEvents,

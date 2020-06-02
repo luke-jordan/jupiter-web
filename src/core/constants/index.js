@@ -32,7 +32,8 @@ export const userHistoryEventTypeMap = {
   WITHDRAWAL_COMPLETED: 'Withdrawal completed',
   PASSWORD_SET: 'Password changed',
   USER_REGISTERED: 'Profile created',
-  STATUS_CHANGED: 'User status changed'
+  STATUS_CHANGED: 'User status changed',
+  BOOST_REDEEMED: 'Boost redeemed'
 };
 
 export const userTransactionTypeMap = {
