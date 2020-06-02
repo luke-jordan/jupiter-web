@@ -42,10 +42,12 @@ class UsersList extends React.Component {
 
         return <table className="table">
             <thead>
-                <th>Date opened</th>
-                <th>Reference</th>
-                <th>Number saves</th>
-                <th>Link</th>
+                <tr>
+                    <th>Date opened</th>
+                    <th>Reference</th>
+                    <th>Number saves</th>
+                    <th>Link</th>
+                </tr>
             </thead>
             <tbody>
                 {rows}

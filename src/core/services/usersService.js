@@ -1,5 +1,5 @@
 import { forkJoin } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import moment from 'moment';
 
 import { setAmountValueAndMoney, formatAmountString } from 'src/core/utils';
@@ -50,12 +50,23 @@ export class UsersService {
     params = Object.assign({}, params, { countryCode: 'ZAF' });
 
     return this.apiService.get(`${this.url}/user/find`, { params }).pipe(
-      tap(user => this._modifyUser(user))
+      map(result => this._modifySearchResult(result))
     );
   }
 
   updateUser(data) {
     return this.apiService.post(`${this.url}/user/update`, data);
+  }
+
+  _modifySearchResult(result) {
+    if (!result) {
+      return { length: 0 };
+    } else if (Array.isArray(result)) {
+      return { length: result.length, possibleUsers: result.map((user) => this._modifyUserAccountSummary(user)) };
+    } else {
+      console.log('Okay, returning this: ', result)
+      return { length: 1, user: this._modifyUser(result) };
+    }
   }
 
   _modifyUser(user) {
@@ -68,6 +79,7 @@ export class UsersService {
 
     user.pendingTransactions.forEach(transaction => this._modifyUserTransaction(transaction));
     user.userHistory.userEvents.forEach(history => this._modifyUserHistory(history));
+    return user;
   }
 
   _modifyUserTransaction(transaction) {
@@ -80,13 +92,19 @@ export class UsersService {
   _modifyUserHistory(history) {
     const { eventType, context } = history;
     let eventTypeText = userHistoryEventTypeMap[history.eventType] || history.eventType;
-    const hasAmountInfo = context && context.savedAmount && typeof context.savedAmount === 'string' && context.savedAmount.length > 0;
-    if (eventType === 'SAVING_PAYMENT_SUCCESSFUL' && hasAmountInfo) {
+    const hasAmountInfo = (keyPrefix) => (
+      context && context[`${keyPrefix}Amount`] && typeof context[`${keyPrefix}Amount`] === 'string' && context[`${keyPrefix}Amount`].length > 0
+    );
+
+    if (eventType === 'SAVING_PAYMENT_SUCCESSFUL' && hasAmountInfo('saved')) {
       const { savedAmount } = context;
       eventTypeText = `${eventTypeText} (${formatAmountString(savedAmount)})`;
-    } else if (eventType === 'WITHDRAWAL_EVENT_CONFIRMED' && hasAmountInfo) {
+    } else if (eventType === 'WITHDRAWAL_EVENT_CONFIRMED' && hasAmountInfo('withdrawal')) {
       const { withdrawalAmount } = context;
       eventTypeText = `${eventTypeText} (${formatAmountString(withdrawalAmount)})`;
+    } else if (eventType === 'BOOST_REDEEMED' && hasAmountInfo('boost')) {
+      const { boostAmount } = context;
+      eventTypeText = `${eventTypeText} (${formatAmountString(boostAmount)})`;
     }
     
     history.eventTypeText = eventTypeText;

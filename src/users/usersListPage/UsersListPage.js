@@ -8,12 +8,12 @@ import UsersList from '../usersList/UsersList';
 
 class UsersListPage extends React.Component {
 
-    constructor() {
+    constructor(props) {
         super();
 
         this.state = {
             loading: true,
-            accounts: [],
+            accounts: props.accounts || [],
             displayAccounts: []
         };
 
@@ -23,15 +23,16 @@ class UsersListPage extends React.Component {
     }
 
     componentDidMount() {
-        this.usersService.getAccountsList().pipe(
-            takeUntil(this.unmount)
-        ).subscribe(accounts => {
-            this.setState({
-                loading: false,
-                accounts,
-                displayAccounts: this.sortAccounts(accounts) 
-            })
-        })
+        // first branch means passed from parent
+        if (Array.isArray(this.state.accounts) && this.state.accounts.length > 0) {
+            this.setState({ loading: false, displayAccounts: this.sortAccounts(this.state.accounts) });
+        } else {
+            this.usersService.getAccountsList().pipe(
+                takeUntil(this.unmount)
+            ).subscribe(accounts => {
+                this.setState({ loading: false, accounts, displayAccounts: this.sortAccounts(accounts) })
+            })  
+        }
     }
 
 
