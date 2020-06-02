@@ -327,7 +327,7 @@ class BoostForm extends React.Component {
             <div className="grid-col-6">
               <div className="form-group">
                 <div className="form-label">How much should the arrow speed up?</div>
-                <Select name="arrowSpeed" value={state.data.arrowSpeedMultiplier}
+                <Select name="arrowSpeedMultiplier" value={state.data.arrowSpeedMultiplier}
                   onChange={this.inputChange} disabled={this.isView()}>
                   <option value="3">3x</option>
                   <option value="5">5x</option>
