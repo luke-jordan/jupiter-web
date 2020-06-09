@@ -111,7 +111,7 @@ class AudienceSelection extends React.Component {
     this.audienceService.getProperties().pipe(
       takeUntil(this.unmount)
     ).subscribe(properties => {
-      this.setState({ properties });
+      this.setState({ properties: properties.filter((property) => !property.excludeOnPanel) });
     });
   }
 

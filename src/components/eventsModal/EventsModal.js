@@ -13,7 +13,9 @@ const events = [
     ['BOOST_TOURNAMENT_WON', 'Boost tournament won'],
     ['FRIEND_REQUEST_RECEIVED', 'Friend request received'],
     ['FRIEND_REQUEST_INITIATED_ACCEPTED', 'Friend request completed'],
-    ['ADDED_TO_FRIEND_SAVING_POOL', 'Added to a saving pot']
+    ['ADDED_TO_FRIEND_SAVING_POOL', 'Added to a saving pot'],
+    ['SAVING_POOL_DEACTIVATED_BY_CREATOR', 'Saving pot deactivated'],
+    ['INVITED_TO_FRIEND_TOURNAMENT', 'Invited to a buddy tournament']
 ];
 
 const renderTableLines = (systemName, humanName) => (<tr key={systemName}><td>{systemName}</td><td>{humanName}</td></tr>);
