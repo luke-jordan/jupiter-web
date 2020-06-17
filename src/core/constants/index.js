@@ -33,6 +33,8 @@ export const userHistoryEventTypeMap = {
   PASSWORD_SET: 'Password changed',
   USER_REGISTERED: 'Profile created',
   STATUS_CHANGED: 'User status changed',
+  VERIFIED_AS_PERSON: 'KYC verification passed',
+  FAILED_VERIFICATION: 'Failed KYC verification',
   BOOST_REDEEMED: 'Boost redeemed'
 };
 
