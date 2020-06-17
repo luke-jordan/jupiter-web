@@ -338,13 +338,25 @@ class BoostForm extends React.Component {
             </div>
           )}
           {state.data.category === 'DESTROY_IMAGE' && (
-            <div className="grid-col-4">
-              <div className="form-group">
-                <div className="form-label">How many taps break a block?</div>
-                <Input name="imageBlockTapsToDestroy" type="number" value={state.data.imageBlockTapsToDestroy}
-                  onChange={this.inputChange} disabled={this.isView()}/>
+            <>
+              <div className="grid-col-4">
+                <div className="form-group">
+                  <div className="form-label">How many taps break a block?</div>
+                  <Input name="imageBlockTapsToDestroy" type="number" value={state.data.imageBlockTapsToDestroy}
+                    onChange={this.inputChange} disabled={this.isView()}/>
+                </div>
               </div>
-            </div>
+              <div className="grid-col-4">
+              <div className="form-group">
+                <div className="form-label">What is the image?</div>
+                  <Select name="breakingGameImage" value={state.data.breakingGameImage}
+                    onChange={this.inputChange} disabled={this.isView()}>
+                    <option value="CREDIT_CARD">Credit card</option>
+                    <option value="LOAN_SHARK">Loan shark</option>
+                  </Select>
+                </div>                
+              </div>
+            </>
           )};
         </div>
       </>
@@ -579,6 +591,7 @@ class BoostForm extends React.Component {
 
       if (data.category === 'DESTROY_IMAGE') {
         gameParams.tapsPerSquare = parseInt(data.imageBlockTapsToDestroy, 10);
+        gameParams.gameImage = data.breakingGameImage;
       }
 
       // todo : could make this more elegant tbh
