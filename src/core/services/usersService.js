@@ -88,6 +88,18 @@ export class UsersService {
     transaction.transactionTypeText = userTransactionTypeMap[transaction.transactionType] || transaction.transactionType;
   }
 
+  _modifyUserKycResult(context) {
+    const apiResponse = context ? context.apiResponse : null;
+    if (!apiResponse) {
+      return 'Unknown server error or log not available';
+    }
+
+    if (apiResponse.message) {
+      return apiResponse.message;
+    }
+
+    return Object.keys(apiResponse).map((key) => `${key}: ${apiResponse[key]}`).join(', ');
+  }
   
   _modifyUserHistory(history) {
     const { eventType, context } = history;
@@ -105,7 +117,10 @@ export class UsersService {
     } else if (eventType === 'BOOST_REDEEMED' && hasAmountInfo('boost')) {
       const { boostAmount } = context;
       eventTypeText = `${eventTypeText} (${formatAmountString(boostAmount)})`;
-    }
+    } else if (eventType === 'VERIFIED_AS_PERSON' || eventType === 'FAILED_VERIFICATION') {
+      const eventSuffix = `KYC checker logs: ${this._modifyUserKycResult(context)}`;
+      eventTypeText = `${eventTypeText}. ${eventSuffix}`;
+    } 
     
     history.eventTypeText = eventTypeText;
     history.formattedDate = moment(history.timestamp).format('DD/MM/YYYY HH:mm');
