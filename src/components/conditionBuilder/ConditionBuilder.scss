@@ -82,6 +82,9 @@
         height: 16px;
       }
     }
+    &.select {
+      width: 100%
+    }
     &.disabled .input-control {
       border-color: $color-silver;
     }

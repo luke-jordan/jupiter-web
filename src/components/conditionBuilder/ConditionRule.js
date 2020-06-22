@@ -50,6 +50,7 @@ class ConditionRule extends React.Component {
       return <Input value={item.value} onChange={e => this.inputChange(e, inputType)}/>;
     }
 
+    // note : would prefer for amounts to include unit and currency, but for the moment backend will assume whole currency if none specified
     if (inputType === 'number' || inputType === 'amount') {
       return <Input type="number" value={item.value} onChange={e => this.inputChange(e, inputType)}/>;
     }
@@ -66,6 +67,15 @@ class ConditionRule extends React.Component {
     if (inputType === 'epochMillis') {
       return <DatePicker selected={item.value} showClear={false}
         onChange={e => this.inputChange(e, inputType)}/>;
+    }
+
+    if (inputType === 'entity') {
+      const availableEntities = this.props.entities[itemField.entity] || [];
+      return <Select value={item.value} onChange={e => this.inputChange(e, inputType)}>
+        {availableEntities.map((entity) => (
+          <option key={entity.entityId} value={entity.entityId}>{entity.entityLabel}</option>
+        ))}
+      </Select>
     }
 
     return null;
@@ -114,7 +124,6 @@ class ConditionRule extends React.Component {
     let newValue;
 
     if (inputType === 'epochMillis') {
-      console.log('Alright, event get time: ', event.getTime());
       newValue = event ? event.getTime() : null;
     } else if (inputType === 'boolean') {
       newValue = event.target.value === 'yes';
