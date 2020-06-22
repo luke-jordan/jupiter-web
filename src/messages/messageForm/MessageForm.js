@@ -19,6 +19,7 @@ class MessageForm extends React.Component {
     super();
 
     this.modalService = inject('ModalService');
+    
     this.typeOptions = mapToOptions(messageDisplayTypeMap);
 
     this.htmlTypes = ['EMAIL', 'MODAL'];

@@ -23,9 +23,12 @@ class ConditionBuilder extends React.Component {
 
   render() {
     return <div className="condition-builder">
-      <ConditionGroup item={this.state.root}
+      <ConditionGroup 
+        item={this.state.root}
         ruleFields={this.props.ruleFields}
-        onEvent={this.eventHandler}/>
+        entities={this.props.entities}
+        onEvent={this.eventHandler}
+      />
       {this.renderPeriodEdit()}
     </div>;
   }

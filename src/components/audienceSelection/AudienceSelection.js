@@ -8,6 +8,7 @@ import RadioButton from 'src/components/radioButton/RadioButton';
 import Input from 'src/components/input/Input';
 
 import './AudienceSelection.scss';
+import { forkJoin } from 'rxjs';
 
 class AudienceSelection extends React.Component {
   constructor() {
@@ -15,6 +16,7 @@ class AudienceSelection extends React.Component {
 
     this.audienceService = inject('AudienceService');
     this.modalService = inject('ModalService');
+    this.boostService = inject('BoostsService');
 
     this.state = {
       loading: false,
@@ -24,6 +26,7 @@ class AudienceSelection extends React.Component {
         proportionValue: '100'
       },
       properties: [],
+      entities: {},
       root: { op: 'and', children: [] },
       preview: null
     };
@@ -45,8 +48,12 @@ class AudienceSelection extends React.Component {
       </div>
       {this.renderSettings()}
       {this.renderHint()}
-      <ConditionBuilder root={state.root} ruleFields={state.properties}
-        onChange={this.conditionChanged}/>
+      <ConditionBuilder 
+        root={state.root} 
+        ruleFields={state.properties}
+        entities={state.entities}
+        onChange={this.conditionChanged}
+      />
       {state.loading && <Spinner overlay/>}
     </div>;
   }
@@ -108,10 +115,18 @@ class AudienceSelection extends React.Component {
   }
 
   loadProperties() {
-    this.audienceService.getProperties().pipe(
+    forkJoin(
+      this.audienceService.getProperties(),
+      this.boostService.getBoosts({ excludeExpired: true, excludeUserCounts: true })
+    ).pipe(
       takeUntil(this.unmount)
-    ).subscribe(properties => {
-      this.setState({ properties: properties.filter((property) => !property.excludeOnPanel) });
+    ).subscribe(([properties, fullBoosts]) => {
+      this.setState({ 
+        properties: properties.filter((property) => !property.excludeOnPanel),
+        entities: {
+          boost: fullBoosts.map((boost) => ({ entityId: boost.boostId, entityLabel: boost.label })),
+        }
+      });
     });
   }
 

@@ -40,6 +40,7 @@ class ConditionGroup extends React.Component {
       item={childItem}
       parent={props.item}
       ruleFields={props.ruleFields}
+      entities={props.entities}
       onEvent={props.onEvent}/>;
   }
 
