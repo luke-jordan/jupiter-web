@@ -49,7 +49,13 @@ export const boostTypeMap = {
 };
 
 export const boostCategoryMap = {
-  TIME_LIMITED: 'Time limited'
+  SIMPLE_SAVE: 'Simple save',
+  ROUND_UP: 'Round up',
+  TIME_LIMITED: 'Old simple',
+
+  TAP_SCREEN: 'Tap screen',
+  CHASE_ARROW: 'Chase arrow',
+  BREAK_IMAGE: 'Break the image'
 };
 
 export const messagePresentationTypeMap = {
