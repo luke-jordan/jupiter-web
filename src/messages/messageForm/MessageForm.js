@@ -33,6 +33,8 @@ class MessageForm extends React.Component {
       'last_capitalization',
       'total_earnings',
       'last_saved_amount',
+      'next_major_digit',
+
       'friendName',
       'poolName',
       'tournamentName',

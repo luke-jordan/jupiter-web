@@ -11,10 +11,12 @@ import AudienceSelection from 'src/components/audienceSelection/AudienceSelectio
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 import EventsListModal from 'src/components/eventsModal/EventsModal';
 
+import { assembleRequestBasics, assembleStatusConditions, assembleBoostMessages } from './boostHelper.js';
+
 import './BoostForm.scss';
 
 const DEFAULT_CATEGORIES = {
-  'SIMPLE': 'TIME_LIMITED',
+  'SIMPLE': 'SIMPLE_SAVE',
   'GAME': 'TAP_SCREEN',
   'SOCIAL': 'FRIENDS_ADDED'
 };
@@ -41,7 +43,8 @@ class BoostForm extends React.Component {
       'total_interest',
       'last_capitalization',
       'total_earnings',
-      'last_saved_amount'
+      'last_saved_amount',
+      'next_major_digit',
     ];
   }
 
@@ -82,7 +85,8 @@ class BoostForm extends React.Component {
 
   renderCategoryOptions() {
     return <>
-        {this.state.data.type === 'SIMPLE' && <option value="TIME_LIMITED">Time limited</option>}
+        {this.state.data.type === 'SIMPLE' && <option value="SIMPLE_SAVE">Save X amount</option>}
+        {this.state.data.type === 'SIMPLE' && <option value="ROUND_UP">Next balance level</option>}
         {this.state.data.type === 'GAME' && <option value="TAP_SCREEN">Tap the screen</option>}
         {this.state.data.type === 'GAME' && <option value="CHASE_ARROW">Chase the arrow</option>}
         {this.state.data.type === 'GAME' && <option value="DESTROY_IMAGE">Destroy image</option>}
@@ -113,7 +117,7 @@ class BoostForm extends React.Component {
             <div className="form-label">Type</div>
             <Select name="type" value={state.data.type}
               onChange={this.onChangeBoostType} disabled={this.isView()}>
-              <option value="SIMPLE">Simple (e.g., time limited)</option>
+              <option value="SIMPLE">Simple</option>
               <option value="GAME">Game</option>
               <option value="SOCIAL">Social</option>
             </Select>
@@ -215,7 +219,9 @@ class BoostForm extends React.Component {
         {/* Required save */}
         <div className="grid-col-4">
           <div className="form-group">
-            <div className="form-label">How much must a user save to get it?</div>
+            <div className="form-label">
+              {this.state.data.category !== 'ROUND_UP' ? 'How much must a user save to get it?' : 'What is the minimum balance?'}
+            </div>
             <Input name="requiredSave" type="number" value={state.data.requiredSave} onChange={this.inputChange} 
               disabled={this.isView() || this.doesNotRequireSaveThreshold()}/>
           </div>
@@ -225,7 +231,7 @@ class BoostForm extends React.Component {
           <div className="form-group">
             <div className="form-label">How much is it worth (per user)?</div>
             <Input name="perUserAmount" type="number" value={state.data.perUserAmount} onChange={this.inputChange} 
-              disabled={this.isView() || (this.state.data.type === 'GAME' && this.state.data.initialStatus === 'UNLOCKED')}/>
+              disabled={this.isView()}/>
           </div>
         </div>
       </div>
@@ -241,6 +247,7 @@ class BoostForm extends React.Component {
             <Select name="offeredCondition" value={state.data.offeredCondition} onChange={this.inputChange} disabled={this.isView()}>
               <option value="IMMEDIATE">Now</option>
               <option value="EVENT">On an event</option>
+              <option value="MACHINE">When our robot overlord decides to</option>
             </Select>
           </div>
         </div>
@@ -497,7 +504,7 @@ class BoostForm extends React.Component {
       return {
         label: '',
         type: 'SIMPLE',
-        category: 'TIME_LIMITED',
+        category: 'SIMPLE_SAVE',
         clientId: clients[0] ? clients[0].clientId : '',
         floatId: clients[0] ? clients[0].floats[0].floatId : '',
         endTime: moment().endOf('day').toDate(),
@@ -538,131 +545,21 @@ class BoostForm extends React.Component {
     };
   }
 
+  // large amounts of complexity so most of it sectioned off and handed over to the helper
   getBoostReqBody() {
     const data = this.state.data;
-    const body = {};
-
-    // label
-    body.label = data.label;
-
-    // type & category
-    body.boostTypeCategory = `${data.type}::${data.category}`;
-
-    // client id
-    body.forClientId = data.clientId;
-    
-    // amount per user, 
-    body.boostAmountOffered = `${data.perUserAmount}::WHOLE_CURRENCY::${data.currency}`;
-
-    // source
-    body.boostSource = { bonusPoolId: data.source, clientId: data.clientId, floatId: 'zar_mmkt_float' };
-
-    // required save
-    const addCashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
-    const addCashCondition = `save_event_greater_than #{${addCashThreshold}}`;
-
-    // total budget
-    body.boostBudget = `${data.totalBudget}::WHOLE_CURRENCY::${data.currency}`;
-
-    // expiry time
-    body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
-
     const isEventTriggered = data.offeredCondition === 'EVENT';
-    const statusConditions = {};
 
-    if (isEventTriggered) {
-      body.initialStatus = 'UNCREATED';
-      statusConditions[data.initialStatus] = [`event_occurs #{${data.offerEvent}}`];
-    } else {
-      body.initialStatus = data.initialStatus;
-    }
+    let body = assembleRequestBasics(data);
 
-    // game paramaters
-    if (data.type === 'GAME') {
-      const gameParams = {
-        gameType: data.category,
-        entryCondition: addCashCondition,
-        timeLimitSeconds: parseInt(data.timeLimitSeconds, 10),
-      };
+    const { statusConditions, initialStatus, gameParams } = assembleStatusConditions(data, isEventTriggered);
+    body = { ...body, statusConditions, initialStatus };
 
-      if (data.category === 'CHASE_ARROW') {
-        gameParams.arrowSpeedMultiplier = parseInt(data.arrowSpeedMultiplier, 10);
-      }
-
-      if (data.category === 'DESTROY_IMAGE') {
-        gameParams.tapsPerSquare = parseInt(data.imageBlockTapsToDestroy, 10);
-        gameParams.gameImage = data.breakingGameImage;
-      }
-
-      // todo : could make this more elegant tbh
-      if (data.thresholdType === 'TOURNAMENT') {
-        gameParams.numberWinners = parseInt(data.winningThreshold, 10);
-      } else {
-        gameParams.winningThreshold = parseInt(data.winningThreshold, 10);
-      }
-
+    if (gameParams) {
       body.gameParams = gameParams;
-    } else {
-      statusConditions.REDEEMED = [addCashCondition];
     }
 
-    if (data.type === 'SOCIAL') {
-      const isAdded = data.category === 'FRIENDS_ADDED';
-      const conditionType = isAdded ? 'friends_added_since' : 'total_number_friends';
-      const conditionSuffix = isAdded ? `${moment().valueOf()}` : data.initiatedRequirement;
-      statusConditions.REDEEMED = [`${conditionType} #{${data.friendThreshold}::${conditionSuffix}}`];
-    }
-
-    // general message params
-    const messagesToCreate = [];
-    let actionToTake = 'ADD_CASH';
-    if (data.type === 'SOCIAL') {
-      actionToTake = 'VIEW_FRIENDS';
-    } else if (data.initialStatus === 'UNLOCKED') {
-      actionToTake = 'VIEW_BOOSTS';
-    }
-    
-    const presentationType = isEventTriggered ? 'EVENT_DRIVEN' : 'ONCE_OFF';
-    const triggerParameters = isEventTriggered ? { triggerEvent: [data.offerEvent] } : {}; 
-    
-    // push notification
-    if (data.pushBody) {
-      messagesToCreate.push({
-        boostStatus: 'CREATED',
-        presentationType,
-        actionToTake,
-        isMessageSequence: false,
-        template: {
-          title: data.pushTitle, body: data.pushBody,
-          display: { type: 'PUSH' }
-        },
-        triggerParameters
-      });
-    }
-
-    // card
-    if (data.cardBody) {
-      messagesToCreate.push({
-        boostStatus: 'OFFERED',
-        presentationType,
-        actionToTake,
-        isMessageSequence: false,
-        template: {
-          display: { type: 'CARD' }, 
-          title: data.cardTitle, 
-          body: data.cardBody,
-          actionToTake,
-          actionContext: {
-            addCashPreFilled: addCashThreshold
-          }
-        },
-        triggerParameters
-      });
-    }
-
-    body.messagesToCreate = messagesToCreate;
-
-    body.statusConditions = statusConditions;
+    body.messagesToCreate = assembleBoostMessages(data, isEventTriggered);
 
     return body;
   }
