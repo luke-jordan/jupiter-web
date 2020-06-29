@@ -14,6 +14,8 @@ class ConditionRule extends React.Component {
     const item = props.item;
     const itemField = this.getItemField();
 
+    const isStringInput = ['string', 'stringMultiple'].includes(itemField.expects);
+
     return <div className="condition-rule">
       <div className="grid-row">
         <div className="grid-col-3">
@@ -27,8 +29,9 @@ class ConditionRule extends React.Component {
           <Select value={item.op} onChange={this.operatorChange}
             disabled={itemField.expects === 'boolean'}>
             <option value="is">is</option>
-            <option value="greater_than">is more than</option>
-            <option value="less_than">is less than</option>
+            {isStringInput && <option value="in">is one of</option>}
+            {!isStringInput && <option value="greater_than">is more than</option>}
+            {!isStringInput && <option value="less_than">is less than</option>}
           </Select>
         </div>
         <div className="grid-col-2">

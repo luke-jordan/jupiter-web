@@ -41,12 +41,17 @@ class UserStatusForm extends React.Component {
 
   render() {
     return <form className="user-status-form">
-      <div className="status-header">Status</div>
-      {this.renderUserStatus()}
-      {this.renderKycStatus()}
-      {this.renderRegulatoryStatus()}
-      {this.renderBSheetId()}
-      {this.renderPwdResetBtn()}
+      <div className="grid-row">
+        <div className="grid-col-9">
+          {this.renderUserStatus()}
+          {this.renderKycStatus()}
+          {this.renderRegulatoryStatus()}
+          {this.renderBSheetId()}
+        </div>
+        <div className="grid-col-3">
+          {this.renderPwdResetBtn()}
+        </div>
+      </div>
     </form>;
   }
 
@@ -150,11 +155,19 @@ class UserStatusForm extends React.Component {
   }
 
   renderPwdResetBtn() {
-    return <div className="page-actions">
-      <button type="button" className="button" onClick={this.pwdResetClick}>Reset user password</button>
-      <button type="button" className="button" style={{ marginLeft: 10 }} onClick={this.otpFlowClick}>Manual OTP</button>
-    </div>;
+    return (<>
+      {this.actionButton('Reset user password', this.pwdResetClick)}
+      {this.actionButton('Stop messages (email/PN)', this.blockMsgClick)}
+      {this.actionButton('Upload a file', this.uploadFileClick)}
+      {this.actionButton('Manual OTP', this.otpFlowClick)}        
+    </>);
   }
+
+  actionButton = (text, onClick) => (
+    <div className="form-group grid-row">
+      <button type="button" className="button" onClick={onClick}>{text}</button>
+    </div>
+  );
 
   inputChange = event => {
     const { name, value } = event.target;

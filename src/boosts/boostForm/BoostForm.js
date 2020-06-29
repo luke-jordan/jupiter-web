@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
-import { inject } from 'src/core/utils';
+import { inject, convertAmount } from 'src/core/utils';
 import Select from 'src/components/select/Select';
 import Input from 'src/components/input/Input';
 import TextArea from 'src/components/textArea/TextArea';
@@ -21,6 +21,17 @@ const DEFAULT_CATEGORIES = {
   'SOCIAL': 'FRIENDS_ADDED'
 };
 
+const saveThresholdDescription = (category) => {
+  if (category === 'ROUND_UP') {
+    return 'What is the minimum balance?';
+  }
+
+  if (category === 'TARGET_BALANCE') {
+    return 'What is the target balance?';
+  }
+
+  return 'How much must a user save to get it?';
+}
 
 class BoostForm extends React.Component {
   constructor(props) {
@@ -87,9 +98,12 @@ class BoostForm extends React.Component {
     return <>
         {this.state.data.type === 'SIMPLE' && <option value="SIMPLE_SAVE">Save X amount</option>}
         {this.state.data.type === 'SIMPLE' && <option value="ROUND_UP">Next balance level</option>}
+        {this.state.data.type === 'SIMPLE' && <option value="TARGET_BALANCE">Absolute balance</option>}
+
         {this.state.data.type === 'GAME' && <option value="TAP_SCREEN">Tap the screen</option>}
         {this.state.data.type === 'GAME' && <option value="CHASE_ARROW">Chase the arrow</option>}
         {this.state.data.type === 'GAME' && <option value="DESTROY_IMAGE">Destroy image</option>}
+        
         {this.state.data.type === 'SOCIAL' && <option value="FRIENDS_ADDED">Friends added</option>}
         {this.state.data.type === 'SOCIAL' && <option value="NUMBER_FRIENDS">Total friends (initiated)</option>}
     </>
@@ -220,7 +234,7 @@ class BoostForm extends React.Component {
         <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">
-              {this.state.data.category !== 'ROUND_UP' ? 'How much must a user save to get it?' : 'What is the minimum balance?'}
+              {saveThresholdDescription(this.state.data.category)}
             </div>
             <Input name="requiredSave" type="number" value={state.data.requiredSave} onChange={this.inputChange} 
               disabled={this.isView() || this.doesNotRequireSaveThreshold()}/>
@@ -533,7 +547,7 @@ class BoostForm extends React.Component {
       category: boost.boostCategory,
       clientId: boost.forClientId,
       endTime: new Date(boost.endTime),
-      totalBudget: boost.boostBudget,
+      totalBudget: convertAmount(boost.boostBudget, boost.boostUnit),
       source: boost.fromBonusPoolId,
       requiredSave,
       perUserAmount: boost.boostAmount,
