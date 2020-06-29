@@ -120,7 +120,11 @@ export class UsersService {
     } else if (eventType === 'VERIFIED_AS_PERSON' || eventType === 'FAILED_VERIFICATION') {
       const eventSuffix = `KYC checker logs: ${this._modifyUserKycResult(context)}`;
       eventTypeText = `${eventTypeText}. ${eventSuffix}`;
-    } 
+    } else if (eventType === 'BANK_VERIFICATION_FAILED') {
+      const { resultFromVerifier } = context;
+      const failureCause = resultFromVerifier ? resultFromVerifier.cause : 'unknown cause, consult logs';
+      eventTypeText = `${eventTypeText} (${failureCause})`;
+    }
     
     history.eventTypeText = eventTypeText;
     history.formattedDate = moment(history.timestamp).format('DD/MM/YYYY HH:mm');

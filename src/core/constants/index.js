@@ -35,7 +35,11 @@ export const userHistoryEventTypeMap = {
   STATUS_CHANGED: 'User status changed',
   VERIFIED_AS_PERSON: 'KYC verification passed',
   FAILED_VERIFICATION: 'Failed KYC verification',
-  BOOST_REDEEMED: 'Boost redeemed'
+  BOOST_REDEEMED: 'Boost redeemed',
+
+  BANK_VERIFICATION_SUCCEEDED: 'Bank verification succeeded',
+  BANK_VERIFICATION_FAILED: 'Bank verification failed',
+  BANK_VERIFICATION_MANUAL: 'Manual bank verification required'
 };
 
 export const userTransactionTypeMap = {

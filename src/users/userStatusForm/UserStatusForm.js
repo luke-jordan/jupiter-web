@@ -12,7 +12,7 @@ class UserStatusForm extends React.Component {
     super();
 
     this.userStatusOptions = mapToOptions(userStatusMap);
-    this.kysStatusOptions = mapToOptions(userKycStatusMap);
+    this.kycStatusOptions = mapToOptions(userKycStatusMap);
     this.regulatoryStatusOptions = mapToOptions(userRegulatoryStatusMap);
 
     this.state = this.getState(props.user);
@@ -90,7 +90,7 @@ class UserStatusForm extends React.Component {
           <div className="form-label">KYC Status</div>
           <Select name="kycStatus" value={state.kycStatus} onChange={this.inputChange}
             disabled={state.userStatusEdit || state.bSheetIdEdit}>
-            {this.kysStatusOptions.map((item) => <option key={item.value} value={item.value}>{item.text}</option>)}
+            {this.kycStatusOptions.map((item) => <option key={item.value} value={item.value}>{item.text}</option>)}
           </Select>
         </div>
         {state.kycStatusEdit && <>
