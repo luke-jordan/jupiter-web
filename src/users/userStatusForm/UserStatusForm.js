@@ -159,7 +159,7 @@ class UserStatusForm extends React.Component {
       {this.actionButton('Reset user password', this.pwdResetClick)}
       {this.actionButton('Stop messages (email/PN)', this.blockMsgClick)}
       {this.actionButton('Upload a file', this.uploadFileClick)}
-      {this.actionButton('Manual OTP', this.otpFlowClick)}        
+      {this.actionButton('Manual OTP', this.otpFlowClick)}
     </>);
   }
 
@@ -235,6 +235,17 @@ class UserStatusForm extends React.Component {
       reasonToLog: 'Manual OTP flow'
     });
   };
+
+  blockMsgClick = () => {
+    this.submit({
+      fieldToUpdate: 'MESSAGE_PREFERENCES',
+      reasonToLog: 'User message update'
+    })
+  };
+
+  uploadFileClick = () => {
+    // actually, show a modal first
+  }
 
   kycStatusCancelClick = () => {
     this.setState({
