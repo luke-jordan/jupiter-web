@@ -39,7 +39,9 @@ export const userHistoryEventTypeMap = {
 
   BANK_VERIFICATION_SUCCEEDED: 'Bank verification succeeded',
   BANK_VERIFICATION_FAILED: 'Bank verification failed',
-  BANK_VERIFICATION_MANUAL: 'Manual bank verification required'
+  BANK_VERIFICATION_MANUAL: 'Manual bank verification required',
+
+  ADMIN_STORED_DOCUMENT: 'Document stored',
 };
 
 export const userTransactionTypeMap = {
