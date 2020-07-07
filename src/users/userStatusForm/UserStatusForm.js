@@ -7,15 +7,22 @@ import { userStatusMap, userKycStatusMap, userRegulatoryStatusMap } from 'src/co
 
 import './UserStatusForm.scss';
 
+import UserFileModal from '../userFileModal/UserFileModal';
+import { inject, unmountDecorator } from 'src/core/utils';
+
 class UserStatusForm extends React.Component {
   constructor(props) {
     super();
+
+    this.modalService = inject('ModalService');
 
     this.userStatusOptions = mapToOptions(userStatusMap);
     this.kycStatusOptions = mapToOptions(userKycStatusMap);
     this.regulatoryStatusOptions = mapToOptions(userRegulatoryStatusMap);
 
     this.state = this.getState(props.user);
+
+    unmountDecorator(this);
   }
 
   getState(user) {
@@ -30,6 +37,7 @@ class UserStatusForm extends React.Component {
       bSheetIdEdit: false,
       regulatoryStatus: user.regulatoryStatus,
       regulatoryStatusEdit: false,
+      showUploadFileModal: false,
     };
   }
 
@@ -181,6 +189,8 @@ class UserStatusForm extends React.Component {
       newState.regulatoryStatusEdit = true;
     } else if (name === 'bSheetId') {
       newState.bSheetIdEdit = true;
+    } else if (name === 'fileLogDescription') {
+      newState.fileLogDescribed = true;
     }
 
     this.setState(newState);
@@ -226,26 +236,22 @@ class UserStatusForm extends React.Component {
     this.submit({
       fieldToUpdate: 'PWORD',
       reasonToLog: 'Password update',
-    });
+    }, false);
   };
 
   otpFlowClick = () => {
     this.submit({
       fieldToUpdate: 'OTP',
       reasonToLog: 'Manual OTP flow'
-    });
+    }, false);
   };
 
   blockMsgClick = () => {
     this.submit({
       fieldToUpdate: 'MESSAGE_PREFERENCES',
       reasonToLog: 'User message update'
-    })
+    }, false)
   };
-
-  uploadFileClick = () => {
-    // actually, show a modal first
-  }
 
   kycStatusCancelClick = () => {
     this.setState({
@@ -274,10 +280,63 @@ class UserStatusForm extends React.Component {
     });
   }
 
-  submit(data) {
+  submit(data, reloadAfterSubmit) {
     data.systemWideUserId = this.props.user.systemWideUserId;
-    this.props.onSubmit(data);
+    this.props.onSubmit(data, reloadAfterSubmit);
   }
+
+  /**
+   * We can move all of this later, for now this React pattern of creating 35 different folders/files so each one has
+   * 10 lines and it's all "encapsulated" is causing more difficulty than it is probably worth
+   */
+  uploadFileClick = () => {
+    // show a modal, then deal with file messiness
+    this.modalService.openModal(
+      <UserFileModal
+        onClose={() => this.modalService.closeModal()}
+        onSelectFile={this.onSelectFileHandler}
+        onSetDescription={this.inputChange}
+        onClickUpload={this.onClickUploadFileForUser}
+      />
+    )
+  }
+
+  onSelectFileHandler = (event) => {
+    this.setState({
+      selectedFileToUpload: event.target.files[0]
+    })
+  };
+
+  onClickUploadFileForUser = event => {
+    event.preventDefault();
+    if (!this.state.selectedFileToUpload) {
+      this.modalService.closeModal();
+      this.modalService.openInfo('Error', 'Please select a file');
+      return;
+    }
+
+    const reader = new FileReader();
+    const file = this.state.selectedFileToUpload;
+
+    reader.onload = (event) => {
+      const base64content = event.target.result.split('base64,')[1];;
+
+      const data = {
+        systemWideUserId: this.props.user.systemWideUserId,
+        logDescription: this.state.fileLogDescription,
+        file: {
+          filename: file.name,
+          mimeType: file.type,
+          fileContent: base64content,
+        }
+      };
+
+      this.props.onUpload(data);
+    }
+
+    reader.readAsDataURL(file);
+  }
+
 }
 
 export default UserStatusForm;

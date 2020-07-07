@@ -17,6 +17,7 @@ class UserHistoryPage extends React.Component {
 
     this.usersService = inject('UsersService');
     this.historyService = inject('HistoryService');
+    this.modalService = inject('ModalService');
 
     this.state = {
       loading: false,
@@ -67,16 +68,29 @@ class UserHistoryPage extends React.Component {
     }
   }
 
+  onClickDownload = (browserEvent, serverEventContext) => {
+    browserEvent.preventDefault();
+    this.downloadFile(serverEventContext);
+  }
+
+  showDownloadLink(eventContext) {
+    return <button class="link text-underline" onClick={event => this.onClickDownload(event, eventContext)}>Download file</button>;
+  }
+
+  renderEvent(event, index) {
+    const insertDownloadLink = event.eventType === 'ADMIN_STORED_DOCUMENT';
+    return <tr key={index}>
+      <td>{event.eventTypeText}{insertDownloadLink ? this.showDownloadLink(event.context): ''}</td>
+      <td>{event.formattedDate}</td>
+      <td></td>
+    </tr>;
+  }
+
   renderHistory() {
     const state = this.state;
 
-    const rows = state.userEvents.slice(0, state.visibleCount).map((event, index) => {
-      return <tr key={index}>
-        <td>{event.eventTypeText}</td>
-        <td>{event.formattedDate}</td>
-        <td></td>
-      </tr>;
-    });
+    const rows = state.userEvents.slice(0, state.visibleCount)
+      .map((event, index) => this.renderEvent(event, index));
 
     const showMore = state.userEvents.length > state.visibleCount &&
       <div className="show-more-history">
@@ -121,6 +135,23 @@ class UserHistoryPage extends React.Component {
         userEvents: user.userHistory.userEvents,
         loading: false
       });
+    });
+  }
+
+  downloadFile({ filename, mimeType }) {
+    const params = { systemWideUserId: this.state.user.systemWideUserId, filename, mimeType };
+    this.usersService.fetchFile(params).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(result => {
+      console.log('Result: ', result);
+      const { fileContent } = result;
+      const a = document.createElement('a'); //Create <a>
+      a.href = `data:${mimeType};base64,${fileContent}`; //File Base64 Goes here
+      a.download = filename;
+      a.click(); //Downloaded file
+    }, (err) => {
+      console.log('Error: ', err);
+      this.modalService.openCommonError();
     });
   }
 

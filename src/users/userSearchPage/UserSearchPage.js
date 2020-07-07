@@ -70,7 +70,7 @@ class UserSearchPage extends React.Component {
           </div>
         </div>
         <div className="card-body">
-          <UserStatusForm user={state.user} onSubmit={this.userStatusChange}/>
+          <UserStatusForm user={state.user} onSubmit={this.userStatusChange} onUpload={this.uploadFileForUser}/>
           <UserTransactions user={state.user} onChanged={this.searchUser}/>
         </div>
       </div>
@@ -127,17 +127,36 @@ class UserSearchPage extends React.Component {
     });
   }
 
-  userStatusChange = data => {
+  userStatusChange = (data, reloadAfterSubmit = true) => {
     this.setState({ loading: true });
     this.usersService.updateUser(data).pipe(
       takeUntil(this.unmount)
     ).subscribe(() => {
-      this.searchUser(); // reload user
+      // show a friendly modal, and reload the user when it is closed
+      this.setState({ loading: false });
+      const onCloseFn = reloadAfterSubmit ? this.searchUser : null;
+      this.modalService.openInfo('Done!', `The user's properties have been updated successfully`, onCloseFn);
     }, () => {
       this.setState({ loading: false });
       this.modalService.openCommonError();
     });
   }
+
+  uploadFileForUser = data => {
+    this.setState({ loading: true });
+
+    this.usersService.uploadFile(data).pipe(
+      takeUntil(this.unmount)
+    ).subscribe(() => {
+      // no need to reload on this one, because the file becomes visible in the history, which will fetch the events again
+      this.setState({ loading: false });
+      this.modalService.openInfo('Done!', 'The file has been stored for the user, and will be visibile in their history');
+    }, () => {
+      this.setState({ loading: false });
+      this.modalService.openCommonError();
+    });
+  }
+
 }
 
 export default UserSearchPage;

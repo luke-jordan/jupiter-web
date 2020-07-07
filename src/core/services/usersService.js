@@ -58,13 +58,20 @@ export class UsersService {
     return this.apiService.post(`${this.url}/user/update`, data);
   }
 
+  uploadFile(data) {
+    return this.apiService.post(`${this.url}/user/document/store`, data);
+  }
+
+  fetchFile(params) {
+    return this.apiService.get(`${this.url}/user/document/retrieve`, { params });
+  }
+
   _modifySearchResult(result) {
     if (!result) {
       return { length: 0 };
     } else if (Array.isArray(result)) {
       return { length: result.length, possibleUsers: result.map((user) => this._modifyUserAccountSummary(user)) };
     } else {
-      console.log('Okay, returning this: ', result)
       return { length: 1, user: this._modifyUser(result) };
     }
   }
@@ -124,6 +131,9 @@ export class UsersService {
       const { resultFromVerifier } = context;
       const failureCause = resultFromVerifier ? resultFromVerifier.cause : 'unknown cause, consult logs';
       eventTypeText = `${eventTypeText} (${failureCause})`;
+    } else if (eventType === 'ADMIN_STORED_DOCUMENT') {
+      const { logDescription } = context;
+      eventTypeText = `${eventTypeText}, with description: ${logDescription}`;
     }
     
     history.eventTypeText = eventTypeText;
