@@ -283,7 +283,7 @@ class UserTransactions extends React.Component {
 
     const submissionBody = {
       operation: 'INITIATE',
-      parameters: {
+      transactionParameters: {
         accountId: txInitiateData.accountId,
         amount: revertAmount(txInitiateData.amount, 'HUNDREDTH_CENT'),
         unit: 'HUNDREDTH_CENT',

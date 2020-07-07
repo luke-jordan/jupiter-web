@@ -70,11 +70,11 @@ export class ApiService {
 
   errorHandler(err, options) {
     // Logout and redirect user to login page if request fails with status 401 or 403
-    // if (
-    //   options.forceRelogin && err instanceof AjaxError && [401, 403].includes(err.status)
-    // ) {
-    //   console.log('Force relogin');
-    //   this.authService.logout().subscribe();
-    // }
+    if (
+      options.forceRelogin && err instanceof AjaxError && [401, 403].includes(err.status)
+    ) {
+      console.log('Force relogin');
+      this.authService.logout().subscribe();
+    }
   }
 }
