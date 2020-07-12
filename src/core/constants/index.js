@@ -5,7 +5,10 @@ export const userStatusMap = {
   USER_HAS_INITIATED_SAVE: 'User has initiated save',
   USER_HAS_SAVED: 'User has cash in account',
   USER_HAS_WITHDRAWN: 'User has completed withdrawal',
-  SUSPENDED_FOR_KYC: 'Suspended by failed KYC'
+  SUSPENDED_FOR_KYC: 'Suspended by failed KYC',
+  SOFT_FLAGGED: 'Soft flagged for fraud/AML',
+  HARD_FLAGGED: 'Hard flagged for fraud/AML',
+  FLAG_CLEARED: 'Cleared of soft/hard flagged'
 };
 
 export const userKycStatusMap = {
@@ -26,17 +29,20 @@ export const userRegulatoryStatusMap = {
 };
 
 export const userHistoryEventTypeMap = {
-  USER_LOGIN: 'User logged in',
   SAVING_PAYMENT_SUCCESSFUL: 'Saving payment successful',
+  BOOST_REDEEMED: 'Boost redeemed',
+
   WITHDRAWAL_EVENT_CONFIRMED: 'Withdrawal confirmed',
   WITHDRAWAL_COMPLETED: 'Withdrawal completed',
+  WITHDRAWAL_EVENT_CANCELLED: 'Withdrawal cancelled',
+
+  USER_LOGIN: 'User logged in',
   PASSWORD_SET: 'Password changed',
   USER_REGISTERED: 'Profile created',
   STATUS_CHANGED: 'User status changed',
   VERIFIED_AS_PERSON: 'KYC verification passed',
   FAILED_VERIFICATION: 'Failed KYC verification',
-  BOOST_REDEEMED: 'Boost redeemed',
-
+  
   BANK_VERIFICATION_SUCCEEDED: 'Bank verification succeeded',
   BANK_VERIFICATION_FAILED: 'Bank verification failed',
   BANK_VERIFICATION_MANUAL: 'Manual bank verification required',

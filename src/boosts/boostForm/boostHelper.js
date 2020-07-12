@@ -32,6 +32,17 @@ const getAddCashCondition = (data) => {
     const addCashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
     const addCashCondition = `save_event_greater_than #{${addCashThreshold}}`;
     return addCashCondition;
+};
+
+const mapSimpleCategoryToCashCondition = (data) => {
+    switch (data.category) {
+        case 'ROUND_UP':
+            return 'balance_crossed_major_digit';
+        case 'TARGET_BALANCE':
+            return 'balance_crossed_abs_target';
+        default:
+            return 'save_event_greater_than';
+    }
 }
 
 const assembleStatusConditions = (data, isEventTriggered) => {
@@ -45,7 +56,7 @@ const assembleStatusConditions = (data, isEventTriggered) => {
       
     if (data.type === 'SIMPLE') {
         const cashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
-        const cashCondition = data.category === 'ROUND_UP' ? 'balance_crossed_major_digit' : 'save_event_greater_than';
+        const cashCondition = mapSimpleCategoryToCashCondition(data);
         statusConditions.REDEEMED = [`${cashCondition} #{${cashThreshold}}`];
     }
 
@@ -117,12 +128,15 @@ const assembleBoostMessages = (data, isEventTriggered) => {
     // card
     if (data.cardBody) {
         const actionContext = {};
-        if (data.category !== 'ROUND_UP') {
-            actionContext.addCashPreFilled = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
-        } else {
+        if (data.category === 'ROUND_UP') {
             actionContext.addCashTargetMinimum = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
             actionContext.addCashDigitThresholds = [3, 5, 10]; // in future may make a parameter
-        }
+        } else if (data.category === 'TARGET_BALANCE') {
+            actionContext.addCashTargetMinimum = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
+        } else {
+            actionContext.addCashPreFilled = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
+
+        }        
 
         messagesToCreate.push({
             boostStatus: 'OFFERED',
