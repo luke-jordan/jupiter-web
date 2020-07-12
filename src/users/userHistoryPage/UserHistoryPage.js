@@ -70,17 +70,40 @@ class UserHistoryPage extends React.Component {
 
   onClickDownload = (browserEvent, serverEventContext) => {
     browserEvent.preventDefault();
+    console.log('Event context: ', serverEventContext);
     this.downloadFile(serverEventContext);
   }
 
   showDownloadLink(eventContext) {
-    return <button class="link text-underline" onClick={event => this.onClickDownload(event, eventContext)}>Download file</button>;
+    return <button className="link text-underline" onClick={event => this.onClickDownload(event, eventContext)}>Download file</button>;
+  }
+
+  onClickMarkSuspicious = (browserEvent, serverEventContext) => {
+    browserEvent.preventDefault();
+    console.log('Would do something with: ', serverEventContext);
+  };
+
+  showMarkSuspiciousLink(eventContext) {
+    return (
+      <button className="link text-underline" onClick={browserEvent => this.onClickMarkSuspicious(browserEvent, eventContext)}>Mark suspicious/fraudulent</button>
+    );
+  }
+
+  renderAdditionalEventAction(eventType, eventContext) {
+    switch (eventType) {
+      case 'ADMIN_STORED_DOCUMENT':
+        return this.showDownloadLink(eventContext);
+      case 'SAVING_PAYMENT_SUCCESSFUL':
+        return this.showMarkSuspiciousLink(eventContext);
+      default:
+        return null;
+    }
   }
 
   renderEvent(event, index) {
-    const insertDownloadLink = event.eventType === 'ADMIN_STORED_DOCUMENT';
+    const additionalAction = this.renderAdditionalEventAction(event.eventType, event.context);
     return <tr key={index}>
-      <td>{event.eventTypeText}{insertDownloadLink ? this.showDownloadLink(event.context): ''}</td>
+      <td>{event.eventTypeText}{additionalAction || ''}</td>
       <td>{event.formattedDate}</td>
       <td></td>
     </tr>;

@@ -64,7 +64,7 @@ class BoostForm extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('Passed client list: ', this.props.clients);
+    // console.log('Passed client list: ', this.props.clients);
     if (
       this.props.boost !== prevProps.boost ||
       this.props.clients !== prevProps.clients
@@ -106,6 +106,9 @@ class BoostForm extends React.Component {
         
         {this.state.data.type === 'SOCIAL' && <option value="FRIENDS_ADDED">Friends added</option>}
         {this.state.data.type === 'SOCIAL' && <option value="NUMBER_FRIENDS">Total friends (initiated)</option>}
+
+        {this.state.data.type === 'WITHDRAWAL' && <option value="ABORT_WITHDRAWAL">Abort withdrawal</option>}
+        {this.state.data.type === 'WITHDRAWAL' && <option value="CANCEL_WITHDRAWAL">Cancel withdrawal</option>}
     </>
   }
 
@@ -134,6 +137,7 @@ class BoostForm extends React.Component {
               <option value="SIMPLE">Simple</option>
               <option value="GAME">Game</option>
               <option value="SOCIAL">Social</option>
+              <option value="WITHDRAWAL">Withdrawal</option>
             </Select>
           </div>
         </div>

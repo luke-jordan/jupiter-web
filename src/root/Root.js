@@ -10,6 +10,7 @@ import MessagesPage from 'src/messages/messagesPage/MessagesPage';
 import BoostsPage from 'src/boosts/boostsPage/BoostsPage';
 import UsersPage from 'src/users/usersPage/UsersPage';
 import ClientsPage from 'src/clients/clientsPage/ClientsPage';
+import SnippetsPage from 'src/snippets/SnippetsPage';
 
 const PageNotFound = () => <div className="no-data">Page not found</div>;
 
@@ -24,6 +25,7 @@ class Root extends React.Component {
           <AdminRoute path="/boosts" component={BoostsPage}/>
           <AdminRoute path="/messages" component={MessagesPage}/>
           <AdminRoute path="/clients" component={ClientsPage}/>
+          <AdminRoute path="/snippets" component={SnippetsPage}/>
           <AdminRoute component={PageNotFound}/>
         </Switch>
       </PageLayout>
