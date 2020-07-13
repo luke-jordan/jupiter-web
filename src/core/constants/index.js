@@ -57,7 +57,9 @@ export const userTransactionTypeMap = {
 
 export const boostTypeMap = {
   GAME: 'Game',
-  SIMPLE: 'Simple'
+  SIMPLE: 'Simple',
+  SOCIAL: 'Social',
+  WITHDRAWAL: 'Withdrawal'
 };
 
 export const boostCategoryMap = {
@@ -67,7 +69,10 @@ export const boostCategoryMap = {
 
   TAP_SCREEN: 'Tap screen',
   CHASE_ARROW: 'Chase arrow',
-  BREAK_IMAGE: 'Break the image'
+  BREAK_IMAGE: 'Break the image',
+
+  CANCEL_WITHDRAWAL: 'Cancel withdrawal',
+  ABORT_WITHDRAWAL: 'Abort withdrawal'
 };
 
 export const messagePresentationTypeMap = {
