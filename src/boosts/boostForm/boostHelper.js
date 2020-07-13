@@ -24,6 +24,12 @@ const assembleRequestBasics = (data) => {
     // expiry time
     body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
 
+    // some important withdrawal stuff
+    if (data.type === 'WITHDRAWAL') {
+        body.flags = ['WITHDRAWAL_HALTING'];
+        body.boostAudienceType = 'EVENT_DRIVEN';
+    }
+
     return body;
 };
 
@@ -48,7 +54,9 @@ const mapSimpleCategoryToCashCondition = (data) => {
 const assembleStatusConditions = (data, isEventTriggered) => {
     const statusConditions = {};
 
-    const initialStatus = isEventTriggered ? 'UNCREATED' : data.initialStatus;
+    // this was not a good idea, but little time now to chase down effects of changing, so grandfather in better 
+    // route (using audience presentation type) via withdrawal then come back and fix
+    let initialStatus = isEventTriggered ? 'UNCREATED' : data.initialStatus;
 
     if (isEventTriggered) {
         statusConditions[data.initialStatus] = [`event_occurs #{${data.offerEvent}}`];
@@ -93,6 +101,17 @@ const assembleStatusConditions = (data, isEventTriggered) => {
         statusConditions.REDEEMED = [`${conditionType} #{${data.friendThreshold}::${conditionSuffix}}`];
     }
 
+    if (data.type === 'WITHDRAWAL') {
+        initialStatus = 'OFFERED'; // by definition
+
+        const timeSuffix = `${data.withdrawalMinDays}::DAYS`;
+        statusConditions['OFFERED'] = [`event_occurs #{${data.withdrawalEventAnchor}}`];
+        statusConditions['PENDING'] = [`event_occurs #{WITHDRAWAL_EVENT_CANCELLED}`];
+        statusConditions['REDEEMED'] = [`event_does_not_follow #{WITHDRAWAL_EVENT_CANCELLED::ADMIN_SETTLED_WITHDRAWAL::${timeSuffix}}`];
+        statusConditions['EXPIRED'] = [`event_does_follow #{${data.withdrawalEventAnchor}::ADMIN_SETTLED_WITHDRAWAL::${timeSuffix}}`];   
+        statusConditions['FAILED'] = [`event_does_follow #{WITHDRAWAL_EVENT_CANCELLED::ADMIN_SETTLED_WITHDRAWAL::${timeSuffix}}`];
+    }
+
     return { statusConditions, initialStatus, gameParams };
 };
 
@@ -108,7 +127,9 @@ const assembleBoostMessages = (data, isEventTriggered) => {
     }
     
     const presentationType = isEventTriggered ? 'EVENT_DRIVEN' : 'ONCE_OFF';
-    const triggerParameters = isEventTriggered ? { triggerEvent: [data.offerEvent] } : {}; 
+
+    const offerEvent = data.type === 'WITHDRAWAL' ? 'WITHDRAWAL_BOOST_OFFERED' : data.offerEvent;
+    const triggerParameters = isEventTriggered ? { triggerEvent: [offerEvent] } : {}; 
     
     // push notification
     if (data.pushBody) {
@@ -149,6 +170,21 @@ const assembleBoostMessages = (data, isEventTriggered) => {
                 body: data.cardBody,
                 actionToTake,
                 actionContext
+            },
+            triggerParameters
+        });
+    }
+
+    // email
+    if (data.emailBody) {
+        messagesToCreate.push({
+            boostStatus: 'OFFERED',
+            presentationType,
+            isMessageSequence: false,
+            template: {
+                display: { type: 'EMAIL' },
+                title: data.emailSubject,
+                body: data.emailBody
             },
             triggerParameters
         });

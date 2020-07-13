@@ -7,6 +7,7 @@ import Input from 'src/components/input/Input';
 import TextArea from 'src/components/textArea/TextArea';
 import DatePicker from 'src/components/datePicker/DatePicker';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
+import TextEditor from 'src/components/textEditor/TextEditor';
 
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 import EventsListModal from 'src/components/eventsModal/EventsModal';
@@ -18,7 +19,8 @@ import './BoostForm.scss';
 const DEFAULT_CATEGORIES = {
   'SIMPLE': 'SIMPLE_SAVE',
   'GAME': 'TAP_SCREEN',
-  'SOCIAL': 'FRIENDS_ADDED'
+  'SOCIAL': 'FRIENDS_ADDED',
+  'WITHDRAWAL': 'CANCEL_WITHDRAWAL'
 };
 
 const saveThresholdDescription = (category) => {
@@ -190,7 +192,8 @@ class BoostForm extends React.Component {
 
   doesNotRequireSaveThreshold() {
     // social saves will have a variant "friends all save" in future, but for now it's simpler
-    return (this.state.data.type === 'GAME' && this.state.data.initialStatus === 'UNLOCKED') || this.state.data.type === 'SOCIAL';
+    const noSaveTypes = ['SOCIAL', 'WITHDRAWAL'];
+    return noSaveTypes.includes(this.state.data.type) || (this.state.data.type === 'GAME' && this.state.data.initialStatus === 'UNLOCKED');
   }
 
   renderConditions() {
@@ -257,27 +260,31 @@ class BoostForm extends React.Component {
       {this.state.data.type === 'GAME' && this.renderGameOptions()}
       {/* Social params */}
       {this.state.data.type === 'SOCIAL' && this.renderSocialOptions()}
-      {/* Start time/conditions */}
-      <div className="grid-row">
-        <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">When will it be offered?</div>
-            <Select name="offeredCondition" value={state.data.offeredCondition} onChange={this.inputChange} disabled={this.isView()}>
-              <option value="IMMEDIATE">Now</option>
-              <option value="EVENT">On an event</option>
-              <option value="MACHINE">When our robot overlord decides to</option>
-            </Select>
+      {/* Withdrawal params */}
+      {this.state.data.type === 'WITHDRAWAL' && this.renderWithdrawalOptions()}
+      {/* Start time/conditions, not relevant if withdrawal */}
+      {this.state.data.type !== 'WITHDRAWAL' && (
+        <div className="grid-row">
+          <div className="grid-col-4">
+            <div className="form-group">
+              <div className="form-label">When will it be offered?</div>
+              <Select name="offeredCondition" value={state.data.offeredCondition} onChange={this.inputChange} disabled={this.isView()}>
+                <option value="IMMEDIATE">Now</option>
+                <option value="EVENT">On an event</option>
+                <option value="MACHINE">When our robot overlord decides to</option>
+              </Select>
+            </div>
+          </div>
+          <div className="grid-col-4">
+            <div className="form-group">
+              <div className="form-label">What event creates the boost?</div>
+              <Input name="offerEvent" value={state.data.offerEvent} onChange={this.inputChange}
+                disabled={state.data.offeredCondition !== 'EVENT'}></Input>
+              <button className="link text-underline" onClick={this.showEventsModal}>Available Events</button>
+            </div>
           </div>
         </div>
-        <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">What event creates the boost?</div>
-            <Input name="offerEvent" value={state.data.offerEvent} onChange={this.inputChange}
-              disabled={state.data.offeredCondition !== 'EVENT'}></Input>
-            <button className="link text-underline" onClick={this.showEventsModal}>Available Events</button>
-          </div>
-        </div>
-      </div>
+      )}
     </>;
   }
 
@@ -310,6 +317,31 @@ class BoostForm extends React.Component {
           </div>
         </div>
       </>
+    )
+  }
+
+  renderWithdrawalOptions() {
+    const { state } = this;
+    return (
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-group">
+          <div className="form-label">Where in withdrawal process is it offered?</div>
+            <Select name="withdrawalEventAnchor" type="number" value={state.data.withdrawalEventAnchor}
+                onChange={this.inputChange} disabled={this.isView()}>
+                  <option value="WITHDRAWAL_EVENT_INITIATED">Started flow in app</option>
+                  <option value="WITHDRAWAL_EVENT_CONFIRMED">Completed flow in app</option>
+            </Select>
+          </div>
+        </div>
+        <div className="grid-col-4">
+          <div className="form-group">
+          <div className="form-label">For how many days must the user not withdraw?</div>
+            <Input name="withdrawalMinDays" type="number" value={state.data.withdrawalMinDays}
+              onChange={this.inputChange} disabled={this.isView()}/>
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -428,6 +460,25 @@ class BoostForm extends React.Component {
           </div>
         </div>
       </div>
+        {/* Email title and rich text body editor */}
+      <div className="grid-row">
+        <div className="grid-col">
+          <div className="form-group">
+            <div className="form-label">Email subject</div>
+            <Input name="emailSubject" placeholder="Enter subject" disabled={this.isView()}
+              value={state.data.emailSubject} onChange={this.inputChange}/>
+          </div>
+        </div>
+      </div>
+      <div className="grid-row">
+        <div className="grid-col">
+          <div className="form-group">
+            <div className="form-label">Email body</div>
+              <TextEditor init={{ setup: this.setupBodyEditor }} value={state.data.emailBody} disabled={this.isView()}
+                onEditorChange={value => this.inputChange({ target: { name: 'emailBody', value }})}/>
+            </div>
+        </div>
+      </div>
     </>;
   }
 
@@ -534,11 +585,15 @@ class BoostForm extends React.Component {
         pushBody: '',
         cardTitle: '',
         cardBody: '',
+        emailSubject: '',
+        emailBody: '',
         currency: 'ZAR',
         timeLimitSeconds: '10',
         winningThreshold: '10',
         arrowSpeedMultiplier: '5',
-        initialStatus: 'OFFERED'
+        initialStatus: 'OFFERED',
+        withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
+        withdrawalMinDays: 30,
       };
     }
 
@@ -566,7 +621,7 @@ class BoostForm extends React.Component {
   // large amounts of complexity so most of it sectioned off and handed over to the helper
   getBoostReqBody() {
     const data = this.state.data;
-    const isEventTriggered = data.offeredCondition === 'EVENT';
+    const isEventTriggered = data.offeredCondition === 'EVENT' || data.type === 'WITHDRAWAL'; // by definition withdrawals are event driven
 
     let body = assembleRequestBasics(data);
 
@@ -590,9 +645,13 @@ class BoostForm extends React.Component {
     const data = this.state.data;
     const pushFilled = data.pushTitle.trim() && data.pushBody.trim();
     const cardFilled = data.cardTitle.trim() && data.cardBody.trim();
+    const emailFilled = data.emailSubject.trim() && data.emailBody.trim();
 
-    if (!pushFilled && !cardFilled) {
-      this.modalService.openInfo('Boost create', 'Please fill in <b>Push notification</b> or <b>Card details</b>');
+    const oneMessageDone = pushFilled || cardFilled || emailFilled;
+    const isInAppWithdrawal = data.type === 'WITHDRAWAL' && data.withdrawalEventAnchor === 'WITHDRAWAL_EVENT_INITIATED';
+
+    if (!oneMessageDone && !isInAppWithdrawal) {
+      this.modalService.openInfo('Boost create', 'Please fill in <b>Push notification</b> or <b>Card details</b> or <b>Email</b>');
       return false;
     }
 
@@ -606,6 +665,23 @@ class BoostForm extends React.Component {
     }
 
     return true;
+  }
+
+  setupBodyEditor = editor => {
+    editor.settings.toolbar += ' | params';
+    editor.ui.registry.addMenuButton('params', {
+      text: 'Insert parameter',
+      fetch: cb => {
+        const items = this.bodyParameters.map(param => {
+          return {
+            type: 'menuitem', text: param,
+            onAction: () => editor.selection.setContent(`#{${param}}`)
+          }
+        });
+        cb(items);
+      }
+    });
+    this.bodyEditor = editor;
   }
 }
 
