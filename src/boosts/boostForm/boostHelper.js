@@ -177,17 +177,25 @@ const assembleBoostMessages = (data, isEventTriggered) => {
 
     // email
     if (data.emailBody) {
-        messagesToCreate.push({
+        const msgDisplay = { type: 'EMAIL' };
+
+        if (typeof data.emailBackupSms === 'string' && data.emailBackupSms.trim().length > 0) {
+            msgDisplay.backupSms = data.emailBackupSms;
+        }
+
+        const emailMsg = {
             boostStatus: 'OFFERED',
             presentationType,
             isMessageSequence: false,
             template: {
-                display: { type: 'EMAIL' },
+                display: msgDisplay,
                 title: data.emailSubject,
                 body: data.emailBody
             },
             triggerParameters
-        });
+        };
+
+        messagesToCreate.push(emailMsg);
     }
 
     return messagesToCreate;

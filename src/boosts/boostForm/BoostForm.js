@@ -479,6 +479,16 @@ class BoostForm extends React.Component {
             </div>
         </div>
       </div>
+      <div className="grid-row">
+        <div className="grid-col">
+          <div className="form-group">
+            <div className="form-label">Backup SMS (optional)</div>
+            <Input name="emailBackupSms" placeholder="" disabled={this.isView()}
+              value={state.data.emailBackupSms} onChange={this.inputChange} />
+          </div>
+        </div>
+      </div>
+
     </>;
   }
 
@@ -587,6 +597,7 @@ class BoostForm extends React.Component {
         cardBody: '',
         emailSubject: '',
         emailBody: '',
+        emailBackupSms: '',
         currency: 'ZAR',
         timeLimitSeconds: '10',
         winningThreshold: '10',
