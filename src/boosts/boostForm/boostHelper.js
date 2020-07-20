@@ -30,6 +30,15 @@ const assembleRequestBasics = (data) => {
         body.boostAudienceType = 'EVENT_DRIVEN';
     }
 
+    // and similarly, setting up ML parameters if this is an ML boost
+    if (data.offeredCondition === 'ML_DETERMINED') {
+        body.flags = ['ML_DETERMINED']
+        body.mlParameters = {
+            onlyOfferOnce: data.mlOfferMoreThanOnce === 'FALSE',
+            minIntervalBetweenRuns: { value: data.mlMinDaysBetweenOffer, unit: 'days' }
+        }
+    }
+
     return body;
 };
 
@@ -51,12 +60,15 @@ const mapSimpleCategoryToCashCondition = (data) => {
     }
 }
 
-const assembleStatusConditions = (data, isEventTriggered) => {
+const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false) => {
     const statusConditions = {};
 
     // this was not a good idea, but little time now to chase down effects of changing, so grandfather in better 
     // route (using audience presentation type) via withdrawal then come back and fix
-    let initialStatus = isEventTriggered ? 'UNCREATED' : data.initialStatus;
+    let initialStatus = data.initialStatus;
+    if (isEventTriggered || isMlDetermined) {
+        initialStatus = 'CREATED';
+    }
 
     if (isEventTriggered) {
         statusConditions[data.initialStatus] = [`event_occurs #{${data.offerEvent}}`];

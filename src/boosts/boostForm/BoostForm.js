@@ -271,7 +271,7 @@ class BoostForm extends React.Component {
               <Select name="offeredCondition" value={state.data.offeredCondition} onChange={this.inputChange} disabled={this.isView()}>
                 <option value="IMMEDIATE">Now</option>
                 <option value="EVENT">On an event</option>
-                <option value="MACHINE">When our robot overlord decides to</option>
+                <option value="ML_DETERMINED">When our robot overlord decides to</option>
               </Select>
             </div>
           </div>
@@ -285,12 +285,39 @@ class BoostForm extends React.Component {
           </div>
         </div>
       )}
+      {this.state.data.offeredCondition === 'ML_DETERMINED' && this.renderMlOptions()}
     </>;
   }
 
   showEventsModal = event => {
     event.preventDefault();
     this.setState({ showEventsModal: true });
+  }
+
+  renderMlOptions() {
+    const { data } = this.state;
+    return (
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-group">
+          <div className="form-label">Offer to the same person more than once?</div>
+          <Select name="mlOfferMoreThanOnce" type="number" value={data.mlOfferMoreThanOnce}
+              onChange={this.inputChange} disabled={this.isView()}>
+                {/* checkbox better but that's a pain with elements, and other parts of this are more important */}
+                <option value="TRUE">Yes</option> 
+                <option value="FALSE">No</option>
+            </Select>
+          </div>
+        </div>
+        <div className="grid-col-4">
+          <div className="form-group">
+          <div className="form-label">Minimum days between an offer?</div>
+          <Input name="mlMinDaysBetweenOffer" type="number" value={data.mlMinDaysBetweenOffer}
+              onChange={this.inputChange} disabled={this.isView() || data.mlOfferMoreThanOnce === "FALSE"}/>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   renderSocialOptions() {
@@ -605,6 +632,8 @@ class BoostForm extends React.Component {
         initialStatus: 'OFFERED',
         withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
         withdrawalMinDays: 30,
+        mlOfferMoreThanOnce: 'TRUE',
+        mlMinDaysBetweenOffer: 7
       };
     }
 
@@ -633,10 +662,11 @@ class BoostForm extends React.Component {
   getBoostReqBody() {
     const data = this.state.data;
     const isEventTriggered = data.offeredCondition === 'EVENT' || data.type === 'WITHDRAWAL'; // by definition withdrawals are event driven
+    const isMlDetermined = data.offeredCondition === 'ML_DETERMINED';
 
     let body = assembleRequestBasics(data);
 
-    const { statusConditions, initialStatus, gameParams } = assembleStatusConditions(data, isEventTriggered);
+    const { statusConditions, initialStatus, gameParams } = assembleStatusConditions(data, isEventTriggered, isMlDetermined);
     body = { ...body, statusConditions, initialStatus };
 
     if (gameParams) {
@@ -663,6 +693,11 @@ class BoostForm extends React.Component {
 
     if (!oneMessageDone && !isInAppWithdrawal) {
       this.modalService.openInfo('Boost create', 'Please fill in <b>Push notification</b> or <b>Card details</b> or <b>Email</b>');
+      return false;
+    }
+
+    if (data.emailBody && (!data.emailSubject || !data.emailSubject.trim())) {
+      this.modalService.openInfo('Email subject', 'Please remember to fill in a subject if you are sending an email');
       return false;
     }
 
