@@ -10,6 +10,7 @@ import { ClientsService } from './clientsService';
 import { DataService } from './dataService';
 import { ModalService } from './modalService';
 import { AudienceService } from './audienceService';
+import { SnippetsService } from './snippetsService';
 
 // register services
 const bottle = new Bottle();
@@ -23,5 +24,6 @@ bottle.service('ClientsService', ClientsService, 'ApiService', 'DataService');
 bottle.service('DataService', DataService);
 bottle.service('ModalService', ModalService);
 bottle.service('AudienceService', AudienceService, 'ApiService');
+bottle.service('SnippetsService', SnippetsService, 'ApiService');
 
 export default bottle;

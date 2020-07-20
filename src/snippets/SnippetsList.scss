@@ -1,0 +1,7 @@
+@import 'src/styles/common';
+
+.snippets-list {
+    .table tr.expired td {
+        color: lighten($color-grey2, 20%);
+    }
+}
