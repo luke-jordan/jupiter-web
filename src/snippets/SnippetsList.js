@@ -40,20 +40,22 @@ class SnippetsList extends React.Component {
         
     }
 
-    renderSnippetRow = (snippet) => (
-        <tr key={snippet.snippetId}>
-            <td></td>
-            <td>{snippet.title}</td>
-            <td>{snippet.body.substring(0, 60)}</td>
-            <td>{snippet.previewMode ? 'Preview' : 'Live'}</td>
-            <td>
-                <DropdownMenu items={[
-                    { text: 'View', link: `/snippets/view/${snippet.snippetId}` },
-                    { text: 'Edit', link: `/snippets/edit/${snippet.snippetId}` }
-                ]}/>
-            </td>
-        </tr>
-    );
+    renderSnippetRow = (snippet) => {
+        return (
+            <tr key={snippet.snippetId}>
+                <td></td>
+                <td>{snippet.title}</td>
+                <td>{snippet.body.substring(0, 60)}</td>
+                <td>{snippet.previewMode ? 'Preview' : 'Live'}</td>
+                <td>
+                    <DropdownMenu items={[
+                        { text: 'View', link: `/snippets/view/${snippet.snippetId}` },
+                        { text: 'Edit', link: `/snippets/edit/${snippet.snippetId}` }
+                    ]}/>
+                </td>
+            </tr>
+        );
+    };
 
     renderTable() {
         const { snippets } = this.state;
