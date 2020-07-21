@@ -1,4 +1,3 @@
-import { tap } from 'rxjs/operators';
 
 export class SnippetsService {
     constructor(apiService) {
@@ -7,17 +6,15 @@ export class SnippetsService {
     }
 
     getSnippets(params) {
-        return this.apiService.get(`${this.url}/snippet/read/list`, { params }).pipe(
-            tap(this._transformSnippets)
-        );       
+        return this.apiService.get(`${this.url}/snippet/read/list`, { params });       
     }
 
     createSnippet(snippetData) {
         return this.apiService.post(`${this.url}/snippet/create`, snippetData);
     }
 
-    _transformSnippets = (snippets) => {
-        console.log('Snippets: ', snippets);
+    fetchSnippet(snippetId) {
+        return this.apiService.get(`${this.url}/snippet/read/view`, { params: { snippetId } });
     }
 
 }

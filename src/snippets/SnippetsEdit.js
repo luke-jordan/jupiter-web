@@ -46,7 +46,27 @@ class SnippetsEdit extends React.Component {
       view: 'Edit',
       edit: 'Update',
       duplicate: 'Submit'
-    };  
+    };
+
+    componentDidMount() {
+      this.loadData();
+    }  
+
+    loadData() {
+      const snippetId = this.props.match.params.id;
+      if (snippetId) {
+        this.setState({ loading: true });
+        this.snippetService.fetchSnippet(snippetId).pipe(
+          takeUntil(this.unmount)
+        ).subscribe((snippet) => {
+          this.setState({ snippet, loading: false });
+        }, (err) => {
+          this.setState({ loading: false });
+          this.modalService.openCommonError();
+          console.log(err);
+        });
+      }
+    }
 
     isView() {
       return this.state.mode === 'view';
@@ -206,6 +226,22 @@ class SnippetsEdit extends React.Component {
         </>
         )
     }
+
+    renderSnippetCounts() {
+      // const { userCount, totalViewCount, totalFetchCount } = this.state.snippet;
+      const keys = ['userCount', 'totalFetchCount', 'totalViewCount'];
+      const titles = ['Users', 'Fetches', 'Views'];
+      return <div className="boost-user-count">
+        <div className="count-inner">
+          <div className="grid-row">
+            {keys.map((key, index) => <div className="grid-col"  key={key}>
+              <div className="count-value">{this.state.snippet[key]}</div>
+              <div className="count-title">{titles[index]}</div>
+            </div>)}
+          </div>
+        </div>
+      </div>
+    }
       
     render() {
       const title = capitalize(`${this.state.mode} snippet`);
@@ -214,6 +250,7 @@ class SnippetsEdit extends React.Component {
       <PageBreadcrumb title={title} link={{ to: '/snippets', text: 'Snippets' }}/>
         <div className="page-content">
           {this.state.loading && <Spinner overlay/>}
+          {typeof this.state.snippet.userCount === 'number' && this.renderSnippetCounts()}
           {this.renderSnippetForm()}
         </div>
       </div>
