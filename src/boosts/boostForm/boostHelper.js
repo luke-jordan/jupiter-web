@@ -39,18 +39,27 @@ const assembleRequestBasics = (data) => {
         }
     }
 
+    // and if it is a random amount boost
+    if (data.isRandomAmount) {
+        const minReward = { 
+            amount: data.randomMinimum,
+            unit: 'WHOLE_CURRENCY',
+            currency: data.currency
+        };
+
+        body.rewardParameters = {
+            rewardType: 'RANDOM',
+            distribution: 'UNIFORM',
+            minRewardAmountPerUser: minReward,
+        }
+    }
+
     return body;
 };
 
-// for required save
-const getAddCashCondition = (data) => {
-    const addCashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
-    const addCashCondition = `save_event_greater_than #{${addCashThreshold}}`;
-    return addCashCondition;
-};
-
-const mapSimpleCategoryToCashCondition = (data) => {
-    switch (data.category) {
+const mapAddCashTypeToCondition = (category) => {
+    // console.log('Category: ', category);
+    switch (category) {
         case 'ROUND_UP':
             return 'balance_crossed_major_digit';
         case 'TARGET_BALANCE':
@@ -58,7 +67,18 @@ const mapSimpleCategoryToCashCondition = (data) => {
         default:
             return 'save_event_greater_than';
     }
-}
+};
+
+// for required save
+const getAddCashCondition = (data) => {
+    const { typeOfSaveUnlock } = data;
+    // console.log('Type of save unlock: ', typeOfSaveUnlock);
+
+    const addCashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
+    const addCashCondition = `${mapAddCashTypeToCondition(typeOfSaveUnlock)} #{${addCashThreshold}}`;
+    
+    return addCashCondition;
+};
 
 const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false) => {
     const statusConditions = {};
@@ -76,7 +96,7 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
       
     if (data.type === 'SIMPLE') {
         const cashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
-        const cashCondition = mapSimpleCategoryToCashCondition(data);
+        const cashCondition = mapAddCashTypeToCondition(data.category);
         statusConditions.REDEEMED = [`${cashCondition} #{${cashThreshold}}`];
     }
 

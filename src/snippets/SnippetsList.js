@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { takeUntil } from 'rxjs/operators';
 
 import PageBreadcrumb from 'src/components/pageBreadcrumb/PageBreadcrumb';
@@ -6,6 +7,9 @@ import Spinner from 'src/components/spinner/Spinner';
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 
 import { unmountDecorator, inject } from 'src/core/utils';
+
+import './SnippetsList.scss';
+import addIcon from 'src/assets/images/add.svg';
 
 class SnippetsList extends React.Component {
     
@@ -72,11 +76,24 @@ class SnippetsList extends React.Component {
         </table>
     }
 
+    renderActions() {
+        return (
+            <div className="page-actions">
+                <div className="action-buttons">
+                    <NavLink to="/snippets/new" className="button">
+                        New snippet <img className="button-icon" src={addIcon} alt="add"/>
+                    </NavLink>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         return <div className="snippets-list">
             <PageBreadcrumb title="Snippets" link={{ to: '/', text: 'Home' }}/>
             <div className="page-content">
                 {this.state.loading && <Spinner overlay/>}
+                {this.renderActions()}
                 {this.renderTable()}
             </div>
         </div>

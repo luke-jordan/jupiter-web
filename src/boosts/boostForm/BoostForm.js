@@ -8,6 +8,7 @@ import TextArea from 'src/components/textArea/TextArea';
 import DatePicker from 'src/components/datePicker/DatePicker';
 import AudienceSelection from 'src/components/audienceSelection/AudienceSelection';
 import TextEditor from 'src/components/textEditor/TextEditor';
+import RadioButton from 'src/components/radioButton/RadioButton';
 
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 import EventsListModal from 'src/components/eventsModal/EventsModal';
@@ -225,6 +226,34 @@ class BoostForm extends React.Component {
           </div>
         </div>
       </div>
+
+      <div className="grid-row">
+        {/* Per user amount */}
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">How much is it worth (per user)?</div>
+            <Input name="perUserAmount" type="number" value={state.data.perUserAmount} onChange={this.inputChange} 
+              disabled={this.isView()}/>
+          </div>
+        </div>
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">Is the amount random?</div>
+              <RadioButton value="yes" name="isRandomAmount" checked={state.data.isRandomAmount} onChange={this.radioChange}>
+                Yes</RadioButton>
+              <RadioButton value="no" name="isRandomAmount" checked={!state.data.isRandomAmount} onChange={this.radioChange}>
+                No</RadioButton>
+          </div>
+        </div>
+        {state.data.isRandomAmount && <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">What is the minimum amount?</div>
+            <Input name="randomMinimum" type="number" value={state.data.randomMinimum} onChange={this.inputChange} 
+              disabled={this.isView()}/>
+          </div>
+        </div>}
+      </div>
+              
       <div className="grid-row">
         {/* Initial status */}
         <div className="grid-col-4">
@@ -237,25 +266,31 @@ class BoostForm extends React.Component {
             </Select>
           </div>
         </div>
-        {/* Required save */}
+
+        {state.data.type === 'GAME' && <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">What kind of save unlocks it?</div>
+            <Select name="typeOfSaveUnlock" value={state.data.typeOfSaveUnlock}
+              onChange={this.inputChange} disable={this.isView() || this.state.data.type !== 'GAME'}>
+                <option value="SIMPLE">User saves X</option>
+                <option value="TARGET_BALANCE">User crosses X</option>
+                <option value="ROUND_UP">User rounds up</option>
+            </Select>
+          </div>
+        </div>}
+
+        {/* Required save or target balance*/}
         <div className="grid-col-4">
           <div className="form-group">
             <div className="form-label">
-              {saveThresholdDescription(this.state.data.category)}
+              {saveThresholdDescription(state.data.type === 'SIMPLE' ? state.data.category : state.data.saveTypeToUnlock)}
             </div>
             <Input name="requiredSave" type="number" value={state.data.requiredSave} onChange={this.inputChange} 
               disabled={this.isView() || this.doesNotRequireSaveThreshold()}/>
           </div>
         </div>
-        {/* Per user amount */}
-        <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">How much is it worth (per user)?</div>
-            <Input name="perUserAmount" type="number" value={state.data.perUserAmount} onChange={this.inputChange} 
-              disabled={this.isView()}/>
-          </div>
-        </div>
       </div>
+      
       {/* Game params */}
       {this.state.data.type === 'GAME' && this.renderGameOptions()}
       {/* Social params */}
@@ -441,7 +476,7 @@ class BoostForm extends React.Component {
                 </div>                
               </div>
             </>
-          )};
+          )}
         </div>
       </>
     )
@@ -593,6 +628,14 @@ class BoostForm extends React.Component {
     });
   }
 
+  radioChange = event => {
+    const target = event.target;
+    const value = target.value === 'yes';
+    this.setState({
+      data: { ...this.state.data, [target.name]: value }
+    });
+  }
+
   submit = event => {
     event.preventDefault();
 
@@ -616,8 +659,24 @@ class BoostForm extends React.Component {
         endTime: moment().endOf('day').toDate(),
         totalBudget: 1000,
         source: 'primary_bonus_pool',
+        
+        initialStatus: 'OFFERED',
+        typeOfSaveUnlock: 'SIMPLE',
         requiredSave: 100,
+        
         perUserAmount: 10,
+        isRandomAmount: false,
+        randomMinimum: 0,
+        
+        timeLimitSeconds: '10',
+        winningThreshold: '10',
+        arrowSpeedMultiplier: '5',
+        
+        withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
+        withdrawalMinDays: 30,
+        mlOfferMoreThanOnce: 'TRUE',
+        mlMinDaysBetweenOffer: 7,
+
         pushTitle: '',
         pushBody: '',
         cardTitle: '',
@@ -625,15 +684,7 @@ class BoostForm extends React.Component {
         emailSubject: '',
         emailBody: '',
         emailBackupSms: '',
-        currency: 'ZAR',
-        timeLimitSeconds: '10',
-        winningThreshold: '10',
-        arrowSpeedMultiplier: '5',
-        initialStatus: 'OFFERED',
-        withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
-        withdrawalMinDays: 30,
-        mlOfferMoreThanOnce: 'TRUE',
-        mlMinDaysBetweenOffer: 7
+        currency: 'ZAR'
       };
     }
 

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 
 import { messageDisplayTypeMap } from 'src/core/constants';
-import { mapToOptions, inject } from 'src/core/utils';
+import { mapToOptions } from 'src/core/utils';
 import Input from 'src/components/input/Input';
 import Select from 'src/components/select/Select';
 import DatePicker from 'src/components/datePicker/DatePicker';
@@ -18,7 +18,7 @@ class MessageForm extends React.Component {
   constructor(props) {
     super();
 
-    this.modalService = inject('ModalService');
+    // this.modalService = inject('ModalService');
     
     this.typeOptions = mapToOptions(messageDisplayTypeMap);
 
