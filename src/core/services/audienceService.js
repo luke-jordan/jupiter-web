@@ -1,7 +1,7 @@
 import { tap } from 'rxjs/operators';
 
 export class AudienceService {
-  periodProps = ['saveCount'];
+  periodProps = ['saveCount', 'boostCount'];
 
   constructor(apiService) {
     this.apiService = apiService;
