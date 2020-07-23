@@ -17,7 +17,6 @@ class SnippetsEdit extends React.Component {
       super(props);
       
       this.snippetService = inject('SnippetsService');
-      // this.clientService = inject('ClientsService');
       this.modalService = inject('ModalService');
       this.historyService = inject('HistoryService');
       
