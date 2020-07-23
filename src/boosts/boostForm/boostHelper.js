@@ -154,6 +154,8 @@ const assembleBoostMessages = (data, isEventTriggered) => {
     let actionToTake = 'ADD_CASH';
     if (data.type === 'SOCIAL') {
         actionToTake = 'VIEW_FRIENDS';
+    } else if (data.type === 'WITHDRAWAL') {
+        actionToTake = 'VIEW_HISTORY';
     } else if (data.initialStatus === 'UNLOCKED') {
         actionToTake = 'VIEW_BOOSTS';
     }
