@@ -78,7 +78,8 @@ export const boostCategoryMap = {
 export const messagePresentationTypeMap = {
   RECURRING: 'Recurring',
   EVENT_DRIVEN: 'Event-Driven',
-  ONCE_OFF: 'Once-Off'
+  ONCE_OFF: 'Once-Off',
+  ML_DETERMINED: 'ML determined'
 };
 
 export const messageDisplayTypeMap = {

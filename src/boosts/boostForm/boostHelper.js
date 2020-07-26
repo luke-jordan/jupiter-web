@@ -32,7 +32,8 @@ const assembleRequestBasics = (data) => {
 
     // and similarly, setting up ML parameters if this is an ML boost
     if (data.offeredCondition === 'ML_DETERMINED') {
-        body.flags = ['ML_DETERMINED']
+        body.flags = ['ML_DETERMINED'];
+        body.boostAudienceType = 'ML_DETERMINED';
         body.mlParameters = {
             onlyOfferOnce: data.mlOfferMoreThanOnce === 'FALSE',
             minIntervalBetweenRuns: { value: data.mlMinDaysBetweenOffer, unit: 'days' }
@@ -147,7 +148,7 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
     return { statusConditions, initialStatus, gameParams };
 };
 
-const assembleBoostMessages = (data, isEventTriggered) => {
+const assembleBoostMessages = (data, isEventTriggered, isMlDetermined = false) => {
     const messagesToCreate = [];
 
     // general message params
@@ -160,7 +161,13 @@ const assembleBoostMessages = (data, isEventTriggered) => {
         actionToTake = 'VIEW_BOOSTS';
     }
     
-    const presentationType = isEventTriggered ? 'EVENT_DRIVEN' : 'ONCE_OFF';
+    let presentationType = 'ONCE_OFF';
+    if (isEventTriggered) {
+        presentationType = 'EVENT_DRIVEN';
+    }
+    if (isMlDetermined) {
+        presentationType = 'ML_DETERMINED';
+    }
 
     const offerEvent = data.type === 'WITHDRAWAL' ? 'WITHDRAWAL_BOOST_OFFERED' : data.offerEvent;
     const triggerParameters = isEventTriggered ? { triggerEvent: [offerEvent] } : {}; 

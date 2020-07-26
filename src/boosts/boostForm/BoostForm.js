@@ -724,7 +724,7 @@ class BoostForm extends React.Component {
       body.gameParams = gameParams;
     }
 
-    body.messagesToCreate = assembleBoostMessages(data, isEventTriggered);
+    body.messagesToCreate = assembleBoostMessages(data, isEventTriggered, isMlDetermined);
 
     return body;
   }
