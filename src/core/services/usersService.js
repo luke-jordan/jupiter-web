@@ -134,6 +134,10 @@ export class UsersService {
     } else if (eventType === 'ADMIN_STORED_DOCUMENT') {
       const { logDescription } = context;
       eventTypeText = `${eventTypeText}, with description: ${logDescription}`;
+    } else if (eventType === 'USER_PROFILE_UPDATED') {
+      eventTypeText = `${eventTypeText}, fields changed: ${JSON.stringify(context)}`;
+    } else if (eventType === 'USER_STATUS_UPDATED') {
+      eventTypeText = `${eventTypeText}, details: ${JSON.stringify(context.reasons)}`;
     }
     
     history.eventTypeText = eventTypeText;

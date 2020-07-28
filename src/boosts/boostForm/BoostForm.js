@@ -79,6 +79,69 @@ class BoostForm extends React.Component {
     }
   }
 
+    boostToFormData(props) {
+    const { boost, clients } = props;
+
+    if (!boost) {
+      return {
+        label: '',
+        type: 'SIMPLE',
+        category: 'SIMPLE_SAVE',
+        clientId: clients[0] ? clients[0].clientId : '',
+        floatId: clients[0] ? clients[0].floats[0].floatId : '',
+        endTime: moment().endOf('day').toDate(),
+        totalBudget: 1000,
+        source: 'primary_bonus_pool',
+        
+        initialStatus: 'OFFERED',
+        typeOfSaveUnlock: 'SIMPLE',
+        requiredSave: 100,
+        
+        perUserAmount: 10,
+        isRandomAmount: false,
+        randomMinimum: 0,
+        
+        timeLimitSeconds: '10',
+        winningThreshold: '10',
+        arrowSpeedMultiplier: '5',
+        
+        withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
+        withdrawalMinDays: 30,
+        mlOfferMoreThanOnce: 'TRUE',
+        mlMinDaysBetweenOffer: 7,
+
+        pushTitle: '',
+        pushBody: '',
+        cardTitle: '',
+        cardBody: '',
+        emailSubject: '',
+        emailBody: '',
+        emailBackupSms: '',
+        currency: 'ZAR'
+      };
+    }
+
+    const requiredSaveMatch = boost.statusConditions.REDEEMED[0].match(/^save_event_greater_than #\{(\d+):/);
+    const requiredSave = (requiredSaveMatch && requiredSaveMatch[1]) ? requiredSaveMatch[1] : 100;
+
+    return {
+      label: boost.label,
+      type: boost.boostType,
+      category: boost.boostCategory,
+      clientId: boost.forClientId,
+      endTime: new Date(boost.endTime),
+      totalBudget: convertAmount(boost.boostBudget, boost.boostUnit),
+      source: boost.fromBonusPoolId,
+      requiredSave,
+      perUserAmount: boost.boostAmount,
+      pushTitle: '',
+      pushBody: '',
+      cardTitle: '',
+      cardBody: '',
+      currency: 'ZAR'
+    };
+  }
+
   render() {
     return <>
     <form className="boost-form" onSubmit={this.submit}>
@@ -644,69 +707,6 @@ class BoostForm extends React.Component {
     }
 
     this.props.onSubmit(this.getBoostReqBody(), this.getAudienceReqBody());
-  }
-
-  boostToFormData(props) {
-    const { boost, clients } = props;
-
-    if (!boost) {
-      return {
-        label: '',
-        type: 'SIMPLE',
-        category: 'SIMPLE_SAVE',
-        clientId: clients[0] ? clients[0].clientId : '',
-        floatId: clients[0] ? clients[0].floats[0].floatId : '',
-        endTime: moment().endOf('day').toDate(),
-        totalBudget: 1000,
-        source: 'primary_bonus_pool',
-        
-        initialStatus: 'OFFERED',
-        typeOfSaveUnlock: 'SIMPLE',
-        requiredSave: 100,
-        
-        perUserAmount: 10,
-        isRandomAmount: false,
-        randomMinimum: 0,
-        
-        timeLimitSeconds: '10',
-        winningThreshold: '10',
-        arrowSpeedMultiplier: '5',
-        
-        withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
-        withdrawalMinDays: 30,
-        mlOfferMoreThanOnce: 'TRUE',
-        mlMinDaysBetweenOffer: 7,
-
-        pushTitle: '',
-        pushBody: '',
-        cardTitle: '',
-        cardBody: '',
-        emailSubject: '',
-        emailBody: '',
-        emailBackupSms: '',
-        currency: 'ZAR'
-      };
-    }
-
-    const requiredSaveMatch = boost.statusConditions.REDEEMED[0].match(/^save_event_greater_than #\{(\d+):/);
-    const requiredSave = (requiredSaveMatch && requiredSaveMatch[1]) ? requiredSaveMatch[1] : 100;
-
-    return {
-      label: boost.label,
-      type: boost.boostType,
-      category: boost.boostCategory,
-      clientId: boost.forClientId,
-      endTime: new Date(boost.endTime),
-      totalBudget: convertAmount(boost.boostBudget, boost.boostUnit),
-      source: boost.fromBonusPoolId,
-      requiredSave,
-      perUserAmount: boost.boostAmount,
-      pushTitle: '',
-      pushBody: '',
-      cardTitle: '',
-      cardBody: '',
-      currency: 'ZAR'
-    };
   }
 
   // large amounts of complexity so most of it sectioned off and handed over to the helper

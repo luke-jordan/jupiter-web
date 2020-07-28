@@ -39,9 +39,10 @@ export const userHistoryEventTypeMap = {
   USER_LOGIN: 'User logged in',
   PASSWORD_SET: 'Password changed',
   USER_REGISTERED: 'Profile created',
-  STATUS_CHANGED: 'User status changed',
+  USER_STATUS_UPDATED: 'User status changed',
   VERIFIED_AS_PERSON: 'KYC verification passed',
   FAILED_VERIFICATION: 'Failed KYC verification',
+  USER_PROFILE_UPDATED: 'User changed profile',
   
   BANK_VERIFICATION_SUCCEEDED: 'Bank verification succeeded',
   BANK_VERIFICATION_FAILED: 'Bank verification failed',
