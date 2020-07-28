@@ -40,6 +40,14 @@ const assembleRequestBasics = (data) => {
         }
     }
 
+    // ML and recurring boosts require this (as boost could last a while but each offer to user is short)
+    if (['ML_DETERMINED', 'AUDIENCE_REFRESH'].includes(data.offeredCondition)) {
+        body.expiryParameters = {
+            individualizedExpiry: true,
+            timeUntilExpiry: { unit: 'hours', value: data.expiryHours}
+        }
+    }
+
     // and if it is a random amount boost
     if (data.isRandomAmount) {
         const minReward = { 
