@@ -369,19 +369,32 @@ class BoostForm extends React.Component {
               <Select name="offeredCondition" value={state.data.offeredCondition} onChange={this.inputChange} disabled={this.isView()}>
                 <option value="IMMEDIATE">Now</option>
                 <option value="EVENT">On an event</option>
+                <option value="AUDIENCE_REFRESH">Whenever a user meets the criteria</option>
                 <option value="ML_DETERMINED">When our robot overlord decides to</option>
               </Select>
             </div>
           </div>
-          <div className="grid-col-4">
-            <div className="form-group">
-              <div className="form-label">What event creates the boost?</div>
-              <Input name="offerEvent" value={state.data.offerEvent} onChange={this.inputChange}
-                disabled={state.data.offeredCondition !== 'EVENT'}></Input>
-              <button className="link text-underline" onClick={this.showEventsModal}>Available Events</button>
+          {state.data.offeredCondition === 'EVENT' && 
+            <div className="grid-col-4">
+              <div className="form-group">
+                <div className="form-label">What event creates the boost?</div>
+                <Input name="offerEvent" value={state.data.offerEvent} onChange={this.inputChange}
+                  disabled={this.isView()}></Input>
+                <button className="link text-underline" onClick={this.showEventsModal}>Available Events</button>
+              </div>
             </div>
-          </div>
+          }
+          {(state.data.offeredCondition === 'AUDIENCE_REFRESH' || state.data.offeredCondition === 'ML_DETERMINED') && 
+            <div className="grid-col-4">
+              <div className="form-group">
+                <div className="form-label">How many hours does a user get?</div>
+                <Input name="expiryHours" type="number" value={state.data.expiryHours} onChange={this.inputChange}
+                  disabled={this.isView()} />
+              </div>
+            </div>
+          }
         </div>
+
       )}
       {this.state.data.offeredCondition === 'ML_DETERMINED' && this.renderMlOptions()}
     </>;
@@ -757,8 +770,16 @@ class BoostForm extends React.Component {
       return false;
     }
 
+    const hasDynamicAudience = this.audienceRef && this.audienceRef.getReqBody().isDynamic;
+    const hasExpiryCondition = ['ML_DETERMINED', 'AUDIENCE_REFRESH'].includes(data.offeredCondition) && data.expiryHours > 0;
+    if (hasDynamicAudience && !hasExpiryCondition) {
+      this.modalService.openInfo('Dynamic audience', 'With a dynamic audience, please set "when offered" to dynamic audience or ML, and choose expiry interval');
+      return false;
+    }
+
     if (data.thresholdType === 'TOURNAMENT' && !data.endTime) {
       this.modalService.openInfo('Boost create', 'For tournament games please set an expiry time');
+      return false;
     }
 
     return true;
