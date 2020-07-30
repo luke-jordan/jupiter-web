@@ -109,6 +109,8 @@ class BoostForm extends React.Component {
         withdrawalMinDays: 30,
         mlOfferMoreThanOnce: 'TRUE',
         mlMinDaysBetweenOffer: 7,
+        mlSetMaxUsersPerRun: 'FALSE',
+        mlMaxUsersPerOfferRun: 10,
 
         pushTitle: '',
         pushBody: '',
@@ -407,7 +409,7 @@ class BoostForm extends React.Component {
 
   renderMlOptions() {
     const { data } = this.state;
-    return (
+    return (<>
       <div className="grid-row">
         <div className="grid-col-4">
           <div className="form-group">
@@ -428,7 +430,29 @@ class BoostForm extends React.Component {
           </div>
         </div>
       </div>
-    );
+
+      <div className="grid-row">
+        <div className="grid-col-4">
+          <div className="form-group">
+          <div className="form-label">Set maximum number of offers per run?</div>
+          <Select name="mlSetMaxUsersPerRun" type="number" value={data.mlSetMaxUsersPerRun}
+              onChange={this.inputChange} disabled={this.isView()}>
+                {/* checkbox better but that's a pain with elements, and other parts of this are more important */}
+                <option value="TRUE">Yes</option> 
+                <option value="FALSE">No</option>
+            </Select>
+          </div>
+        </div>
+        <div className="grid-col-4">
+          <div className="form-group">
+          <div className="form-label">How many users max per run should be targeted?</div>
+          <Input name="mlMaxUsersPerOfferRun" type="number" value={data.mlMaxUsersPerOfferRun}
+              onChange={this.inputChange} disabled={this.isView() || data.mlSetMaxUsersPerRun === "FALSE"}/>
+          </div>
+        </div>
+
+      </div>
+    </>);
   }
 
   renderSocialOptions() {
