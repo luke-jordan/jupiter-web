@@ -1,5 +1,21 @@
 import moment from 'moment';
 
+const assembleMlParams = (data) => {
+    const mlParameters = {
+        onlyOfferOnce: data.mlOfferMoreThanOnce === 'FALSE'
+    };
+
+    if (mlParameters.onlyOfferOnce) {
+        mlParameters.minIntervalBetweenRuns = { value: data.mlMinDaysBetweenOffer, unit: 'days' }
+    }
+
+    if (data.mlSetMaxUsersPerRun === 'TRUE') {
+        mlParameters.maxUsersPerOfferRun = { basis: 'ABSOLUTE', value: data.mlMaxUsersPerOfferRun };
+    }
+
+    return mlParameters;
+}
+
 const assembleRequestBasics = (data) => {
     const body = {};
 
@@ -34,10 +50,7 @@ const assembleRequestBasics = (data) => {
     if (data.offeredCondition === 'ML_DETERMINED') {
         body.flags = ['ML_DETERMINED'];
         body.boostAudienceType = 'ML_DETERMINED';
-        body.mlParameters = {
-            onlyOfferOnce: data.mlOfferMoreThanOnce === 'FALSE',
-            minIntervalBetweenRuns: { value: data.mlMinDaysBetweenOffer, unit: 'days' }
-        }
+        body.mlParameters = assembleMlParams(data);
     }
 
     // ML and recurring boosts require this (as boost could last a while but each offer to user is short)
