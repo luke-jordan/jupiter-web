@@ -196,7 +196,7 @@ const assembleBoostMessages = (data, isEventTriggered, isMlDetermined = false) =
     // push notification
     if (data.pushBody) {
         messagesToCreate.push({
-            boostStatus: 'CREATED',
+            boostStatus: 'OFFERED',
             presentationType,
             actionToTake,
             isMessageSequence: false,
@@ -218,7 +218,6 @@ const assembleBoostMessages = (data, isEventTriggered, isMlDetermined = false) =
             actionContext.addCashTargetMinimum = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
         } else {
             actionContext.addCashPreFilled = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
-
         }        
 
         messagesToCreate.push({
