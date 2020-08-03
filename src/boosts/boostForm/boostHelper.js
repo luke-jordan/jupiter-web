@@ -135,9 +135,12 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
     if (data.type === 'GAME') {
         gameParams = {
             gameType: data.category,
-            entryCondition: getAddCashCondition(data),
             timeLimitSeconds: parseInt(data.timeLimitSeconds, 10),
         };
+
+        if (data.initialStatus !== 'UNLOCKED') {
+            gameParams.entryCondition = getAddCashCondition(data);
+        }
 
         if (data.category === 'CHASE_ARROW') {
             gameParams.arrowSpeedMultiplier = parseInt(data.arrowSpeedMultiplier, 10);
