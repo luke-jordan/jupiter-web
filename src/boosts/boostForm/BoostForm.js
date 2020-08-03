@@ -140,6 +140,9 @@ class BoostForm extends React.Component {
       pushBody: '',
       cardTitle: '',
       cardBody: '',
+      emailSubject: '',
+      emailBody: '',
+      emailBackupSms: '',
       currency: 'ZAR'
     };
   }
@@ -171,6 +174,7 @@ class BoostForm extends React.Component {
         {this.state.data.type === 'GAME' && <option value="TAP_SCREEN">Tap the screen</option>}
         {this.state.data.type === 'GAME' && <option value="CHASE_ARROW">Chase the arrow</option>}
         {this.state.data.type === 'GAME' && <option value="DESTROY_IMAGE">Destroy image</option>}
+        {this.state.data.type === 'GAME' && <option value="MATCH_TILES">Match tiles</option>}
         
         {this.state.data.type === 'SOCIAL' && <option value="FRIENDS_ADDED">Friends added</option>}
         {this.state.data.type === 'SOCIAL' && <option value="NUMBER_FRIENDS">Total friends (initiated)</option>}
@@ -336,7 +340,7 @@ class BoostForm extends React.Component {
           <div className="form-group">
             <div className="form-label">What kind of save unlocks it?</div>
             <Select name="typeOfSaveUnlock" value={state.data.typeOfSaveUnlock}
-              onChange={this.inputChange} disable={this.isView() || this.state.data.type !== 'GAME'}>
+              onChange={this.inputChange} disabled={this.isView() || this.state.data.type !== 'GAME' || this.doesNotRequireSaveThreshold()}>
                 <option value="SIMPLE">User saves X</option>
                 <option value="TARGET_BALANCE">User crosses X</option>
                 <option value="ROUND_UP">User rounds up</option>

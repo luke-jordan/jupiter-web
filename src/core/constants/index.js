@@ -71,6 +71,7 @@ export const boostCategoryMap = {
   TAP_SCREEN: 'Tap screen',
   CHASE_ARROW: 'Chase arrow',
   BREAK_IMAGE: 'Break the image',
+  MATCH_TILES: 'Match tiles',
 
   CANCEL_WITHDRAWAL: 'Cancel withdrawal',
   ABORT_WITHDRAWAL: 'Abort withdrawal'
