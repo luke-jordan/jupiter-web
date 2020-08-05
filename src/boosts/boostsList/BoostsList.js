@@ -12,6 +12,8 @@ import { unmountDecorator, inject } from 'src/core/utils';
 import './BoostsList.scss';
 import addIcon from 'src/assets/images/add.svg';
 
+import { boostFlagDescription } from '../../core/constants/index';
+
 class BoostsList extends React.Component {
   constructor() {
     super();
@@ -92,12 +94,23 @@ class BoostsList extends React.Component {
     </table>;
   }
 
+  extractBoostLabel(label, flags) {
+    if (!flags || flags.length === 0) {
+      return label;
+    }
+
+    const flagDescriptions = flags.map((flag) => boostFlagDescription[flag] || flag);
+    return (
+      <span>{label} (<em>flags: {flagDescriptions.join(', ')}</em>)</span>
+    )
+  }
+
   renderTableRow(boost) {
     const rowClass = classNames({ expired: boost.expired });
     return <tr key={boost.boostId} className={rowClass}>
       <td>{boost.boostTypeText}</td>
       <td>{boost.boostCategoryText}</td>
-      <td>{boost.label}</td>
+      <td>{this.extractBoostLabel(boost.label, boost.flags)}</td>
       <td className="text-center">{boost.formattedStartDate}</td>
       <td className="text-center">{boost.formattedEndDate}</td>
       <td className="text-center">{boost.totalCount}</td>

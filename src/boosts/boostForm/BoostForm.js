@@ -100,6 +100,8 @@ class BoostForm extends React.Component {
         perUserAmount: 10,
         isRandomAmount: false,
         randomMinimum: 0,
+        isRandomSelection: false,
+        numberToSelect: 1,
         
         timeLimitSeconds: '10',
         winningThreshold: '10',
@@ -322,32 +324,8 @@ class BoostForm extends React.Component {
           </div>
         </div>}
       </div>
-              
+
       <div className="grid-row">
-        {/* Initial status */}
-        <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">What is its initial state?</div>
-            <Select name="initialStatus" value={state.data.initialStatus}
-                onChange={this.inputChange} disabled={this.isView() || this.state.data.type !== 'GAME'}>
-              <option value="OFFERED">Only offered</option>
-              <option value="UNLOCKED">Already unlocked</option>
-            </Select>
-          </div>
-        </div>
-
-        {state.data.type === 'GAME' && <div className="grid-col-4">
-          <div className="form-group">
-            <div className="form-label">What kind of save unlocks it?</div>
-            <Select name="typeOfSaveUnlock" value={state.data.typeOfSaveUnlock}
-              onChange={this.inputChange} disabled={this.isView() || this.state.data.type !== 'GAME' || this.doesNotRequireSaveThreshold()}>
-                <option value="SIMPLE">User saves X</option>
-                <option value="TARGET_BALANCE">User crosses X</option>
-                <option value="ROUND_UP">User rounds up</option>
-            </Select>
-          </div>
-        </div>}
-
         {/* Required save or target balance*/}
         <div className="grid-col-4">
           <div className="form-group">
@@ -358,8 +336,25 @@ class BoostForm extends React.Component {
               disabled={this.isView() || this.doesNotRequireSaveThreshold()}/>
           </div>
         </div>
+        <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">Is the selection random?</div>
+              <RadioButton value="yes" name="isRandomSelection" checked={state.data.isRandomSelection} onChange={this.radioChange}>
+                Yes</RadioButton>
+              <RadioButton value="no" name="isRandomSelection" checked={!state.data.isRandomSelection} onChange={this.radioChange}>
+                No</RadioButton>
+          </div>
+        </div>
+        {state.data.isRandomSelection && <div className="grid-col-4">
+          <div className="form-group">
+            <div className="form-label">How many will be selected?</div>
+            <Input name="numberToSelect" type="number" value={state.data.numberToSelect} onChange={this.inputChange} 
+              disabled={this.isView()}/>
+          </div>
+        </div>}
+
       </div>
-      
+                    
       {/* Game params */}
       {this.state.data.type === 'GAME' && this.renderGameOptions()}
       {/* Social params */}
@@ -371,7 +366,7 @@ class BoostForm extends React.Component {
         <div className="grid-row">
           <div className="grid-col-4">
             <div className="form-group">
-              <div className="form-label">When will it be offered?</div>
+              <div className="form-label">When will it go out?</div>
               <Select name="offeredCondition" value={state.data.offeredCondition} onChange={this.inputChange} disabled={this.isView()}>
                 <option value="IMMEDIATE">Now</option>
                 <option value="EVENT">On an event</option>
@@ -518,6 +513,31 @@ class BoostForm extends React.Component {
       : 'How many successful taps win the game?';
     return (
       <>
+        <div className="grid-row">
+          {/* Initial status */}
+          <div className="grid-col-4">
+            <div className="form-group">
+              <div className="form-label">What is its initial state?</div>
+              <Select name="initialStatus" value={state.data.initialStatus}
+                  onChange={this.inputChange} disabled={this.isView() || this.state.data.type !== 'GAME'}>
+                <option value="OFFERED">Only offered</option>
+                <option value="UNLOCKED">Already unlocked</option>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid-col-4">
+            <div className="form-group">
+              <div className="form-label">What kind of save unlocks it?</div>
+              <Select name="typeOfSaveUnlock" value={state.data.typeOfSaveUnlock}
+                onChange={this.inputChange} disabled={this.isView() || this.state.data.type !== 'GAME' || this.doesNotRequireSaveThreshold()}>
+                  <option value="SIMPLE">User saves X</option>
+                  <option value="TARGET_BALANCE">User crosses X</option>
+                  <option value="ROUND_UP">User rounds up</option>
+              </Select>
+            </div>
+          </div>
+        </div>
         <div className="grid-row">
           <div className="grid-col-6">
             <div className="form-group">

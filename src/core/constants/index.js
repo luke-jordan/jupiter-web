@@ -70,11 +70,23 @@ export const boostCategoryMap = {
 
   TAP_SCREEN: 'Tap screen',
   CHASE_ARROW: 'Chase arrow',
-  BREAK_IMAGE: 'Break the image',
+  DESTROY_IMAGE: 'Break the image',
   MATCH_TILES: 'Match tiles',
 
   CANCEL_WITHDRAWAL: 'Cancel withdrawal',
-  ABORT_WITHDRAWAL: 'Abort withdrawal'
+  ABORT_WITHDRAWAL: 'Abort withdrawal',
+
+  FRIENDS_ADDED: 'Friends added'
+};
+
+export const boostFlagDescription = {
+  EVENT_TRIGGERED: 'event triggered',
+  ML_DETERMINED: 'ML targeted',
+  RANDOM_AMOUNT: 'random amount',
+  RANDOM_SELECTION: 'random selection',
+  WITHDRAWAL_HALTING: 'withdrawal halter',
+  AUDIENCE_REFRESH: 'dynamic audience',
+  FRIEND_TOURNAMENT: 'friend tournament'
 };
 
 export const messagePresentationTypeMap = {
