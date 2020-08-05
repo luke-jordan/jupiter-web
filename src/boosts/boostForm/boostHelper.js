@@ -18,6 +18,7 @@ const assembleMlParams = (data) => {
 
 const assembleRequestBasics = (data) => {
     const body = {};
+    const flags = [];
 
     // label
     body.label = data.label;
@@ -40,21 +41,26 @@ const assembleRequestBasics = (data) => {
     // expiry time
     body.endTimeMillis = data.endTime ? data.endTime.getTime() : +moment().endOf('day');
 
+    // then some flag setting and other options for more 'advanced' boosts
+    if (data.offeredCondition === 'EVENT') {
+        flags.push('EVENT_TRIGGERED');   
+    }
+
     // some important withdrawal stuff
     if (data.type === 'WITHDRAWAL') {
-        body.flags = ['WITHDRAWAL_HALTING'];
+        flags.push(['WITHDRAWAL_HALTING']);
         body.boostAudienceType = 'EVENT_DRIVEN';
     }
 
     // and similarly, setting up ML parameters if this is an ML boost
     if (data.offeredCondition === 'ML_DETERMINED') {
-        body.flags = ['ML_DETERMINED'];
         body.boostAudienceType = 'ML_DETERMINED';
         body.mlParameters = assembleMlParams(data);
     }
 
     // ML and recurring boosts require this (as boost could last a while but each offer to user is short)
     if (['ML_DETERMINED', 'AUDIENCE_REFRESH'].includes(data.offeredCondition)) {
+        flags.push(data.offeredCondition);
         body.expiryParameters = {
             individualizedExpiry: true,
             timeUntilExpiry: { unit: 'hours', value: data.expiryHours}
@@ -71,6 +77,8 @@ const assembleRequestBasics = (data) => {
 
     // and if it is a random amount boost
     if (data.isRandomAmount) {
+        flags.push('RANDOM_AMOUNT');
+
         const minReward = { 
             amount: data.randomMinimum,
             unit: 'WHOLE_CURRENCY',
@@ -82,6 +90,14 @@ const assembleRequestBasics = (data) => {
             distribution: 'UNIFORM',
             minRewardAmountPerUser: minReward,
         }
+    }
+
+    if (data.isRandomSelection) {
+        flags.push('RANDOM_SELECTION');
+    }
+
+    if (flags.length > 0) {
+        body.flags = flags;
     }
 
     return body;
@@ -127,7 +143,13 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
     if (data.type === 'SIMPLE') {
         const cashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
         const cashCondition = mapAddCashTypeToCondition(data.category);
-        statusConditions.REDEEMED = [`${cashCondition} #{${cashThreshold}}`];
+
+        if (data.isRandomSelection) {
+            statusConditions.PENDING = [`${cashCondition} #{${cashThreshold}}`];
+            statusConditions.REDEEMED = [`randomly_chosen_first_N #{${data.numberToSelect}}`];
+        } else {
+            statusConditions.REDEEMED = [`${cashCondition} #{${cashThreshold}}`];
+        }
     }
 
     // game paramaters
