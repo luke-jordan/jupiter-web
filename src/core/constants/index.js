@@ -80,7 +80,8 @@ export const boostCategoryMap = {
 };
 
 export const boostFlagDescription = {
-  EVENT_TRIGGERED: 'event triggered',
+  EVENT_TRIGGERED: 'event triggered', // legacy
+  EVENT_DRIVEN: 'event triggered',
   ML_DETERMINED: 'ML targeted',
   RANDOM_AMOUNT: 'random amount',
   RANDOM_SELECTION: 'random selection',

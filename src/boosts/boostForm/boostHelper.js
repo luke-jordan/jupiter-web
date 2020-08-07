@@ -43,7 +43,8 @@ const assembleRequestBasics = (data) => {
 
     // then some flag setting and other options for more 'advanced' boosts
     if (data.offeredCondition === 'EVENT') {
-        flags.push('EVENT_TRIGGERED');   
+        flags.push('EVENT_DRIVEN');   
+        body.boostAudienceType = 'EVENT_DRIVEN';
     }
 
     // some important withdrawal stuff
@@ -132,14 +133,15 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
     // this was not a good idea, but little time now to chase down effects of changing, so grandfather in better 
     // route (using audience presentation type) via withdrawal then come back and fix
     let initialStatus = data.initialStatus;
-    if (isEventTriggered || isMlDetermined) {
-        initialStatus = 'CREATED';
-    }
-
     if (isEventTriggered) {
+        initialStatus = 'UNCREATED';
         statusConditions[data.initialStatus] = [`event_occurs #{${data.offerEvent}}`];
     }
-      
+
+    if (isMlDetermined) {
+        initialStatus = 'CREATED';
+    }
+    
     if (data.type === 'SIMPLE') {
         const cashThreshold = `${data.requiredSave}::WHOLE_CURRENCY::${data.currency}`;
         const cashCondition = mapAddCashTypeToCondition(data.category);
