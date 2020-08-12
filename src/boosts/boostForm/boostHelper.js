@@ -93,8 +93,21 @@ const assembleRequestBasics = (data) => {
         }
     }
 
+    if (data.hasConsolationPrize) {
+        const consolationPrize = {
+            type: data.consolationType,
+            amount: { amount: parseInt(data.consolationAmount) * 100, unit: 'WHOLE_CENT', currency: 'ZAR' }
+        }
+
+        body.rewardParameters = body.rewardParameters ? { ...body.rewardParameters, consolationPrize } : { consolationPrize };
+    }
+
     if (data.isRandomSelection) {
         flags.push('RANDOM_SELECTION');
+    }
+
+    if (data.allowRepeatPlay) {
+        flags.push('ALLOW_REPEAT_PLAY');   
     }
 
     if (flags.length > 0) {
@@ -160,6 +173,7 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
         gameParams = {
             gameType: data.category,
             timeLimitSeconds: parseInt(data.timeLimitSeconds, 10),
+            allowRepeatPlay: data.allowRepeatPlay,
         };
 
         if (data.initialStatus !== 'UNLOCKED') {
@@ -180,6 +194,10 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
             gameParams.numberWinners = parseInt(data.winningThreshold, 10);
         } else {
             gameParams.winningThreshold = parseInt(data.winningThreshold, 10);
+        }
+
+        if (data.hasConsolationPrize) {
+            gameParams.hasConsolationPrize = true;
         }
     }
 

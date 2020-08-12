@@ -106,6 +106,11 @@ class BoostForm extends React.Component {
         timeLimitSeconds: '10',
         winningThreshold: '10',
         arrowSpeedMultiplier: '5',
+        allowRepeatPlay: false,
+
+        hasConsolationPrize: false,
+        consolationType: 'RANDOM',
+        consolationAmount: 1,
         
         withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
         withdrawalMinDays: 30,
@@ -515,7 +520,7 @@ class BoostForm extends React.Component {
       <>
         <div className="grid-row">
           {/* Initial status */}
-          <div className="grid-col-4">
+          <div className="grid-col-5">
             <div className="form-group">
               <div className="form-label">What is its initial state?</div>
               <Select name="initialStatus" value={state.data.initialStatus}
@@ -526,7 +531,7 @@ class BoostForm extends React.Component {
             </div>
           </div>
 
-          <div className="grid-col-4">
+          <div className="grid-col-5">
             <div className="form-group">
               <div className="form-label">What kind of save unlocks it?</div>
               <Select name="typeOfSaveUnlock" value={state.data.typeOfSaveUnlock}
@@ -538,26 +543,38 @@ class BoostForm extends React.Component {
             </div>
           </div>
         </div>
+
         <div className="grid-row">
-          <div className="grid-col-6">
+          <div className="grid-col-5">
+            <div className="form-group">
+              <div className="form-label">How does someone win?</div>
+              <Select name="thresholdType" value={state.data.thresholdType} onChange={this.inputChange} disabled={this.isView()}>
+                <option value="THRESHOLD">More than X taps</option>
+                <option value="TOURNAMENT">Top X scores</option>
+              </Select>
+            </div>
+          </div>
+          <div className="grid-col-5">
             <div className="form-group">
               <div className="form-label">What is the game time limit? (seconds)</div>
               <Input name="timeLimitSeconds" type="number" value={state.data.timeLimitSeconds}
                 onChange={this.inputChange} disabled={this.isView()}/>
             </div>
           </div>
-          <div className="grid-col-6">
+          <div className="grid-col-2">
             <div className="form-group">
-              <div className="form-label">How does someone win?</div>
-                <Select name="thresholdType" value={state.data.thresholdType} onChange={this.inputChange} disabled={this.isView()}>
-                  <option value="THRESHOLD">More than X taps</option>
-                  <option value="TOURNAMENT">Top X scores</option>
-                </Select>
-              </div>
+              <div className="form-label">Allow repeat plays?</div>
+              <RadioButton value="yes" name="allowRepeatPlay" checked={state.data.allowRepeatPlay} onChange={this.radioChange}>
+                Yes</RadioButton>
+              <RadioButton value="no" name="allowRepeatPlay" checked={!state.data.allowRepeatPlay} onChange={this.radioChange}>
+                No</RadioButton>
             </div>
+          </div>
         </div>
+
         <div className="grid-row">
-          <div className="grid-col-6">
+
+          <div className="grid-col-4">
             <div className="form-group">
               <div className="form-label">
                 {state.data.thresholdType === 'TOURNAMENT' ? 'How many users will win?' : thresholdDescription}
@@ -566,6 +583,46 @@ class BoostForm extends React.Component {
                 onChange={this.inputChange} disabled={this.isView()}/>
             </div>
           </div>
+
+
+          <div className="grid-col-2">
+            <div className="form-group">
+              <div className="form-label">
+                Is there a consolation prize?
+              </div>
+              <RadioButton value="yes" name="hasConsolationPrize" checked={state.data.hasConsolationPrize} onChange={this.radioChange}>
+                Yes</RadioButton>
+              <RadioButton value="no" name="hasConsolationPrize" checked={!state.data.hasConsolationPrize} onChange={this.radioChange}>
+                No</RadioButton>
+            </div>
+          </div>
+
+          {state.data.hasConsolationPrize && (<>
+            <div className="grid-col-3">
+              <div className="form-group">
+                <div className="form-label">
+                  What kind?
+                </div>
+                <Select name="consolationType" value={state.data.consolationType} onChange={this.inputChange} disabled={this.isView()}>
+                  <option value="RANDOM">Random amount</option>
+                  <option value="FIXED">Fixed amount</option>
+                </Select>
+              </div>
+            </div>          
+            <div className="grid-col-3">
+              <div className="form-group">
+                <div className="form-label">
+                  What is the reference amount?
+                </div>
+                <Input name="consolationAmount" type="number" value={state.data.consolationAmount}
+                  onChange={this.inputChange} disabled={this.isView()}/>
+              </div>
+            </div>          
+          </>)}
+
+        </div>
+        
+        <div className="grid-row">
           {state.data.category === 'CHASE_ARROW' && (
             <div className="grid-col-6">
               <div className="form-group">
