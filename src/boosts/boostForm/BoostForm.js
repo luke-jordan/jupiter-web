@@ -112,6 +112,9 @@ class BoostForm extends React.Component {
         consolationType: 'RANDOM',
         consolationAmount: 1,
         
+        hasRevokeCondition: false,
+        daysForNoRevoke: 30,
+
         withdrawalEventAnchor: 'WITHDRAWAL_EVENT_CONFIRMED',
         withdrawalMinDays: 30,
         mlOfferMoreThanOnce: 'TRUE',
@@ -653,6 +656,7 @@ class BoostForm extends React.Component {
                     onChange={this.inputChange} disabled={this.isView()}>
                     <option value="CREDIT_CARD">Credit card</option>
                     <option value="LOAN_SHARK">Loan shark</option>
+                    <option value="PYRAMID_SCHEME">Pyramid scheme</option>
                   </Select>
                 </div>                
               </div>
