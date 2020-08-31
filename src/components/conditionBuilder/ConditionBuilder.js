@@ -100,7 +100,14 @@ class ConditionBuilder extends React.Component {
     }
   }
 
-  getDefaultValue(inputType) {
+  getDefaultEntity(entityType) {
+    // console.log('Getting default entity for: ', entityType);
+    return this.props.entities && this.props.entities[entityType] && this.props.entities[entityType].length > 0 ?
+      this.props.entities[entityType][0].entityId : '';
+  }
+
+  getDefaultValue(inputType, entityType = null) {
+    // console.log('Getting default value for: ', inputType, ' and entity type: ', entityType);
     switch (inputType) {
       case 'string': return '';
       case 'stringMultiple': return '';
@@ -108,6 +115,7 @@ class ConditionBuilder extends React.Component {
       case 'amount': return '0';
       case 'boolean': return true;
       case 'epochMillis': return Date.now();
+      case 'entity': return this.getDefaultEntity(entityType);
       default: return '';
     }
   }
@@ -124,7 +132,7 @@ class ConditionBuilder extends React.Component {
 
   processItemOnPropChange(item) {
     const field = this.props.ruleFields.find(_field => _field.name === item.prop);
-    item.value = this.getDefaultValue(field.expects);
+    item.value = this.getDefaultValue(field.expects, field.entity);
     item.type = field.type;
     item.startTime = item.endTime = undefined;
 
