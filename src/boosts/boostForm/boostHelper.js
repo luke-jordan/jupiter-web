@@ -189,6 +189,10 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
             gameParams.gameImage = data.breakingGameImage;
         }
 
+        if (data.category === 'QUIZ') {
+            gameParams.questionSnippetIds = data.quizSnippetIds;
+        }
+
         // todo : could make this more elegant tbh
         if (data.thresholdType === 'TOURNAMENT') {
             gameParams.numberWinners = parseInt(data.winningThreshold, 10);

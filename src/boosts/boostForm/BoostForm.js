@@ -16,6 +16,7 @@ import EventsListModal from 'src/components/eventsModal/EventsModal';
 import { assembleRequestBasics, assembleStatusConditions, assembleBoostMessages } from './boostHelper.js';
 
 import './BoostForm.scss';
+import QuizForm from './QuizForm.js';
 
 const DEFAULT_CATEGORIES = {
   'SIMPLE': 'SIMPLE_SAVE',
@@ -38,7 +39,7 @@ const saveThresholdDescription = (category) => {
 
 class BoostForm extends React.Component {
   constructor(props) {
-    super();
+    super(props);
 
     this.modalService = inject('ModalService');
 
@@ -107,6 +108,7 @@ class BoostForm extends React.Component {
         winningThreshold: '10',
         arrowSpeedMultiplier: '5',
         allowRepeatPlay: false,
+        quizSnippetIds: [],
 
         hasConsolationPrize: false,
         consolationType: 'RANDOM',
@@ -185,6 +187,7 @@ class BoostForm extends React.Component {
         {this.state.data.type === 'GAME' && <option value="CHASE_ARROW">Chase the arrow</option>}
         {this.state.data.type === 'GAME' && <option value="DESTROY_IMAGE">Destroy image</option>}
         {this.state.data.type === 'GAME' && <option value="MATCH_TILES">Match tiles</option>}
+        {this.state.data.type === 'GAME' && <option value="QUIZ">Quiz</option>}
         
         {this.state.data.type === 'SOCIAL' && <option value="FRIENDS_ADDED">Friends added</option>}
         {this.state.data.type === 'SOCIAL' && <option value="NUMBER_FRIENDS">Total friends (initiated)</option>}
@@ -516,9 +519,14 @@ class BoostForm extends React.Component {
 
   renderGameOptions() {
     const { state } = this;
-    const thresholdDescription = state.data.category === 'DESTROY_IMAGE' 
-      ? 'What % of image must be destroyed?' 
-      : 'How many successful taps win the game?';
+    let thresholdDescription = 'How many successful taps win the game?';
+    if (state.data.category === 'DESTROY_IMAGE') {
+      thresholdDescription = 'What % of image must be destroyed?';
+    } 
+    if (state.data.category === 'QUIZ') {
+      thresholdDescription = 'What % of questions must be answered correctly?';
+    }
+
     return (
       <>
         <div className="grid-row">
@@ -552,7 +560,7 @@ class BoostForm extends React.Component {
             <div className="form-group">
               <div className="form-label">How does someone win?</div>
               <Select name="thresholdType" value={state.data.thresholdType} onChange={this.inputChange} disabled={this.isView()}>
-                <option value="THRESHOLD">More than X taps</option>
+                <option value="THRESHOLD">Higher than X score (taps, percent)</option>
                 <option value="TOURNAMENT">Top X scores</option>
               </Select>
             </div>
@@ -663,6 +671,8 @@ class BoostForm extends React.Component {
             </>
           )}
         </div>
+
+        {state.data.category === 'QUIZ' && <QuizForm updateSelectedSnippets={this.updateQuizSnippetIds} />}
       </>
     )
   }
@@ -821,6 +831,11 @@ class BoostForm extends React.Component {
     });
   }
 
+  updateQuizSnippetIds = snippetIds => {
+    console.log('Setting quiz snippet IDs to: ', snippetIds);
+    this.setState({ data: {...this.state.data, quizSnippetIds: snippetIds } });
+  }
+
   submit = event => {
     event.preventDefault();
 
@@ -888,6 +903,11 @@ class BoostForm extends React.Component {
 
     if (data.thresholdType === 'TOURNAMENT' && !data.endTime) {
       this.modalService.openInfo('Boost create', 'For tournament games please set an expiry time');
+      return false;
+    }
+
+    if (data.category === 'QUIZ' && data.quizSnippetIds.length === 0) {
+      this.modalService.openInfo('Quiz questions', 'Please set at least one quiz question');
       return false;
     }
 

@@ -1,3 +1,5 @@
+@import 'src/styles/common';
+
 .boost-form {
     .insert-parameter {
       margin-left: 20px;
@@ -6,4 +8,18 @@
         top: 5px;
       }
     }
+
+    .delete-question {
+      position: absolute;
+      top: calc(50% - 18px);
+      right: 8px;
+      width: 36px;
+      height: 36px;
+      border: 1px solid $color-silver;
+      border-radius: 100%;
+      background-color: $color-white;
+      cursor: pointer;
+      @include flex-center;
+    }  
+
   } 
