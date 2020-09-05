@@ -25,6 +25,7 @@ class SnippetsEdit extends React.Component {
         mode: props.match.params.mode,
         
         snippet: {
+          snippetType: 'NORMAL',
           title: '',
           body: '',
           priority: 'NORMAL',
@@ -32,6 +33,9 @@ class SnippetsEdit extends React.Component {
           previewMode: false,
         },
         clients: [],
+
+        quizAnswers: ['', '', ''],
+        correctAnswer: -1,
 
         hasErrors: false,
         errors: {}
@@ -57,14 +61,26 @@ class SnippetsEdit extends React.Component {
         this.setState({ loading: true });
         this.snippetService.fetchSnippet(snippetId).pipe(
           takeUntil(this.unmount)
-        ).subscribe((snippet) => {
-          this.setState({ snippet, loading: false });
-        }, (err) => {
+        ).subscribe((snippet) => this.loadSnippetForView(snippet), (err) => {
           this.setState({ loading: false });
           this.modalService.openCommonError();
           console.log(err);
         });
       }
+    }
+
+    loadSnippetForView(snippet) {
+      const stateSnippet = { ...snippet };
+      
+      const isQuiz = snippet.responseOptions && snippet.responseOptions.correctAnswerText;
+      stateSnippet.snippetType = isQuiz ? 'QUIZ' : 'NORMAL';
+      const newState = { snippet: stateSnippet, loading: false };
+      if (isQuiz) {
+        newState.quizAnswers = snippet.responseOptions.responseTexts;
+        newState.correctAnswer = snippet.responseOptions.responseTexts.indexOf(snippet.responseOptions.correctAnswerText);
+      }
+
+      this.setState(newState);
     }
 
     isView() {
@@ -80,8 +96,16 @@ class SnippetsEdit extends React.Component {
         errors.title = 'Remember to set a title';
       }
 
-      if (!snippet.body || snippet.body.trim().length === 0) {
+      if (snippet.snippetType === 'NORMAL' && (!snippet.body || snippet.body.trim().length === 0)) {
         errors.body = 'Remember to add a body'
+      }
+
+      if (snippet.snippetType === 'QUIZ' && !this.areAllAnswersFilled()) {
+        errors.quiz = 'Remember to add all answers';
+      }
+
+      if (snippet.snippetType ==='QUIZ' && this.areAllAnswersFilled() && this.state.correctAnswer < 0){
+        errors.quiz = 'Please remember to select an answer';
       }
   
       if (Object.keys(errors).length === 0) {
@@ -100,13 +124,20 @@ class SnippetsEdit extends React.Component {
       this.setState(newState);
     }
 
+    quizAnswerChange = event => {
+      const { name, value } = event.target;
+      const answerIndex = name.split('::')[1];
+      const { quizAnswers } = this.state;
+      quizAnswers[answerIndex] = value;
+      this.setState({ quizAnswers });
+    }
+
     submit = event => {
       event.preventDefault();
       if (!this.isValid()) {
         return;
       }
     
-      // this.props.onSubmit(this.getMessageReqBody(), this.getAudienceReqBody());
       const mode = this.state.mode;
 
       if (mode === 'view') {
@@ -117,6 +148,7 @@ class SnippetsEdit extends React.Component {
       this.setState({ loading: true });
 
       const { snippet } = this.state;
+
       const snippetBody = {
         title: snippet.title,
         body: snippet.body,
@@ -124,6 +156,12 @@ class SnippetsEdit extends React.Component {
         snippetPriority: snippet.priority === 'HIGH' ? 10 : 1,
         previewMode: snippet.previewMode
       };
+
+      if (snippet.snippetType === 'QUIZ') {
+        console.log('Snippet body, correct answer currently: ', this.state.correctAnswer);
+        const responseTexts = this.state.quizAnswers.map((answer) => answer.trim());
+        snippetBody.responseOptions = { responseTexts, correctAnswerText: responseTexts[this.state.correctAnswer] } 
+      }
 
       if (mode === 'edit') {
         const snippetId = this.props.match.params.id;
@@ -139,6 +177,7 @@ class SnippetsEdit extends React.Component {
       }
 
       // new or duplicate
+      console.log('Submitting snippet: ', snippetBody);
       this.snippetService.createSnippet(snippetBody).pipe(
         takeUntil(this.unmount)
       ).subscribe(() => {
@@ -148,6 +187,37 @@ class SnippetsEdit extends React.Component {
         this.setState({ loading: false, sentResult: { success: false } });
         this.modalService.openInfo('Error!', 'Sorry, there was an error submitting');
       });
+    }
+
+    areAllAnswersFilled = () => this.state.quizAnswers.every((answer) => answer.trim().length > 0);
+
+    renderQuestionAnswerForm() {
+      const { quizAnswers, correctAnswer } = this.state;
+      return (
+        <>
+          <div className="form-group">
+            <div className="form-label">Enter answers below. The snippet body will form the question. The question order will be 
+              randomized for each user, and an option "D", "don't know" will be added</div>
+          </div>
+          {quizAnswers.map((_, index) => (
+            <div className="form-group">
+              <Input placeholder="Enter possible answer" name={`answer::${index}`} maxLength="40" disabled={this.isView()}
+                value={quizAnswers[index]} onChange={this.quizAnswerChange}/>
+            </div>
+          ))}
+          {this.areAllAnswersFilled() && (
+            <div className="form-group">
+              <div className="form-label">Please select the correct answer:</div>
+              <Select name="snippetAnswer" disabled={this.isView()} value={correctAnswer} 
+                onChange={(event) => this.setState({ correctAnswer: event.target.value })}>
+                  <option value="-1">(select)</option>
+                  {quizAnswers.map((answer, index) => <option value={index}>{answer}</option>)}
+              </Select>
+            </div>
+          )}
+          {this.state.hasErrors && this.state.errors.quiz && 
+            (<p className="input-error">{this.state.errors.quiz}</p>)}
+        </>)
     }
       
     renderSnippetForm() {
@@ -159,6 +229,15 @@ class SnippetsEdit extends React.Component {
             <div className="form-section">
               <div className="section-num">1</div>
               <div className="section-text">Snippet content</div>
+            </div>
+
+            {/* Title */}
+            <div className="form-group">
+              <div className="form-label">Snippet type</div>
+              <Select name="snippetType" disabled={this.isView()} value={snippet.snippetType} onChange={this.inputChange}>
+                <option value="NORMAL">Normal (text only) snippet</option>
+                <option value="QUIZ">Quiz (question-answer) snipper</option>
+              </Select>
             </div>
 
             {/* Title */}
@@ -178,6 +257,9 @@ class SnippetsEdit extends React.Component {
               {this.state.hasErrors && this.state.errors.body && 
                 (<p className="input-error">{this.state.errors.body}</p>)}
             </div>
+
+            {/* Answer options (if quiz) :: for the moment, fixed at 3, may be flexible in the future */}
+            {snippet.snippetType === 'QUIZ' && this.renderQuestionAnswerForm(snippet)}
 
             <div className="form-section">
               <div className="section-num">2</div>

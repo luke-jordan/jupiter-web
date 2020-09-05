@@ -189,6 +189,11 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
             gameParams.gameImage = data.breakingGameImage;
         }
 
+        if (data.category === 'QUIZ') {
+            gameParams.questionSnippetIds = data.quizSnippetIds;
+            gameParams.timeLimitSeconds = 1800; // 30 minutes (for now, no time limit)
+        }
+
         // todo : could make this more elegant tbh
         if (data.thresholdType === 'TOURNAMENT') {
             gameParams.numberWinners = parseInt(data.winningThreshold, 10);
