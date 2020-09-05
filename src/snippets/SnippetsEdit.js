@@ -61,14 +61,26 @@ class SnippetsEdit extends React.Component {
         this.setState({ loading: true });
         this.snippetService.fetchSnippet(snippetId).pipe(
           takeUntil(this.unmount)
-        ).subscribe((snippet) => {
-          this.setState({ snippet, loading: false });
-        }, (err) => {
+        ).subscribe((snippet) => this.loadSnippetForView(snippet), (err) => {
           this.setState({ loading: false });
           this.modalService.openCommonError();
           console.log(err);
         });
       }
+    }
+
+    loadSnippetForView(snippet) {
+      const stateSnippet = { ...snippet };
+      
+      const isQuiz = snippet.responseOptions && snippet.responseOptions.correctAnswerText;
+      stateSnippet.snippetType = isQuiz ? 'QUIZ' : 'NORMAL';
+      const newState = { snippet: stateSnippet, loading: false };
+      if (isQuiz) {
+        newState.quizAnswers = snippet.responseOptions.responseTexts;
+        newState.correctAnswer = snippet.responseOptions.responseTexts.indexOf(snippet.responseOptions.correctAnswerText);
+      }
+
+      this.setState(newState);
     }
 
     isView() {

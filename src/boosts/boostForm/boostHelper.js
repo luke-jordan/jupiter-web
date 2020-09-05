@@ -191,6 +191,7 @@ const assembleStatusConditions = (data, isEventTriggered, isMlDetermined = false
 
         if (data.category === 'QUIZ') {
             gameParams.questionSnippetIds = data.quizSnippetIds;
+            gameParams.timeLimitSeconds = 1800; // 30 minutes (for now, no time limit)
         }
 
         // todo : could make this more elegant tbh

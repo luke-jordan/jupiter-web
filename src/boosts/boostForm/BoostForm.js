@@ -569,7 +569,7 @@ class BoostForm extends React.Component {
             <div className="form-group">
               <div className="form-label">What is the game time limit? (seconds)</div>
               <Input name="timeLimitSeconds" type="number" value={state.data.timeLimitSeconds}
-                onChange={this.inputChange} disabled={this.isView()}/>
+                onChange={this.inputChange} disabled={this.isView() || state.data.category === 'QUIZ'}/>
             </div>
           </div>
           <div className="grid-col-2">
