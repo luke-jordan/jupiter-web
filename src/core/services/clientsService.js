@@ -55,6 +55,10 @@ export class ClientsService {
     return this.apiService.post(`${this.url}/client/comparators`, data);
   }
 
+  updateUserRefParams(data) {
+    return this.apiService.post(`${this.url}/referral/user`, data);
+  }
+
   createRefCode(data) {
     return this.apiService.post(`${this.url}/referral/create`, data).pipe(
       tap(res => {

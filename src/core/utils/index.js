@@ -75,6 +75,23 @@ export const formatAmountString = (amountString) => {
   return formatMoney(convertedAmount, currency);
 }
 
+export const extractWholeAmount = (amountStringOrDict) => {
+  if (!amountStringOrDict || (typeof amountStringOrDict === 'object' && Object.keys(amountStringOrDict).length === 0)) {
+    return 0;
+  }
+
+  if (typeof amountStringOrDict === 'object') {
+    return convertAmount(amountStringOrDict.amount, amountStringOrDict.unit);
+  }
+  
+  const splitInfo = amountStringOrDict.split('::');
+  if (splitInfo.length !== 3) {
+    return 0;
+  }
+  const [amount, unit] = splitInfo;
+  return convertAmount(amount, unit);
+}
+
 export const getCountryByCode = (countries, code) => {
   return countries.find(country => {
     return (country['alpha-2'] === code || country['alpha-3'] === code);
