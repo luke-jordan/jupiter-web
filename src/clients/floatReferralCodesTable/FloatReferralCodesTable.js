@@ -7,6 +7,7 @@ import TagList from 'src/components/tagList/TagList';
 import DropdownMenu from 'src/components/dropdownMenu/DropdownMenu';
 import Spinner from 'src/components/spinner/Spinner';
 import Input from 'src/components/input/Input';
+import Select from 'src/components/select/Select';
 
 import FloatReferralCodeEdit from './FloatReferralCodeEdit';
 
@@ -51,7 +52,8 @@ class FloatReferralCodesTable extends React.Component {
     return {
       boostAmount: extractWholeAmount(userReferralDefaults.boostAmountOffered),
       minimumBalance: extractWholeAmount(userReferralDefaults.redeemConditionAmount),
-      daysToMaintain: userReferralDefaults.daysToMaintain || 0
+      daysToMaintain: userReferralDefaults.daysToMaintain || 0,
+      bonusPoolId: userReferralDefaults.bonusPoolId || float.floatBonusPools[0]
     }
   }
 
@@ -106,6 +108,15 @@ class FloatReferralCodesTable extends React.Component {
         </td>
       </tr>;
     });
+
+    rows.push(<tr key="bonusPoolId">
+      <td>Bonus source</td>
+      <td>
+        <Select name="bonusPoolId" disabled={!this.state.editUserCodeParams} value={data.bonusPoolId} onChange={this.userParameterChange}>
+          {Object.keys(this.props.float.floatBonusPools).map(key => <option key={key} value={key}>{key}</option>)}
+        </Select>
+      </td>
+    </tr>)
 
     const className = classNames('table', { edit: this.state.editUserCodeParams });
 
@@ -208,7 +219,8 @@ class FloatReferralCodesTable extends React.Component {
         boostAmountOffered: { amount: userCodeData.boostAmount, unit: 'WHOLE_CURRENCY', currency: float.currency },
         redeemConditionAmount: { amount: userCodeData.minimumBalance, unit: 'WHOLE_CURRENCY', currency: float.currency },
         redeemConditionType: 'TARGET_BALANCE',
-        daysToMaintain: parseInt(userCodeData.daysToMaintain, 10)
+        daysToMaintain: parseInt(userCodeData.daysToMaintain, 10),
+        bonusPoolId: userCodeData.bonusPoolId
       }
     };
 
