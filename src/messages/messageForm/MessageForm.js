@@ -27,6 +27,7 @@ class MessageForm extends React.Component {
     this.bodyParameters = [
       'user_first_name',
       'user_full_name',
+      'user_referral_code',
       'current_balance',
       'opened_date',
       'total_interest',
