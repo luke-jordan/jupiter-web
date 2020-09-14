@@ -41,7 +41,8 @@ class MessageForm extends React.Component {
       'tournamentName',
       'entryAmount',
       'bonusAmountMax',
-      'friendsForBonus'
+      'friendsForBonus',
+      'referredUserCalledName'
     ];
 
     this.bodyEditor = null;

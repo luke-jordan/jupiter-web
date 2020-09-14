@@ -18,7 +18,9 @@ const events = [
     ['FRIEND_REQUEST_INITIATED_ACCEPTED', 'Friend request completed'],
     ['ADDED_TO_FRIEND_SAVING_POOL', 'Added to a saving pot'],
     ['SAVING_POOL_DEACTIVATED_BY_CREATOR', 'Saving pot deactivated'],
-    ['INVITED_TO_FRIEND_TOURNAMENT', 'Invited to a buddy tournament']
+    ['INVITED_TO_FRIEND_TOURNAMENT', 'Invited to a buddy tournament'],
+    ['REFERRAL_CODE_USED', 'Someone used the user referral, boost pending'],
+    ['REFERRAL_BOOST_REVOKED', 'A referred user withdrew early, revoking boost']
 ];
 
 const renderTableLines = (systemName, humanName) => (<tr key={systemName}><td>{systemName}</td><td>{humanName}</td></tr>);
