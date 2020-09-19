@@ -13,10 +13,10 @@ export class ClientsService {
   }
 
   getClients() {
-    return forkJoin(
+    return forkJoin([
       this.apiService.get(`${this.url}/client/list`),
       this.dataService.getCountries()
-    ).pipe(
+    ]).pipe(
       map(res => {
         const [clientsMap, countries] = res;
 
@@ -45,6 +45,11 @@ export class ClientsService {
         float.referralCodes.forEach(referralCode => this._modifyReferralCode(referralCode));
       })
     );
+  }
+
+  getHeatConfig(clientId, floatId) {
+    const params = { clientId, floatId };
+    return this.apiService.get(`${this.url}/heat/config`, { params });
   }
 
   updateClient(data) {
