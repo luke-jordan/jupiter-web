@@ -40,6 +40,10 @@ class SavingHeatConfig extends React.Component {
     }
 
     componentDidMount() {
+        this.fetchCurrentConfig();
+    }
+
+    fetchCurrentConfig() {
         this.clientsService.getHeatConfig(this.state.clientId, this.state.floatId)
             .pipe(takeUntil(this.unmount))
             .subscribe(this.transformHeatConfig, err => console.log(err));
@@ -59,6 +63,17 @@ class SavingHeatConfig extends React.Component {
         this.setState({ [editStateKey]: false });
     }
 
+    // new entities need to have their id removed (as it is set locally just for convenience), and client and float ids added
+    removeIdAndAddClientFloat = (entity, idKey) => {
+        if (!entity[idKey].startsWith('NEW')) {
+            return entity;
+        }
+        delete entity[idKey];
+        entity.clientId = this.state.clientId;
+        entity.floatId = this.state.floatId;
+        return entity;
+    }
+
     renderEditButton = (editStateKey, onSaveClick) => 
         <div className="header-actions">
         {this.state[editStateKey] ?
@@ -71,6 +86,10 @@ class SavingHeatConfig extends React.Component {
         <button className="button button-outline button-small" onClick={() => this.editClick(editStateKey)}>Edit</button>
         }
     </div>
+
+    // //////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////// EVENT POINTS SECTION /////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////
 
     changeEventPointProperty = event => {
         const { name, value } = event.target;
@@ -93,11 +112,27 @@ class SavingHeatConfig extends React.Component {
       this.setState({ eventPointItems: newPointItems });
     }
 
+    submitEventPointEdits = () => {
+        const eventPointItems = this.state.eventPointItems.map((eventPointItem) => this.removeIdAndAddClientFloat(eventPointItem, 'eventPointMatchId'));
+        console.log('Submitting event point items: ', eventPointItems);
+
+        this.clientsService.updateEventHeatPoints({ eventPointItems }).pipe(takeUntil(this.unmount))
+            .subscribe((result) => {
+                console.log('Update result: ', result);
+                this.modalService.openInfo('Done!', 'Points per event updated');
+                this.fetchCurrentConfig(); // so updates show
+                this.setState({ editPoints: false });
+            }, err => {
+                console.log('Error submitting changed items! : ', err);
+                this.modalService.openCommonError();
+            })
+    }
+
     renderEventPointList = () => (
     <>
         <div className="section-header">
             <div className="header-text">Heat points per event</div>
-            {this.renderEditButton('editPoints')}
+            {this.renderEditButton('editPoints', this.submitEventPointEdits)}
         </div>
         <table className="table">
             <thead>
@@ -134,6 +169,10 @@ class SavingHeatConfig extends React.Component {
     </>
     );
 
+    // //////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////// LEVELS SECTION ///////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////
+
     changeLevelConfigProperty = event => {
       const { name, value } = event.target;
       const [levelId, propertyKey] = name.split('::');
@@ -155,6 +194,27 @@ class SavingHeatConfig extends React.Component {
       this.setState({ levelConfigurations: newPointItems });
     }
 
+    submitHeatLevelEdits = () => {
+        const levelConfigurations = this.state.levelConfigurations.map((rawConfiguration) => {
+            const levelConfiguration = this.removeIdAndAddClientFloat(rawConfiguration, 'levelId');
+            // i.e., avoid sending blanks
+            ['levelColor', 'levelColor'].forEach((key) => (!levelConfiguration[key] || levelConfiguration[key].trim().length === 0) && delete levelConfiguration[key]);
+            return levelConfiguration;
+        });
+        console.log('Submitting heat levels: ', this.state.levelConfigurations);
+        
+        this.clientsService.updateHeatLevels({ levelConfigurations }).pipe(takeUntil(this.unmount))
+            .subscribe((result) => {
+                console.log('Update heat level result: ', result);
+                this.modalService.openInfo('Done!', 'Heat levels updated');
+                this.fetchCurrentConfig(); // so updates show
+                this.setState({ editLevels: false });
+            }, err => {
+                console.log('Error submitting changed heat levels! : ', err);
+                this.modalService.openCommonError();
+            })
+    }
+
     renderLevelValueOrInput = (levelConfig, propertyName, inputType = 'text') => <td>
       {this.state.editLevels ? 
       <Input type={inputType} name={`${levelConfig.levelId}::${propertyName}`} value={levelConfig[propertyName] || ''} 
@@ -174,7 +234,7 @@ class SavingHeatConfig extends React.Component {
     renderLevelThresholds = () => (<>
         <div className="section-header">
             <div className="header-text">Heat levels</div>
-            {this.renderEditButton('editLevels')}
+            {this.renderEditButton('editLevels', this.submitHeatLevelEdits)}
         </div>
         <table className="table">
             <thead>
@@ -196,6 +256,8 @@ class SavingHeatConfig extends React.Component {
             </div>
         </div>}
     </>);
+
+    // SOME GENERIC STUFF, INCLUDING HELPER MODALS AND OVERALL RENDERS
 
     showEventModal = event => {
       event.preventDefault();

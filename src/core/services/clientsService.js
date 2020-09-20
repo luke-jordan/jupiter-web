@@ -60,6 +60,14 @@ export class ClientsService {
     return this.apiService.post(`${this.url}/client/comparators`, data);
   }
 
+  updateEventHeatPoints(data) {
+    return this.apiService.post(`${this.url}/heat/edit/event`, data);
+  }
+
+  updateHeatLevels(data) {
+    return this.apiService.post(`${this.url}/heat/edit/level`, data);
+  }
+
   updateUserRefParams(data) {
     return this.apiService.post(`${this.url}/referral/user`, data);
   }
