@@ -13,10 +13,10 @@ export class ClientsService {
   }
 
   getClients() {
-    return forkJoin(
+    return forkJoin([
       this.apiService.get(`${this.url}/client/list`),
       this.dataService.getCountries()
-    ).pipe(
+    ]).pipe(
       map(res => {
         const [clientsMap, countries] = res;
 
@@ -47,12 +47,25 @@ export class ClientsService {
     );
   }
 
+  getHeatConfig(clientId, floatId) {
+    const params = { clientId, floatId };
+    return this.apiService.get(`${this.url}/heat/config`, { params });
+  }
+
   updateClient(data) {
     return this.apiService.post(`${this.url}/client/edit`, data);
   }
 
   updateComparatorRates(data) {
     return this.apiService.post(`${this.url}/client/comparators`, data);
+  }
+
+  updateEventHeatPoints(data) {
+    return this.apiService.post(`${this.url}/heat/edit/event`, data);
+  }
+
+  updateHeatLevels(data) {
+    return this.apiService.post(`${this.url}/heat/edit/level`, data);
   }
 
   updateUserRefParams(data) {

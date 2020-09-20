@@ -12,7 +12,6 @@ const events = [
     ['SAVING_EVENT_CANCELLED', 'Save cancelled'],
     ['WITHDRAWAL_EVENT_INITIATED', 'Withdrawal initiated'],
     ['WITHDRAWAL_EVENT_CONFIRMED', 'Withdrawal confirmed'],
-    ['ADMIN_SETTLED_WITHDRAWAL', 'Withdrawal done'],
     ['BOOST_TOURNAMENT_WON', 'Boost tournament won'],
     ['FRIEND_REQUEST_RECEIVED', 'Friend request received'],
     ['FRIEND_REQUEST_INITIATED_ACCEPTED', 'Friend request completed'],
