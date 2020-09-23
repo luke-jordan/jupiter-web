@@ -13,6 +13,8 @@ const events = [
     ['WITHDRAWAL_EVENT_INITIATED', 'Withdrawal initiated'],
     ['WITHDRAWAL_EVENT_CONFIRMED', 'Withdrawal confirmed'],
     ['BOOST_TOURNAMENT_WON', 'Boost tournament won'],
+    ['HEAT_LEVEL_UP', 'Saving heat level up'],
+    ['HEAT_LEVEL_DOWN', 'Saving heat level down'],
     ['FRIEND_REQUEST_RECEIVED', 'Friend request received'],
     ['FRIEND_REQUEST_INITIATED_ACCEPTED', 'Friend request completed'],
     ['ADDED_TO_FRIEND_SAVING_POOL', 'Added to a saving pot'],
