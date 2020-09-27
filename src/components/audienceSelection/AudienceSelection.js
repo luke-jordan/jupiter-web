@@ -17,6 +17,7 @@ class AudienceSelection extends React.Component {
     this.audienceService = inject('AudienceService');
     this.modalService = inject('ModalService');
     this.boostService = inject('BoostsService');
+    this.clientService = inject('ClientsService');
 
     this.state = {
       loading: false,
@@ -115,16 +116,18 @@ class AudienceSelection extends React.Component {
   }
 
   loadProperties() {
-    forkJoin(
+    forkJoin([
       this.audienceService.getProperties(),
-      this.boostService.getBoosts({ excludeExpired: true, excludeUserCounts: true })
-    ).pipe(
+      this.boostService.getBoosts({ excludeExpired: true, excludeUserCounts: true }),
+      this.clientService.getClientHeatLevels(this.props.clientId)
+    ]).pipe(
       takeUntil(this.unmount)
-    ).subscribe(([properties, fullBoosts]) => {
+    ).subscribe(([properties, fullBoosts, heatLevels]) => {
       this.setState({ 
         properties: properties.filter((property) => !property.excludeOnPanel),
         entities: {
           boost: fullBoosts.map((boost) => ({ entityId: boost.boostId, entityLabel: boost.label })),
+          heatLevel: heatLevels.map((level) => ({ entityId: level.levelId, entityLabel: level.levelName }))
         }
       });
     });

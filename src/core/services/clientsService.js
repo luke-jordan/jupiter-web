@@ -52,6 +52,14 @@ export class ClientsService {
     return this.apiService.get(`${this.url}/heat/config`, { params });
   }
 
+  getClientHeatLevels(clientId) {
+    return this.apiService.get(`${this.url}/heat/config`, { params: { clientId }}).pipe(
+      map((configResult) => {
+        console.log('Result of heat level fetch: ', configResult);
+        return configResult.clientHeatLevels
+      }));
+  }
+
   updateClient(data) {
     return this.apiService.post(`${this.url}/client/edit`, data);
   }

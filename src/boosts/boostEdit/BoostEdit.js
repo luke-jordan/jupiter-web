@@ -59,10 +59,10 @@ class BoostEdit extends React.Component {
 
   loadData() {
     const boostId = this.props.match.params.id;
-    forkJoin(
+    forkJoin([
       boostId ? this.boostsService.getBoost(boostId) : of(null),
       this.clientsService.getClients()
-    ).pipe(
+    ]).pipe(
       takeUntil(this.unmount)
     ).subscribe(([boost, clients]) => {
       this.setState({ boost, clients, loading: false });
