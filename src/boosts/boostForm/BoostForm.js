@@ -795,7 +795,8 @@ class BoostForm extends React.Component {
   }
 
   renderAudienceSelection() {
-    return /(new|duplicate)/.test(this.props.mode) ?
+    // client id must be set before audience selection (and at present only display on new boost)
+    return this.state.data.clientId && /(new|duplicate)/.test(this.props.mode) ?
       <AudienceSelection headerText="Who is Eligible?"
         clientId={this.state.data.clientId}
         ref={ref => this.audienceRef = ref}

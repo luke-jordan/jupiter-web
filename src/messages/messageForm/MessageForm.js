@@ -314,6 +314,13 @@ class MessageForm extends React.Component {
 
   renderAudienceSelection() {
     const clients = this.props.clients;
+    console.log('Rendering audience selection, clients? : ', this.props.clients);
+    // otherwise need to do some lifecycle mgmt in audience selector (and anyway must have client present before selecting audience)
+    if (!clients || clients.length === 0) {
+      return null;
+    }
+
+    console.log('First client ID: ', clients[0].clientId, ' using as default and continuing');
     return /(new|duplicate)/.test(this.props.mode) ?
       <AudienceSelection headerNum="3"
         clientId={clients[0] ? clients[0].clientId : null}

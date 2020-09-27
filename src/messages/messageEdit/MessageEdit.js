@@ -70,10 +70,10 @@ class MessageEdit extends React.Component {
 
     this.setState({ loading: true });
     
-    forkJoin(
+    forkJoin([
       messageId ? this.messagesService.getMessage(messageId) : of(null),
       /(new|duplicate)/.test(mode) ? this.clientsService.getClients() : of([])
-    ).pipe(
+    ]).pipe(
       takeUntil(this.unmount)
     ).subscribe(([message, clients]) => {
       this.setState({ message, clients, loading: false });
