@@ -135,6 +135,7 @@ class MessageForm extends React.Component {
               <option value="VISIT_WEB">Visit website</option>
               <option value="VIEW_BOOSTS">View boosts</option>
               <option value="VIEW_FRIENDS">View friends</option>
+              <option value="WITHDRAW">Withdraw</option>
             </Select>
           </div>
         </div>
