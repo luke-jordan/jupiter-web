@@ -5,6 +5,7 @@ import { inject, unmountDecorator, revertAmount } from 'src/core/utils';
 import Modal from 'src/components/modal/Modal';
 import Input from 'src/components/input/Input';
 import Spinner from 'src/components/spinner/Spinner';
+import Select from 'src/components/select/Select';
 
 import './UserTransactions.scss';
 
@@ -27,8 +28,11 @@ class UserTransactions extends React.Component {
   render() {
     // doing this as a button requires finding the class and that is 10 minutes that the warning is not worth at present
     return <div className="user-transactions">
-      <header className="transactions-header">Pending EFT Transactions 
-        (<a href="#" onClick={this.openInitiateTransactionModal}>create new</a>)</header>
+      <header className="transactions-header">Pending EFT Transactions (
+        <button className="link text-underline" onClick={() => this.openInitiateTransactionModal(false)}>create save</button> /
+        <button className="link text-underline" onClick={() => this.openInitiateTransactionModal(true)}>create withdrawal</button>
+      )
+      </header>
       {this.renderTable()}
       {this.renderTransactionStatusChangeModal()}
       {this.renderTransactionAmountModal()}
@@ -139,8 +143,7 @@ class UserTransactions extends React.Component {
     });
   }
 
-  openInitiateTransactionModal = e => {
-    e.preventDefault();
+  openInitiateTransactionModal = (isWithdrawal) => {
     this.setState({
       showInitiateTxModal: true,
       txInitiateData: {
@@ -148,7 +151,8 @@ class UserTransactions extends React.Component {
         currency: 'ZAR',
         unit: 'WHOLE_CURRENCY',
         accountId: this.props.user.userBalance.accountId[0],
-        reasonText: ''
+        reasonText: '',
+        isWithdrawal
       }
     });
   }
@@ -171,8 +175,11 @@ class UserTransactions extends React.Component {
 
   renderTransactionInitiateModal() {
     const { txInitiateData } = this.state;
+    const isWithdrawal = txInitiateData && txInitiateData.isWithdrawal;
+
     return this.state.showInitiateTxModal &&
-    <Modal open className="transaction-change-reason" header="Initiate transaction" onClose={this.closeInitiateTransactionModal}>
+    <Modal open className="transaction-change-reason" header={`Initiate ${isWithdrawal ? 'withdrawal' : 'save'}`} 
+      onClose={this.closeInitiateTransactionModal}>
       <form onSubmit={this.submitNewTransaction}>
         <div className="reason-msg">Please enter the amount below and a note to log</div>
         <div className="grid-row">
@@ -188,6 +195,39 @@ class UserTransactions extends React.Component {
             <button className="button" disabled={!txInitiateData.reasonText.trim() || txInitiateData.amount === 0}>Submit</button>
           </div>
         </div>
+        {isWithdrawal && <>
+          <div className="grid-row">
+            Bank detials (optional-for verification if not before)
+          </div>
+          <div className="grid-row">
+            <div className="grid-col-6">
+              <span className="reason-msg">Bank: </span>
+              <Select name="bankAccBank" value={txInitiateData.bankAccBank} onChange={this.changeInitiateTxField}>
+                <option value="">Select</option>
+                <option value="FNB">FNB</option>
+                <option value="CAPITEC">Capitec</option>
+                <option value="STANDARD">Standard</option>
+                <option value="ABSA">Absa</option>
+                <option value="NEDBANK">Nedbank</option>
+                <option value="TYME">Tyme</option>
+              </Select>
+            </div>
+            <div className="grid-col-6">
+              <span className="reason-msg">Type: </span>
+              <Select name="bankAccType" value={txInitiateData.bankAccType} onChange={this.changeInitiateTxField}>
+                <option value="">Select</option>
+                <option value="CURRENT">Current</option>
+                <option value="SAVINGS">Savings</option>
+              </Select>
+            </div>
+          </div>
+          <div className="grid-row">
+            <div className="grid-col-4">
+              <span className="reason-msg">Acc Number: </span>
+              <Input name="bankAccNumber" value={txInitiateData.bankAccNumber} onChange={this.changeInitiateTxField}/>
+            </div>
+          </div>
+        </>}
       </form>
     </Modal> 
   }
@@ -292,6 +332,20 @@ class UserTransactions extends React.Component {
       },
       reasonText: txInitiateData.reasonText
     };
+
+    if (txInitiateData.isWithdrawal) {
+      submissionBody.initiateWithdrawal = true;
+    }
+
+    if (txInitiateData.bankAccNumber && txInitiateData.bankAccNumber.trim().length > 0) {
+      const bankAccountDetails = {
+        bankName: txInitiateData.bankAccBank,
+        accountType: txInitiateData.bankAccType,
+        accountNumber: txInitiateData.bankAccNumber,
+      };
+
+      submissionBody.transactionParameters.bankAccountDetails = bankAccountDetails;
+    }
 
     this.submitUserChange(submissionBody);
   }
