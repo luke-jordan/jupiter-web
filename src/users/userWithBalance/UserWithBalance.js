@@ -21,8 +21,8 @@ const UserWithBalance = props => {
       </div>
     </div>
     <div className="user-balance">
-      <div className="balance-label">Total jupiter balance</div>
-      <div className="balance-value">{user.userBalance.currentBalance.amountMoney}</div>
+      <div className="balance-label">Settled jupiter balance</div>
+      <div className="balance-value">{user.userBalance.balanceStartDayOrLastSettled.amountMoney}</div>
     </div>
   </div>;
 };
