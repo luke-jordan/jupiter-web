@@ -84,6 +84,9 @@ export class UsersService {
     const currentBalance = user.userBalance.currentBalance;
     setAmountValueAndMoney(currentBalance, 'amount', currentBalance.unit, currentBalance.currency);
 
+    const settledBalance = user.userBalance.balanceStartDayOrLastSettled;
+    setAmountValueAndMoney(settledBalance, 'amount', settledBalance.unit, settledBalance.currency);
+
     user.pendingTransactions.forEach(transaction => this._modifyUserTransaction(transaction));
     user.userHistory.userEvents.forEach(history => this._modifyUserHistory(history));
     return user;
