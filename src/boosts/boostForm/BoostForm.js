@@ -383,7 +383,7 @@ class BoostForm extends React.Component {
                 <option value="IMMEDIATE">Now</option>
                 <option value="EVENT">On an event</option>
                 <option value="AUDIENCE_REFRESH">Whenever a user meets the criteria</option>
-                <option value="ML_DETERMINED">When our robot overlord decides to</option>
+                <option value="ML_DETERMINED">Let ML model pick</option>
               </Select>
             </div>
           </div>
